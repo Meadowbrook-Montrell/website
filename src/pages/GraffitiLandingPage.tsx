@@ -120,7 +120,7 @@ export function GraffitiLandingPage() {
               <img
                 src="/images/logo-3gmg-graffiti.webp"
                 alt="3GMG"
-                className="h-12 md:h-14 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.4)]"
+                className="h-12 md:h-14 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.4)] mix-blend-lighten"
               />
             </a>
 
@@ -215,7 +215,7 @@ export function GraffitiLandingPage() {
           <img
             src="/images/logo-3gmg-graffiti.webp"
             alt="3GMG Graffiti"
-            className="w-64 sm:w-80 md:w-96 mx-auto mb-6 drop-shadow-[0_0_20px_rgba(212,168,67,0.5)]"
+            className="w-64 sm:w-80 md:w-96 mx-auto mb-6 drop-shadow-[0_0_20px_rgba(212,168,67,0.5)] mix-blend-lighten"
           />
 
           {/* Location tag */}
@@ -687,7 +687,7 @@ export function GraffitiLandingPage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Logo */}
             <div className="flex flex-col items-center md:items-start gap-3">
-              <img src="/images/logo-3gmg-graffiti.webp" alt="3GMG" className="h-12 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.3)]" />
+              <img src="/images/logo-3gmg-graffiti.webp" alt="3GMG" className="h-12 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.3)] mix-blend-lighten" />
               <div className="flex items-center gap-2 text-[#888078] text-sm">
                 <MapPin className="size-3.5" />
                 <span>Fort Worth, Texas</span>
