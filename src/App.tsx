@@ -5,6 +5,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { LandingPage } from "./pages/LandingPage";
 import { GraffitiLandingPage } from "./pages/GraffitiLandingPage";
 import { LibraryPage } from "./pages/LibraryPage";
+import { GalleryPage } from "./pages/GalleryPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/v2" element={<GraffitiLandingPage />} />
           <Route path="/library" element={<LibraryPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ThemeProvider>

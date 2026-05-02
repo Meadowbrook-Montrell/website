@@ -343,6 +343,7 @@ const CATEGORIES: { key: Category; label: string; icon: typeof Mic }[] = [
 const NAV_LINKS = [
   { label: "HOME", href: "/v2" },
   { label: "LIBRARY", href: "/library" },
+  { label: "GALLERY", href: "/gallery" },
 ];
 
 /* ─── Scroll animation ─── */
