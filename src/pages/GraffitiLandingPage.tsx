@@ -104,7 +104,16 @@ export function GraffitiLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4] overflow-x-hidden">
+    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden">
+      {/* Fixed full-page background: Fort Worth Stock Yards */}
+      <div className="fixed inset-0 -z-10" style={{
+        backgroundImage: `url('/images/hero-graffiti.webp')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}>
+        <div className="absolute inset-0 bg-[#0a0a0a]/40" />
+      </div>
       {/* ─── NAVIGATION ─── */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -193,15 +202,10 @@ export function GraffitiLandingPage() {
           HERO SECTION
           ═══════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background image - fixed so it stays static while scrolling */}
-        <div className="fixed inset-0 -z-10" style={{
-          backgroundImage: `url('/images/hero-graffiti.webp')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/50 via-[#0a0a0a]/30 to-[#0a0a0a]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/40 via-transparent to-[#0a0a0a]/40" />
+        {/* Hero overlay gradients */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/30 via-transparent to-[#0a0a0a]/30" />
         </div>
 
         {/* Noise texture overlay */}
@@ -275,12 +279,7 @@ export function GraffitiLandingPage() {
       {/* ═══════════════════════════════════════════════════
           ABOUT / MISSION SECTION
           ═══════════════════════════════════════════════════ */}
-      <section id="about" className="relative py-24 md:py-32" style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(10,10,10,0.95), rgba(10,10,10,0.85)), url('/images/hero-graffiti.webp')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center 70%",
-        backgroundAttachment: "fixed",
-      }}>
+      <section id="about" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Photo placeholder */}
@@ -361,7 +360,7 @@ export function GraffitiLandingPage() {
       {/* ═══════════════════════════════════════════════════
           PODCAST SECTION
           ═══════════════════════════════════════════════════ */}
-      <section id="podcast" className="relative py-24 md:py-32 overflow-hidden">
+      <section id="podcast" className="relative py-24 md:py-32 overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-sm">
         {/* Background accent */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D4A843]/[0.02] to-transparent" />
 
@@ -452,7 +451,7 @@ export function GraffitiLandingPage() {
       {/* ═══════════════════════════════════════════════════
           CONTENT SECTION (Interviews + Street Reporting)
           ═══════════════════════════════════════════════════ */}
-      <section id="content" className="relative py-24 md:py-32">
+      <section id="content" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
             <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
@@ -569,7 +568,7 @@ export function GraffitiLandingPage() {
       {/* ═══════════════════════════════════════════════════
           MERCH SECTION
           ═══════════════════════════════════════════════════ */}
-      <section id="merch" className="relative py-24 md:py-32 overflow-hidden">
+      <section id="merch" className="relative py-24 md:py-32 overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-sm">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D4A843]/[0.02] to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -633,7 +632,7 @@ export function GraffitiLandingPage() {
       {/* ═══════════════════════════════════════════════════
           CONNECT / SOCIAL LINKS SECTION
           ═══════════════════════════════════════════════════ */}
-      <section id="connect" className="relative py-24 md:py-32">
+      <section id="connect" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
             <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
@@ -682,7 +681,7 @@ export function GraffitiLandingPage() {
       {/* ═══════════════════════════════════════════════════
           FOOTER
           ═══════════════════════════════════════════════════ */}
-      <footer className="relative border-t border-[#D4A843]/10 bg-[#0a0a0a]">
+      <footer className="relative border-t border-[#D4A843]/10 bg-[#0a0a0a]/90 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Logo */}
