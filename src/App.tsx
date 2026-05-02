@@ -3,6 +3,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LandingPage } from "./pages/LandingPage";
+import { GraffitiLandingPage } from "./pages/GraffitiLandingPage";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Toaster />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/v2" element={<GraffitiLandingPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ThemeProvider>
