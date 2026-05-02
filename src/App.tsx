@@ -4,6 +4,7 @@ import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LandingPage } from "./pages/LandingPage";
 import { GraffitiLandingPage } from "./pages/GraffitiLandingPage";
+import { LibraryPage } from "./pages/LibraryPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/v2" element={<GraffitiLandingPage />} />
+          <Route path="/library" element={<LibraryPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ThemeProvider>

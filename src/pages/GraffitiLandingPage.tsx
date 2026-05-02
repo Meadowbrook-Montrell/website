@@ -75,7 +75,7 @@ const SOCIALS = [
 const NAV_LINKS = [
   { label: "About", href: "#about" },
   { label: "Podcast", href: "#podcast" },
-  { label: "Content", href: "#content" },
+  { label: "Library", href: "/library" },
   { label: "Merch", href: "#merch" },
   { label: "Connect", href: "#connect" },
 ];
