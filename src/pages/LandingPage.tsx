@@ -69,7 +69,7 @@ const SOCIALS = [
   { name: "Facebook", icon: Facebook, url: "https://www.facebook.com/montrell.wilson.884042", followers: "40K" },
   { name: "Instagram", icon: Instagram, url: "https://www.instagram.com/3gmgmeadowbrookmontrell/", followers: "" },
   { name: "TikTok", icon: TikTokIcon, url: "https://www.tiktok.com/@meadowbrookmontrellmedia", followers: "2.1K" },
-  { name: "YouTube", icon: Youtube, url: "https://youtube.com/@meadowbrookmontrell817", followers: "" },
+  { name: "YouTube", icon: Youtube, url: "https://www.youtube.com/@Meadowbrookmontrell", followers: "" },
 ];
 
 const NAV_LINKS = [
@@ -396,7 +396,7 @@ export function LandingPage() {
                     {/* Listen platforms */}
                     <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                       <a
-                        href="https://youtube.com/@meadowbrookmontrell817"
+                        href="https://www.youtube.com/@Meadowbrookmontrell"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300"
@@ -477,7 +477,7 @@ export function LandingPage() {
                     Real questions, real answers, real stories from the block.
                   </p>
                   <a
-                    href="https://youtube.com/@meadowbrookmontrell817"
+                    href="https://www.youtube.com/@Meadowbrookmontrell"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium hover:text-[#E8C767] transition-colors"
