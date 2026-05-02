@@ -193,13 +193,13 @@ export function GraffitiLandingPage() {
           HERO SECTION
           ═══════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <img
-            src="/images/hero-graffiti.webp"
-            alt="Fort Worth Graffiti Alley"
-            className="w-full h-full object-cover"
-          />
+        {/* Background image - fixed so it stays static while scrolling */}
+        <div className="fixed inset-0 -z-10" style={{
+          backgroundImage: `url('/images/hero-graffiti.webp')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}>
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/50 via-[#0a0a0a]/30 to-[#0a0a0a]" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/40 via-transparent to-[#0a0a0a]/40" />
         </div>
