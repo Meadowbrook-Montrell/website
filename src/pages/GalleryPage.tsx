@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Mic,
-  Video,
   Music,
   Users,
   Flame,

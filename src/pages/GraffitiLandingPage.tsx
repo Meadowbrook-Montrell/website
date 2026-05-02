@@ -283,21 +283,28 @@ export function GraffitiLandingPage() {
       <section id="about" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Photo placeholder */}
+            {/* Montrell Avatar with Gold LED Glow */}
             <AnimatedSection>
-              <div className="relative aspect-[3/4] max-w-md mx-auto lg:mx-0 rounded-sm overflow-hidden glow-border group">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <div className="w-32 h-32 rounded-full bg-[#D4A843]/10 border-2 border-dashed border-[#D4A843]/30 flex items-center justify-center mx-auto mb-6">
-                      <span className="text-4xl">📸</span>
-                    </div>
-                    <p className="text-[#D4A843]/60 text-sm tracking-widest uppercase">Your Photo Here</p>
-                    <p className="text-[#888078] text-xs mt-2">Upload coming soon</p>
-                  </div>
+              <div className="relative max-w-md mx-auto lg:mx-0 flex items-center justify-center">
+                {/* Gold LED glow layers behind the image */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-[85%] h-[85%] rounded-full bg-[#D4A843]/10 blur-[80px]" />
                 </div>
-                {/* Gold corner accents */}
-                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#D4A843]/40" />
-                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#D4A843]/40" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-[70%] h-[70%] rounded-full bg-[#D4A843]/15 blur-[50px]" />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-[50%] h-[50%] rounded-full bg-[#E8C767]/10 blur-[30px]" />
+                </div>
+                {/* The avatar image */}
+                <img
+                  src="/images/montrell-avatar.png"
+                  alt="Meadowbrook Montrell - 3GMG - The Hood's Paparazzi"
+                  className="relative z-10 w-full max-w-[420px] h-auto drop-shadow-[0_0_30px_rgba(212,168,67,0.3)] hover:drop-shadow-[0_0_50px_rgba(212,168,67,0.5)] transition-all duration-700"
+                />
+                {/* Subtle gold edge light on left and right */}
+                <div className="absolute left-0 top-[15%] bottom-[15%] w-1 bg-gradient-to-b from-transparent via-[#D4A843]/30 to-transparent blur-[3px]" />
+                <div className="absolute right-0 top-[15%] bottom-[15%] w-1 bg-gradient-to-b from-transparent via-[#D4A843]/30 to-transparent blur-[3px]" />
               </div>
             </AnimatedSection>
 
