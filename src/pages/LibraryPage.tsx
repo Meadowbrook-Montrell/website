@@ -10,10 +10,7 @@ import {
   MapPin,
   Radio,
   Calendar,
-  Clock,
-  Eye,
   Filter,
-  ExternalLink,
 } from "lucide-react";
 
 /* ─── Types ─── */
