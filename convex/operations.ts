@@ -478,7 +478,7 @@ export const addCommunityPost = mutation({
   handler: async (ctx, args) => {
     return await ctx.db.insert("communityPosts", {
       ...args,
-      isApproved: false,
+      isApproved: true,
       likes: 0,
       createdAt: new Date().toISOString(),
     });
