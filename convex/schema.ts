@@ -37,6 +37,43 @@ const schema = defineSchema({
   })
     .index("by_scheduled", ["scheduledAt"])
     .index("by_live", ["isLive"]),
+
+  // Newsletter / SMS subscribers
+  subscribers: defineTable({
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    subscribedAt: v.string(),
+    source: v.optional(v.string()), // "hero" | "footer" | "live-banner"
+  }).index("by_email", ["email"]),
+
+  // News ticker items
+  tickerItems: defineTable({
+    text: v.string(),
+    isActive: v.boolean(),
+    priority: v.optional(v.number()), // higher = shows first
+    link: v.optional(v.string()),
+    createdAt: v.string(),
+  }).index("by_active", ["isActive"]),
+
+  // Guest spotlights
+  guests: defineTable({
+    name: v.string(),
+    title: v.optional(v.string()), // e.g. "Rapper" | "Community Leader"
+    quote: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    episodeUrl: v.optional(v.string()),
+    youtubeId: v.optional(v.string()),
+    featured: v.optional(v.boolean()),
+    createdAt: v.string(),
+  }).index("by_featured", ["featured"]),
+
+  // Site analytics / page views
+  pageViews: defineTable({
+    page: v.string(), // "/v2" | "/library" | "/gallery"
+    timestamp: v.string(),
+    referrer: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+  }).index("by_page", ["page"]),
 });
 
 export default schema;
