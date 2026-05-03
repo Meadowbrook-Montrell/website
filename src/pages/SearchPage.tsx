@@ -22,7 +22,7 @@ export function SearchPage() {
       <div className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-lg border-b border-[#D4A843]/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center h-16 gap-4">
           <a href="/" className="flex items-center gap-2 text-[#888078] hover:text-[#D4A843] transition-colors">
-            <ArrowLeft className="size-4" />
+            <ArrowLeft className="size-4" /> <span className="text-sm">Home</span>
           </a>
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#888078]" />
