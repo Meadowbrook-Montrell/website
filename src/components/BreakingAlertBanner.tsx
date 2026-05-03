@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useState, Component, type ReactNode } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { AlertTriangle, X, ExternalLink } from "lucide-react";
 
-export default function BreakingAlertBanner() {
+/* Error boundary so a failed query doesn't crash the whole page */
+class AlertErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() { return this.state.hasError ? null : this.props.children; }
+}
+
+function AlertBannerInner() {
   const alerts = useQuery(api.features2.getActiveAlerts);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
   if (!alerts || alerts.length === 0) return null;
 
-  const visible = alerts.filter(a => !dismissed.has(a._id));
+  const visible = alerts.filter((a: any) => !dismissed.has(a._id));
   if (visible.length === 0) return null;
 
-  const alert = visible[0]; // show the most recent active alert
+  const alert = visible[0];
 
   const severityStyles: Record<string, { bg: string; border: string; text: string; icon: string }> = {
     breaking: { bg: "bg-red-600/95", border: "border-red-500", text: "text-white", icon: "animate-pulse" },
@@ -45,5 +52,13 @@ export default function BreakingAlertBanner() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function BreakingAlertBanner() {
+  return (
+    <AlertErrorBoundary>
+      <AlertBannerInner />
+    </AlertErrorBoundary>
   );
 }
