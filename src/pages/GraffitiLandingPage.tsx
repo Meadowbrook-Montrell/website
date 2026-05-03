@@ -30,13 +30,7 @@ import {
 } from "lucide-react";
 
 /* ─── tiny TikTok icon (lucide doesn't have one) ─── */
-function TikTokIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.71a8.21 8.21 0 004.76 1.52V6.69h-1z" />
-    </svg>
-  );
-}
+import { TikTokIcon } from "../components/icons/TikTokIcon";
 
 /* ─── Intersection Observer hook for scroll animations ─── */
 function useInView(threshold = 0.1) {
@@ -272,7 +266,7 @@ function FloatingAudioPlayer() {
               onClick={() => setIsPlaying(!isPlaying)}
               className="w-10 h-10 rounded-full bg-[#D4A843] text-[#0a0a0a] flex items-center justify-center hover:bg-[#E8C767] transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,168,67,0.3)]"
             >
-              {isPlaying ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+              {isPlaying ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
             </button>
           </div>
         </div>
@@ -484,7 +478,7 @@ export function GraffitiLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden cursor-crosshair">
+    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden landing-crosshair">
       {/* Feature 8: Custom cursor CSS via style tag */}
       <style>{`
         @keyframes ticker {
@@ -505,7 +499,8 @@ export function GraffitiLandingPage() {
         @keyframes countUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
         .stat-glow { text-shadow: 0 0 30px rgba(212, 168, 67, 0.4); }
         /* Custom cursor */
-        * { cursor: crosshair !important; }
+        .landing-crosshair { cursor: crosshair; }
+        .landing-crosshair a, .landing-crosshair button, .landing-crosshair input, .landing-crosshair select, .landing-crosshair textarea { cursor: pointer; }
         a, button, [role="button"], input, select, textarea { cursor: pointer !important; }
         /* Video hero shimmer */
         @keyframes shimmer {
@@ -524,24 +519,8 @@ export function GraffitiLandingPage() {
         <div className="absolute inset-0 bg-[#0a0a0a]/40" />
       </div>
 
-      {/* Feature 1: Video Hero Background */}
+      {/* Hero Background — static image (video removed until a real URL is provided) */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/hero-graffiti.webp"
-          className="absolute inset-0 w-full h-full object-cover"
-          onError={(e) => {
-            // Fallback to static image if video fails
-            (e.target as HTMLVideoElement).style.display = 'none';
-          }}
-        >
-          {/* The video source — will gracefully fallback to poster image */}
-          <source src="" type="video/mp4" />
-        </video>
-        {/* Always show the static background as fallback */}
         <div className="absolute inset-0" style={{
           backgroundImage: `url('/images/hero-graffiti.webp')`,
           backgroundSize: 'cover',
@@ -854,7 +833,9 @@ export function GraffitiLandingPage() {
                 <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
                   <SmartYouTubeEmbed videoId={clip.id} title={clip.title} aspectClass="aspect-[9/16]" />
                   <div className="p-3">
-                    <span className={`text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-${clip.color}-500/20 text-${clip.color}-400 border border-${clip.color}-500/30`}>{clip.badge}</span>
+                    <span className={`text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded ${
+                      ({ blue: "bg-blue-500/20 text-blue-400 border border-blue-500/30", amber: "bg-amber-500/20 text-amber-400 border border-amber-500/30", purple: "bg-purple-500/20 text-purple-400 border border-purple-500/30", red: "bg-red-500/20 text-red-400 border border-red-500/30", green: "bg-green-500/20 text-green-400 border border-green-500/30" } as Record<string, string>)[clip.color] || "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+                    }`}>{clip.badge}</span>
                     <h4 className="font-display text-xs text-[#f0ece4] tracking-wider mt-1.5 line-clamp-2">{clip.title}</h4>
                   </div>
                 </div>
@@ -897,7 +878,7 @@ export function GraffitiLandingPage() {
                     />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <a
-                        href={`https://www.youtube.com/shorts/${vid.id}`}
+                        href={`https://www.youtube.com/watch?v=${vid.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-14 h-14 rounded-full bg-[#D4A843] text-[#0a0a0a] flex items-center justify-center hover:scale-110 transition-transform"
@@ -1003,7 +984,7 @@ export function GraffitiLandingPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/80 via-transparent to-transparent" />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <a href={`https://www.youtube.com/shorts/${video.id}`} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#D4A843] flex items-center justify-center shadow-lg shadow-[#D4A843]/30">
+                      <a href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#D4A843] flex items-center justify-center shadow-lg shadow-[#D4A843]/30">
                         <Play className="size-6 text-[#0a0a0a] ml-1" />
                       </a>
                     </div>
