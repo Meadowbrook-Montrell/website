@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Facebook,
   Instagram,
@@ -11,6 +11,13 @@ import {
   Play,
   Menu,
   X,
+  Volume2,
+  VolumeX,
+  Mail,
+  Bell,
+  ChevronLeft,
+  ChevronRight,
+  Quote,
 } from "lucide-react";
 
 /* ─── tiny TikTok icon (lucide doesn't have one) ─── */
@@ -60,8 +67,33 @@ function AnimatedSection({ children, className = "", delay = 0 }: {
   );
 }
 
+/* ─── Animated Counter ─── */
+function AnimatedCounter({ end, suffix = "", duration = 2000 }: {
+  end: number; suffix?: string; duration?: number;
+}) {
+  const [count, setCount] = useState(0);
+  const { ref, inView } = useInView(0.3);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!inView || hasAnimated.current) return;
+    hasAnimated.current = true;
+    const startTime = Date.now();
+    const step = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * end));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [inView, end, duration]);
+
+  return <span ref={ref as any}>{count.toLocaleString()}{suffix}</span>;
+}
+
 /* ══════════════════════════════════════════════════════════
-   SOCIAL LINKS CONFIG
+   CONSTANTS & CONFIG
    ══════════════════════════════════════════════════════════ */
 const SOCIALS = [
   { name: "Facebook", icon: Facebook, url: "https://www.facebook.com/montrell.wilson.884042", followers: "40K" },
@@ -79,9 +111,6 @@ const NAV_LINKS = [
   { label: "Connect", href: "#connect" },
 ];
 
-/* ══════════════════════════════════════════════════════════
-   MERCH PLACEHOLDER DATA
-   ══════════════════════════════════════════════════════════ */
 const MERCH_ITEMS = [
   { name: "3GMG Classic Tee", price: "$35", tag: "BEST SELLER", color: "from-amber-900/40 to-stone-900/40" },
   { name: "Hood's Paparazzi Hoodie", price: "$55", tag: "NEW", color: "from-red-900/30 to-stone-900/40" },
@@ -89,12 +118,276 @@ const MERCH_ITEMS = [
   { name: "Fort Worth Rep Tee", price: "$35", tag: "LIMITED", color: "from-yellow-900/30 to-stone-900/40" },
 ];
 
+const TICKER_DEFAULTS = [
+  "🔥 NEW EPISODE DROPPING THIS WEEK",
+  "🎤 DFW SHAKA INTERVIEW NOW LIVE ON YOUTUBE",
+  "👕 3GMG MERCH COMING SOON — STAY TUNED",
+  "📍 STRAIGHT FROM FORT WORTH, TEXAS",
+  "🎙️ MAKE IT MAKE SENSE PODCAST",
+  "📸 THE HOOD'S PAPARAZZI — ALWAYS IN THE STREETS",
+];
+
+const GUEST_DEFAULTS = [
+  { name: "Yung Deco", title: "Rapper / Artist", quote: "More albums than Lil Flip — the grind don't stop.", youtubeId: "ufUQcipbtmw" },
+  { name: "Twisted Black", title: "Rapper / Entertainer", quote: "Connecting with the people is what it's all about.", youtubeId: "ETyWsOCWxtg" },
+  { name: "DFW Shaka", title: "Community Voice", quote: "Somebody gotta expose the truth — that's what we do.", youtubeId: "q5IEpbLpvno" },
+  { name: "Fort Worth Legend McHenry", title: "OG / Legend", quote: "The streets remember everything.", youtubeId: "0BbxgRKk_sU" },
+];
+
+/* Short clips from YouTube */
+const SOCIAL_FEED_VIDEOS = [
+  { id: "dXpHHjXHMfI", title: "On The Block With 3GMG" },
+  { id: "WdmVpGrLt7E", title: "Fort Worth Street Stories" },
+  { id: "UfqjFAriKQA", title: "Community First Always" },
+  { id: "SPIr9bP1a0Q", title: "Real Talk No Filter" },
+  { id: "Cj2FkbYCmqE", title: "Making Moves in FTW" },
+  { id: "DP3vIkCAY7g", title: "3GMG In The Building" },
+];
+
+/* ══════════════════════════════════════════════════════════
+   SCROLLING NEWS TICKER (Feature 6)
+   ══════════════════════════════════════════════════════════ */
+function NewsTicker() {
+  const items = TICKER_DEFAULTS;
+  const doubled = [...items, ...items];
+
+  return (
+    <div className="fixed top-16 md:top-20 left-0 right-0 z-40 bg-[#0a0a0a]/95 border-b border-[#D4A843]/20 overflow-hidden backdrop-blur-sm">
+      <div className="flex animate-ticker whitespace-nowrap py-2">
+        {doubled.map((text, i) => (
+          <span key={i} className="inline-flex items-center mx-8 text-xs sm:text-sm font-medium tracking-wider uppercase">
+            <span className="text-[#D4A843]">{text}</span>
+            <span className="mx-8 text-[#D4A843]/30">◆</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   LIVE COUNTDOWN TIMER (Feature 2)
+   ══════════════════════════════════════════════════════════ */
+function LiveCountdown() {
+  // Demo: next live session = next Friday at 8 PM CST
+  const getNextFriday = useCallback(() => {
+    const now = new Date();
+    const nextFriday = new Date(now);
+    nextFriday.setDate(now.getDate() + ((5 - now.getDay() + 7) % 7 || 7));
+    nextFriday.setHours(20, 0, 0, 0);
+    if (nextFriday <= now) nextFriday.setDate(nextFriday.getDate() + 7);
+    return nextFriday;
+  }, []);
+
+  const [target] = useState(getNextFriday);
+  const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
+
+  useEffect(() => {
+    const tick = () => {
+      const diff = Math.max(0, target.getTime() - Date.now());
+      setTimeLeft({
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [target]);
+
+  return (
+    <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-sm bg-[#0a0a0a]/80 border border-red-500/30 backdrop-blur-sm">
+      <div className="flex items-center gap-1.5">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+        <span className="text-red-400 text-xs font-bold tracking-widest uppercase">NEXT LIVE</span>
+      </div>
+      <div className="flex items-center gap-1 font-display text-xl tracking-wider text-[#f0ece4]">
+        <span className="bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#D4A843]/10">{String(timeLeft.d).padStart(2, "0")}</span>
+        <span className="text-[#D4A843]">:</span>
+        <span className="bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#D4A843]/10">{String(timeLeft.h).padStart(2, "0")}</span>
+        <span className="text-[#D4A843]">:</span>
+        <span className="bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#D4A843]/10">{String(timeLeft.m).padStart(2, "0")}</span>
+        <span className="text-[#D4A843]">:</span>
+        <span className="bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#D4A843]/10">{String(timeLeft.s).padStart(2, "0")}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   FLOATING AUDIO PLAYER (Feature 4)
+   ══════════════════════════════════════════════════════════ */
+function FloatingAudioPlayer() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [minimized, setMinimized] = useState(true);
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      {!minimized ? (
+        <div className="bg-[#141414]/95 backdrop-blur-lg border border-[#D4A843]/20 rounded-sm p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] w-72">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-[#D4A843]">NOW PLAYING</span>
+            <button onClick={() => setMinimized(true)} className="text-[#888078] hover:text-[#D4A843] transition-colors">
+              <ChevronDown className="size-4" />
+            </button>
+          </div>
+          <p className="text-xs text-[#f0ece4] font-medium mb-1 line-clamp-1">Yung Deco Interview</p>
+          <p className="text-[10px] text-[#888078] mb-3">Make It Make Sense Podcast</p>
+          {/* Waveform visualization */}
+          <div className="flex items-end gap-[3px] h-8 mb-3">
+            {Array.from({ length: 24 }).map((_, i) => (
+              <div
+                key={i}
+                className={`flex-1 rounded-full transition-all duration-300 ${isPlaying ? "bg-[#D4A843]" : "bg-[#D4A843]/30"}`}
+                style={{
+                  height: isPlaying
+                    ? `${20 + Math.sin(i * 0.8 + Date.now() * 0.003) * 60}%`
+                    : `${20 + Math.sin(i * 0.5) * 15}%`,
+                  animation: isPlaying ? `waveform ${0.4 + i * 0.05}s ease-in-out infinite alternate` : "none",
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] text-[#888078]">0:00 / 0:30</span>
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="w-10 h-10 rounded-full bg-[#D4A843] text-[#0a0a0a] flex items-center justify-center hover:bg-[#E8C767] transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,168,67,0.3)]"
+            >
+              {isPlaying ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={() => setMinimized(false)}
+          className="group w-14 h-14 rounded-full bg-[#D4A843] text-[#0a0a0a] flex items-center justify-center shadow-[0_0_25px_rgba(212,168,67,0.3)] hover:shadow-[0_0_35px_rgba(212,168,67,0.5)] hover:scale-110 transition-all duration-300"
+        >
+          <Volume2 className="size-6 group-hover:scale-110 transition-transform" />
+          {/* Pulse rings */}
+          <div className="absolute inset-0 rounded-full border-2 border-[#D4A843]/40 animate-ping" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   GUEST SPOTLIGHT CAROUSEL (Feature 7)
+   ══════════════════════════════════════════════════════════ */
+function GuestCarousel() {
+  const [current, setCurrent] = useState(0);
+  const guests = GUEST_DEFAULTS;
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrent((c) => (c + 1) % guests.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, [guests.length]);
+
+  const prev = () => setCurrent((c) => (c - 1 + guests.length) % guests.length);
+  const next = () => setCurrent((c) => (c + 1) % guests.length);
+  const guest = guests[current];
+
+  return (
+    <div className="relative max-w-3xl mx-auto">
+      <div className="bg-[#141414]/80 border border-[#D4A843]/15 rounded-sm p-8 md:p-12 text-center overflow-hidden relative">
+        {/* Decorative quote marks */}
+        <Quote className="absolute top-4 left-4 size-12 text-[#D4A843]/10 rotate-180" />
+        <Quote className="absolute bottom-4 right-4 size-12 text-[#D4A843]/10" />
+
+        <div className="relative z-10">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4A843] to-[#B8922E] mx-auto mb-4 flex items-center justify-center text-[#0a0a0a] font-display text-2xl">
+            {guest.name.charAt(0)}
+          </div>
+          <p className="text-lg md:text-xl text-[#c8c0b0] italic mb-6 leading-relaxed max-w-xl mx-auto">
+            "{guest.quote}"
+          </p>
+          <h4 className="font-display text-xl text-[#D4A843] tracking-wider">{guest.name}</h4>
+          <p className="text-[#888078] text-sm mt-1">{guest.title}</p>
+
+          {/* Dots */}
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {guests.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current ? "bg-[#D4A843] w-6" : "bg-[#D4A843]/30 hover:bg-[#D4A843]/50"}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Nav arrows */}
+      <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#0a0a0a]/80 border border-[#D4A843]/20 flex items-center justify-center text-[#D4A843] hover:bg-[#D4A843]/10 transition-all">
+        <ChevronLeft className="size-5" />
+      </button>
+      <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#0a0a0a]/80 border border-[#D4A843]/20 flex items-center justify-center text-[#D4A843] hover:bg-[#D4A843]/10 transition-all">
+        <ChevronRight className="size-5" />
+      </button>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   EMAIL SIGNUP (Feature 9)
+   ══════════════════════════════════════════════════════════ */
+function EmailSignup() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    // Would call addSubscriber mutation here
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 4000);
+    setEmail("");
+  };
+
+  return (
+    <div className="max-w-lg mx-auto">
+      {submitted ? (
+        <div className="text-center py-4 px-6 rounded-sm border border-green-500/30 bg-green-500/10">
+          <Bell className="size-6 text-green-400 mx-auto mb-2" />
+          <p className="text-green-400 font-bold text-sm tracking-wider">YOU'RE IN! WE'LL NOTIFY YOU WHEN WE GO LIVE 🔥</p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 relative">
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#888078]" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email..."
+              className="w-full pl-11 pr-4 py-3.5 bg-[#141414] border border-[#D4A843]/20 rounded-sm text-[#f0ece4] text-sm placeholder:text-[#888078]/60 focus:border-[#D4A843]/50 focus:outline-none focus:ring-1 focus:ring-[#D4A843]/30 transition-all"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-8 py-3.5 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,168,67,0.3)] whitespace-nowrap"
+          >
+            GET NOTIFIED
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 /* ══════════════════════════════════════════════════════════
    MAIN COMPONENT
    ══════════════════════════════════════════════════════════ */
 export function GraffitiLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoAnimated, setLogoAnimated] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50);
@@ -102,8 +395,43 @@ export function GraffitiLandingPage() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
+  // Feature 5: Graffiti spray animation on load
+  useEffect(() => {
+    const timer = setTimeout(() => setLogoAnimated(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden">
+    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden cursor-crosshair">
+      {/* Feature 8: Custom cursor CSS via style tag */}
+      <style>{`
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-ticker { animation: ticker 40s linear infinite; }
+        @keyframes sprayIn {
+          0% { clip-path: circle(0% at 50% 50%); opacity: 0; filter: blur(20px); }
+          50% { clip-path: circle(35% at 50% 50%); opacity: 0.7; filter: blur(5px); }
+          100% { clip-path: circle(100% at 50% 50%); opacity: 1; filter: blur(0px); }
+        }
+        .spray-in { animation: sprayIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes waveform {
+          0% { height: 15%; }
+          100% { height: 85%; }
+        }
+        @keyframes countUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+        .stat-glow { text-shadow: 0 0 30px rgba(212, 168, 67, 0.4); }
+        /* Custom cursor */
+        * { cursor: crosshair !important; }
+        a, button, [role="button"], input, select, textarea { cursor: pointer !important; }
+        /* Video hero shimmer */
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+      `}</style>
+
       {/* Fixed full-page background: Fort Worth Stock Yards */}
       <div className="fixed inset-0 -z-10" style={{
         backgroundImage: `url('/images/hero-graffiti.webp')`,
@@ -113,6 +441,33 @@ export function GraffitiLandingPage() {
       }}>
         <div className="absolute inset-0 bg-[#0a0a0a]/40" />
       </div>
+
+      {/* Feature 1: Video Hero Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/images/hero-graffiti.webp"
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => {
+            // Fallback to static image if video fails
+            (e.target as HTMLVideoElement).style.display = 'none';
+          }}
+        >
+          {/* The video source — will gracefully fallback to poster image */}
+          <source src="" type="video/mp4" />
+        </video>
+        {/* Always show the static background as fallback */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url('/images/hero-graffiti.webp')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }} />
+        <div className="absolute inset-0 bg-[#0a0a0a]/40" />
+      </div>
+
       {/* ─── NAVIGATION ─── */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -123,7 +478,6 @@ export function GraffitiLandingPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
             <a href="#" className="flex items-center gap-3 group">
               <img
                 src="/images/logo-3gmg-graffiti.png"
@@ -131,60 +485,39 @@ export function GraffitiLandingPage() {
                 className="h-12 md:h-14 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.4)]"
               />
             </a>
-
-            {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-8">
               {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-medium tracking-wider uppercase text-[#c8c0b0] hover:text-[#D4A843] transition-colors duration-300"
-                >
+                <a key={link.href} href={link.href} className="text-sm font-medium tracking-wider uppercase text-[#c8c0b0] hover:text-[#D4A843] transition-colors duration-300">
                   {link.label}
                 </a>
               ))}
+              <a href="/admin" className="text-sm font-medium tracking-wider uppercase text-[#888078] hover:text-[#D4A843] transition-colors duration-300">
+                Admin
+              </a>
             </div>
-
-            {/* Social icons desktop */}
             <div className="hidden md:flex items-center gap-3">
               {SOCIALS.map((s) => (
-                <a
-                  key={s.name}
-                  href={s.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#888078] hover:text-[#D4A843] transition-colors duration-300"
-                  title={s.name}
-                >
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#888078] hover:text-[#D4A843] transition-colors duration-300" title={s.name}>
                   <s.icon className="size-5" />
                 </a>
               ))}
             </div>
-
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden text-[#c8c0b0] hover:text-[#D4A843] transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
+            <button className="md:hidden text-[#c8c0b0] hover:text-[#D4A843] transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
             </button>
           </div>
         </div>
-
-        {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-[#0a0a0a]/98 backdrop-blur-lg border-b border-[#D4A843]/10">
             <div className="px-4 py-6 space-y-4">
               {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-medium tracking-wider uppercase text-[#c8c0b0] hover:text-[#D4A843] transition-colors"
-                >
+                <a key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block text-lg font-medium tracking-wider uppercase text-[#c8c0b0] hover:text-[#D4A843] transition-colors">
                   {link.label}
                 </a>
               ))}
+              <a href="/admin" onClick={() => setMobileMenuOpen(false)} className="block text-lg font-medium tracking-wider uppercase text-[#888078] hover:text-[#D4A843] transition-colors">
+                Admin
+              </a>
               <div className="flex gap-4 pt-4 border-t border-[#D4A843]/10">
                 {SOCIALS.map((s) => (
                   <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#888078] hover:text-[#D4A843]">
@@ -197,81 +530,103 @@ export function GraffitiLandingPage() {
         )}
       </nav>
 
+      {/* Feature 6: Scrolling News Ticker */}
+      <NewsTicker />
+
       {/* ═══════════════════════════════════════════════════
           HERO SECTION
           ═══════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Hero overlay gradients */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]/70" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/30 via-transparent to-[#0a0a0a]/30" />
         </div>
-
-        {/* Noise texture overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         }} />
 
-        {/* Hero content */}
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          {/* Spraypaint 3GMG logo */}
-          <img
-            src="/images/logo-3gmg-graffiti.png"
-            alt="3GMG Graffiti"
-            className="w-64 sm:w-80 md:w-96 mx-auto mb-6 drop-shadow-[0_0_20px_rgba(212,168,67,0.5)]"
-          />
-
-          {/* Location tag */}
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-[#D4A843]/30 bg-[#0a0a0a]/60 backdrop-blur-sm shadow-[0_0_15px_rgba(212,168,67,0.15)]">
-            <MapPin className="size-4 text-[#D4A843]" />
-            <span className="text-sm font-medium tracking-widest uppercase text-[#D4A843]">
-              Fort Worth, Texas
-            </span>
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-12">
+          {/* Feature 5: Graffiti Spray Animation */}
+          <div className={logoAnimated ? "spray-in" : "opacity-0"}>
+            <img
+              src="/images/logo-3gmg-graffiti.png"
+              alt="3GMG Graffiti"
+              className="w-64 sm:w-80 md:w-96 mx-auto mb-6 drop-shadow-[0_0_20px_rgba(212,168,67,0.5)]"
+            />
           </div>
 
-          {/* Main name */}
+          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-[#D4A843]/30 bg-[#0a0a0a]/60 backdrop-blur-sm shadow-[0_0_15px_rgba(212,168,67,0.15)]">
+            <MapPin className="size-4 text-[#D4A843]" />
+            <span className="text-sm font-medium tracking-widest uppercase text-[#D4A843]">Fort Worth, Texas</span>
+          </div>
+
           <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] mb-4 tracking-wider drop-shadow-[0_0_30px_rgba(212,168,67,0.3)]">
             <span className="block text-[#f0ece4]" style={{ textShadow: "0 0 40px rgba(212,168,67,0.2)" }}>MEADOWBROOK</span>
             <span className="block text-gold-gradient" style={{ textShadow: "0 0 60px rgba(212,168,67,0.4)" }}>MONTRELL</span>
           </h1>
 
-          {/* Tagline */}
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#D4A843]/50" />
-            <p className="text-lg sm:text-xl md:text-2xl font-medium tracking-[0.2em] uppercase text-[#c8c0b0]">
-              The Hood's Paparazzi
-            </p>
+            <p className="text-lg sm:text-xl md:text-2xl font-medium tracking-[0.2em] uppercase text-[#c8c0b0]">The Hood's Paparazzi</p>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#D4A843]/50" />
           </div>
 
-          {/* Roles */}
-          <p className="text-sm md:text-base text-[#888078] tracking-widest uppercase mb-10">
+          <p className="text-sm md:text-base text-[#888078] tracking-widest uppercase mb-8">
             Content Creator &bull; Podcast Host &bull; Street Reporter &bull; Songwriter &bull; Father
           </p>
 
-          {/* CTA Buttons */}
+          {/* Feature 2: Live Countdown Timer */}
+          <div className="mb-10">
+            <LiveCountdown />
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="#podcast"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,168,67,0.3)]"
-            >
-              <Play className="size-4" />
-              Listen to the Podcast
+            <a href="#podcast" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,168,67,0.3)]">
+              <Play className="size-4" /> Listen to the Podcast
             </a>
-            <a
-              href="#content"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-[#D4A843]/30 text-[#D4A843] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 hover:border-[#D4A843]/50 transition-all duration-300"
-            >
-              <Video className="size-4" />
-              Watch Content
+            <a href="#content" className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-[#D4A843]/30 text-[#D4A843] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 hover:border-[#D4A843]/50 transition-all duration-300">
+              <Video className="size-4" /> Watch Content
             </a>
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#888078] animate-bounce">
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <ChevronDown className="size-5" />
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
+          ANIMATED STATS BAR (Feature 3)
+          ═══════════════════════════════════════════════════ */}
+      <section className="relative py-8 bg-[#0a0a0a]/95 border-y border-[#D4A843]/10">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <p className="font-display text-4xl md:text-5xl text-[#D4A843] tracking-wider stat-glow">
+                <AnimatedCounter end={40} suffix="K+" />
+              </p>
+              <p className="text-xs text-[#888078] tracking-widest uppercase mt-2">Followers</p>
+            </div>
+            <div>
+              <p className="font-display text-4xl md:text-5xl text-[#D4A843] tracking-wider stat-glow">
+                <AnimatedCounter end={40} suffix="+" />
+              </p>
+              <p className="text-xs text-[#888078] tracking-widest uppercase mt-2">Videos</p>
+            </div>
+            <div>
+              <p className="font-display text-4xl md:text-5xl text-[#D4A843] tracking-wider stat-glow">
+                <AnimatedCounter end={100} suffix="+" />
+              </p>
+              <p className="text-xs text-[#888078] tracking-widest uppercase mt-2">Interviews</p>
+            </div>
+            <div>
+              <p className="font-display text-4xl md:text-5xl text-[#D4A843] tracking-wider stat-glow">
+                <AnimatedCounter end={817} />
+              </p>
+              <p className="text-xs text-[#888078] tracking-widest uppercase mt-2">Fort Worth, TX</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -281,67 +636,23 @@ export function GraffitiLandingPage() {
       <section id="about" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Montrell About Photo */}
             <AnimatedSection>
               <div className="relative max-w-md mx-auto lg:mx-0 flex items-center justify-center rounded-sm overflow-hidden">
-                <img
-                  src="/images/montrell-about.webp"
-                  alt="Meadowbrook Montrell - 3GMG - The Hood's Paparazzi"
-                  className="w-full h-auto rounded-sm hover:scale-[1.02] transition-transform duration-700"
-                />
-                {/* Gold corner accents */}
+                <img src="/images/montrell-about.webp" alt="Meadowbrook Montrell - 3GMG - The Hood's Paparazzi" className="w-full h-auto rounded-sm hover:scale-[1.02] transition-transform duration-700" />
                 <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#D4A843]/40" />
                 <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#D4A843]/40" />
               </div>
             </AnimatedSection>
-
-            {/* Bio text */}
             <AnimatedSection delay={0.2}>
               <div>
-                <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
-                  The Mission
-                </p>
+                <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">The Mission</p>
                 <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-[#f0ece4] mb-6 tracking-wider">
-                  STRAIGHT FROM<br />
-                  <span className="text-gold-gradient">THE STREETS</span>
+                  STRAIGHT FROM<br /><span className="text-gold-gradient">THE STREETS</span>
                 </h2>
                 <div className="space-y-4 text-[#c8c0b0] leading-relaxed">
-                  <p>
-                    Born and raised in the Meadowbrook neighborhood of Fort Worth, Texas,
-                    Montrell has always been rooted in his community. Known as{" "}
-                    <span className="text-[#D4A843] font-medium">"The Hood's Paparazzi,"</span>{" "}
-                    he brings raw, unfiltered stories from the streets to the people —
-                    no filter, no sugarcoating, just the truth.
-                  </p>
-                  <p>
-                    As a father, content creator, songwriter, and podcast host,
-                    Montrell wears many hats. But his mission is singular: give a voice
-                    to the voiceless and shine a light on the stories that mainstream
-                    media overlooks. From street interviews to community events,
-                    he's always where the action is.
-                  </p>
-                  <p>
-                    Through the{" "}
-                    <span className="text-[#D4A843] font-medium">Make It Make Sense</span>{" "}
-                    podcast, he breaks down real issues affecting real people — keeping it
-                    100 while building bridges in the community.
-                  </p>
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-6 mt-10 pt-8 border-t border-[#D4A843]/10">
-                  <div>
-                    <p className="font-display text-3xl md:text-4xl text-[#D4A843] tracking-wider">40K+</p>
-                    <p className="text-xs text-[#888078] tracking-widest uppercase mt-1">Followers</p>
-                  </div>
-                  <div>
-                    <p className="font-display text-3xl md:text-4xl text-[#D4A843] tracking-wider">FTW</p>
-                    <p className="text-xs text-[#888078] tracking-widest uppercase mt-1">Fort Worth</p>
-                  </div>
-                  <div>
-                    <p className="font-display text-3xl md:text-4xl text-[#D4A843] tracking-wider">24/7</p>
-                    <p className="text-xs text-[#888078] tracking-widest uppercase mt-1">In The Streets</p>
-                  </div>
+                  <p>Born and raised in the Meadowbrook neighborhood of Fort Worth, Texas, Montrell has always been rooted in his community. Known as <span className="text-[#D4A843] font-medium">"The Hood's Paparazzi,"</span> he brings raw, unfiltered stories from the streets to the people — no filter, no sugarcoating, just the truth.</p>
+                  <p>As a father, content creator, songwriter, and podcast host, Montrell wears many hats. But his mission is singular: give a voice to the voiceless and shine a light on the stories that mainstream media overlooks.</p>
+                  <p>Through the <span className="text-[#D4A843] font-medium">Make It Make Sense</span> podcast, he breaks down real issues affecting real people — keeping it 100 while building bridges in the community.</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -349,260 +660,204 @@ export function GraffitiLandingPage() {
         </div>
       </section>
 
-      {/* Street divider */}
       <div className="street-divider mx-auto max-w-4xl" />
 
       {/* ═══════════════════════════════════════════════════
           PODCAST SECTION
           ═══════════════════════════════════════════════════ */}
       <section id="podcast" className="relative py-24 md:py-32 overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-sm">
-        {/* Background accent */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D4A843]/[0.02] to-transparent" />
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
-            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
-              The Podcast
-            </p>
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">The Podcast</p>
             <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
-              MAKE IT<br />
-              <span className="text-gold-gradient">MAKE SENSE</span>
+              MAKE IT<br /><span className="text-gold-gradient">MAKE SENSE</span>
             </h2>
-            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">
-              Real conversations about real issues. No script, no teleprompter —
-              just raw, uncut dialogue about what's happening in our communities.
-            </p>
+            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">Real conversations about real issues. No script, no teleprompter — just raw, uncut dialogue.</p>
           </AnimatedSection>
 
-          {/* Featured Episode — Embedded Video */}
+          {/* Featured Episode */}
           <AnimatedSection delay={0.2} className="max-w-4xl mx-auto mb-12">
             <div className="relative rounded-sm overflow-hidden glow-border bg-gradient-to-br from-[#1a1a1a] to-[#111]">
               <div className="aspect-video">
-                <iframe
-                  src="https://www.youtube.com/embed/ufUQcipbtmw?rel=0"
-                  title="Yung Deco Speaks On More Albums Than Lil Flip — Make It Make Sense"
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                <iframe src="https://www.youtube.com/embed/ufUQcipbtmw?rel=0" title="Yung Deco Speaks On More Albums Than Lil Flip" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
               </div>
               <div className="p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-[#D4A843]/20 text-[#D4A843] border border-[#D4A843]/30">
-                    ★ LATEST EPISODE
-                  </span>
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-[#D4A843]/20 text-[#D4A843] border border-[#D4A843]/30">★ LATEST EPISODE</span>
                   <span className="text-[#888078] text-xs">9:25</span>
                 </div>
-                <h3 className="font-display text-xl md:text-2xl text-[#f0ece4] tracking-wider mb-2">
-                  YUNG DECO SPEAKS ON MORE ALBUMS THAN LIL FLIP, HATE IN HIS OWN CITY
-                </h3>
-                <p className="text-[#888078] text-sm leading-relaxed">
-                  Meadowbrook Montrell sits down with Yung Deco to talk discography, city politics, and the grind.
-                </p>
+                <h3 className="font-display text-xl md:text-2xl text-[#f0ece4] tracking-wider mb-2">YUNG DECO SPEAKS ON MORE ALBUMS THAN LIL FLIP, HATE IN HIS OWN CITY</h3>
+                <p className="text-[#888078] text-sm leading-relaxed">Meadowbrook Montrell sits down with Yung Deco to talk discography, city politics, and the grind.</p>
               </div>
               <div className="h-1 bg-gradient-to-r from-[#D4A843] via-[#E8C767] to-[#D4A843]" />
             </div>
           </AnimatedSection>
 
-          {/* More Episodes + Platform Links */}
+          {/* More Episodes */}
           <AnimatedSection delay={0.3} className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {/* Episode 2 */}
               <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
                 <div className="aspect-video">
-                  <iframe
-                    src="https://www.youtube.com/embed/ETyWsOCWxtg?rel=0"
-                    title="Twisted Black Before Video Shoot With Shaq"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <iframe src="https://www.youtube.com/embed/ETyWsOCWxtg?rel=0" title="Twisted Black Before Video Shoot With Shaq" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 </div>
                 <div className="p-4">
-                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                    INTERVIEW
-                  </span>
-                  <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">
-                    TWISTED BLACK CONNECTING WITH THE PEOPLE BEFORE HIS VIDEO SHOOT WITH SHAQ
-                  </h4>
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">INTERVIEW</span>
+                  <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">TWISTED BLACK CONNECTING WITH THE PEOPLE BEFORE HIS VIDEO SHOOT WITH SHAQ</h4>
                 </div>
               </div>
-              {/* Episode 3 */}
               <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
                 <div className="aspect-video">
-                  <iframe
-                    src="https://www.youtube.com/embed/q5IEpbLpvno?rel=0"
-                    title="DFW Shaka Exposes Pandora Strip Club Promoters"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <iframe src="https://www.youtube.com/embed/q5IEpbLpvno?rel=0" title="DFW Shaka Exposes Pandora Strip Club Promoters" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 </div>
                 <div className="p-4">
-                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                    STREET REPORTING
-                  </span>
-                  <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">
-                    DFW SHAKA EXPOSES PANDORA STRIP CLUB PROMOTERS
-                  </h4>
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET REPORTING</span>
+                  <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">DFW SHAKA EXPOSES PANDORA STRIP CLUB PROMOTERS</h4>
                 </div>
               </div>
             </div>
-
-            {/* Platform buttons + Library CTA */}
             <div className="flex flex-wrap gap-3 justify-center">
-              <a
-                href="/library"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300"
-              >
-                VIEW FULL LIBRARY
+              <a href="/library" className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300">VIEW FULL LIBRARY</a>
+              <a href="https://www.youtube.com/@Meadowbrookmontrell" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-3 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300">
+                <Youtube className="size-4" /> YouTube
               </a>
-              <a
-                href="https://www.youtube.com/@Meadowbrookmontrell"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"
-              >
-                <Youtube className="size-4" />
-                YouTube
+              <a href="https://www.facebook.com/montrell.wilson.884042" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-3 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300">
+                <Facebook className="size-4" /> Facebook
               </a>
-              <a
-                href="https://www.facebook.com/montrell.wilson.884042"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"
-              >
-                <Facebook className="size-4" />
-                Facebook
-              </a>
-              <a
-                href="https://www.tiktok.com/@meadowbrookmontrellmedia"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"
-              >
-                <TikTokIcon className="size-4" />
-                TikTok
+              <a href="https://www.tiktok.com/@meadowbrookmontrellmedia" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-3 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300">
+                <TikTokIcon className="size-4" /> TikTok
               </a>
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Street divider */}
       <div className="street-divider mx-auto max-w-4xl" />
 
       {/* ═══════════════════════════════════════════════════
-          CONTENT SECTION (Interviews + Street Reporting)
+          GUEST SPOTLIGHT (Feature 7)
+          ═══════════════════════════════════════════════════ */}
+      <section className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-16">
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">Past Guests</p>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
+              GUEST<br /><span className="text-gold-gradient">SPOTLIGHT</span>
+            </h2>
+            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">The conversations that keep the streets talking.</p>
+          </AnimatedSection>
+          <AnimatedSection delay={0.2}>
+            <GuestCarousel />
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <div className="street-divider mx-auto max-w-4xl" />
+
+      {/* ═══════════════════════════════════════════════════
+          CONTENT SECTION
           ═══════════════════════════════════════════════════ */}
       <section id="content" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
-            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
-              The Work
-            </p>
-            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
-              FROM THE<br />
-              <span className="text-gold-gradient">STREETS</span>
-            </h2>
-            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">
-              Street interviews, community coverage, and raw reporting from the heart
-              of Fort Worth. Always on the scene, always keeping it real.
-            </p>
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">The Work</p>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">FROM THE<br /><span className="text-gold-gradient">STREETS</span></h2>
+            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">Street interviews, community coverage, and raw reporting from the heart of Fort Worth.</p>
           </AnimatedSection>
 
-          {/* Shorts / Clips Grid — Real Embedded Content */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {/* Interview Short */}
-            <AnimatedSection delay={0.1}>
-              <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-[9/16]">
-                  <iframe
-                    src="https://www.youtube.com/embed/0BbxgRKk_sU?rel=0"
-                    title="DFW Shaka & Fort Worth Legend McHenry Interview"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+            {[
+              { id: "0BbxgRKk_sU", title: "DFW SHAKA & FORT WORTH LEGEND MCHENRY", badge: "INTERVIEW", color: "blue" },
+              { id: "of9vm8OHu0c", title: "3GMG TAMUNO ON BOOKER T BLOCK", badge: "STREET", color: "amber" },
+              { id: "Mvb41IsSHEM", title: 'TWISTED BLACK — "I\'M A FOOL WIT IT"', badge: "PERFORMANCE", color: "purple" },
+              { id: "o9fF-4SYo00", title: "2 CHAINZ STOPS IN FORT WORTH", badge: "STREET", color: "amber" },
+            ].map((clip, i) => (
+              <AnimatedSection key={clip.id} delay={0.1 + i * 0.05}>
+                <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
+                  <div className="aspect-[9/16]">
+                    <iframe src={`https://www.youtube.com/embed/${clip.id}?rel=0`} title={clip.title} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                  </div>
+                  <div className="p-3">
+                    <span className={`text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-${clip.color}-500/20 text-${clip.color}-400 border border-${clip.color}-500/30`}>{clip.badge}</span>
+                    <h4 className="font-display text-xs text-[#f0ece4] tracking-wider mt-1.5 line-clamp-2">{clip.title}</h4>
+                  </div>
                 </div>
-                <div className="p-3">
-                  <span className="text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">INTERVIEW</span>
-                  <h4 className="font-display text-xs text-[#f0ece4] tracking-wider mt-1.5 line-clamp-2">DFW SHAKA & FORT WORTH LEGEND MCHENRY</h4>
-                </div>
-              </div>
-            </AnimatedSection>
-
-            {/* Street Short */}
-            <AnimatedSection delay={0.15}>
-              <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-[9/16]">
-                  <iframe
-                    src="https://www.youtube.com/embed/of9vm8OHu0c?rel=0"
-                    title="3GMG Tamuno on Booker T Block"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-                <div className="p-3">
-                  <span className="text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET</span>
-                  <h4 className="font-display text-xs text-[#f0ece4] tracking-wider mt-1.5 line-clamp-2">3GMG TAMUNO ON BOOKER T BLOCK</h4>
-                </div>
-              </div>
-            </AnimatedSection>
-
-            {/* Music Short */}
-            <AnimatedSection delay={0.2}>
-              <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-[9/16]">
-                  <iframe
-                    src="https://www.youtube.com/embed/Mvb41IsSHEM?rel=0"
-                    title="Twisted Black Performing I'm A Fool Wit It"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-                <div className="p-3">
-                  <span className="text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">PERFORMANCE</span>
-                  <h4 className="font-display text-xs text-[#f0ece4] tracking-wider mt-1.5 line-clamp-2">TWISTED BLACK — "I'M A FOOL WIT IT"</h4>
-                </div>
-              </div>
-            </AnimatedSection>
-
-            {/* 2 Chainz Short */}
-            <AnimatedSection delay={0.25}>
-              <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-[9/16]">
-                  <iframe
-                    src="https://www.youtube.com/embed/o9fF-4SYo00?rel=0"
-                    title="2 Chainz Stops in Fort Worth"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-                <div className="p-3">
-                  <span className="text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET</span>
-                  <h4 className="font-display text-xs text-[#f0ece4] tracking-wider mt-1.5 line-clamp-2">2 CHAINZ STOPS IN FORT WORTH</h4>
-                </div>
-              </div>
-            </AnimatedSection>
+              </AnimatedSection>
+            ))}
           </div>
 
-          {/* View All CTA */}
           <AnimatedSection delay={0.3} className="text-center mt-10">
-            <a
-              href="/library"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300"
-            >
-              VIEW ALL 40+ VIDEOS IN LIBRARY
-            </a>
+            <a href="/library" className="inline-flex items-center gap-2 px-8 py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300">VIEW ALL 40+ VIDEOS IN LIBRARY</a>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Street divider */}
+      <div className="street-divider mx-auto max-w-4xl" />
+
+      {/* ═══════════════════════════════════════════════════
+          SOCIAL FEED WALL (Feature 10)
+          ═══════════════════════════════════════════════════ */}
+      <section className="relative py-24 md:py-32 overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-sm">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D4A843]/[0.02] to-transparent" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-16">
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">Always Active</p>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
+              SOCIAL<br /><span className="text-gold-gradient">FEED</span>
+            </h2>
+            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">The latest from across all platforms — always fresh, always real.</p>
+          </AnimatedSection>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {SOCIAL_FEED_VIDEOS.map((vid, i) => (
+              <AnimatedSection key={vid.id} delay={0.1 + i * 0.05}>
+                <div className="group rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500 hover:shadow-[0_0_20px_rgba(212,168,67,0.1)]">
+                  <div className="aspect-video relative">
+                    <img
+                      src={`https://img.youtube.com/vi/${vid.id}/mqdefault.jpg`}
+                      alt={vid.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <a
+                        href={`https://www.youtube.com/watch?v=${vid.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-14 h-14 rounded-full bg-[#D4A843] text-[#0a0a0a] flex items-center justify-center hover:scale-110 transition-transform"
+                      >
+                        <Play className="size-6 ml-1" />
+                      </a>
+                    </div>
+                    {/* Platform badge */}
+                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#0a0a0a]/80 backdrop-blur-sm rounded text-[9px] font-bold text-red-400 tracking-widest uppercase flex items-center gap-1">
+                      <Youtube className="size-3" /> YouTube
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <p className="text-xs text-[#c8c0b0] font-medium line-clamp-1">{vid.title}</p>
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+
+          <AnimatedSection delay={0.4} className="flex flex-wrap gap-4 justify-center mt-10">
+            {SOCIALS.map((s) => (
+              <a
+                key={s.name}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#D4A843]/20 rounded-sm text-[#c8c0b0] text-xs font-bold tracking-widest uppercase hover:bg-[#D4A843]/10 hover:border-[#D4A843]/40 hover:text-[#D4A843] transition-all duration-300"
+              >
+                <s.icon className="size-4" /> {s.name}
+              </a>
+            ))}
+          </AnimatedSection>
+        </div>
+      </section>
+
       <div className="street-divider mx-auto max-w-4xl" />
 
       {/* ═══════════════════════════════════════════════════
@@ -610,41 +865,23 @@ export function GraffitiLandingPage() {
           ═══════════════════════════════════════════════════ */}
       <section id="merch" className="relative py-24 md:py-32 overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-sm">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D4A843]/[0.02] to-transparent" />
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
-            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
-              Rep The Brand
-            </p>
-            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
-              OFFICIAL<br />
-              <span className="text-gold-gradient">MERCH</span>
-            </h2>
-            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">
-              Rep the 3GMG brand. Straight from the Meadowbrook, made for the streets.
-              Wear it with pride — Fort Worth on your chest.
-            </p>
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">Rep The Brand</p>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">OFFICIAL<br /><span className="text-gold-gradient">MERCH</span></h2>
+            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">Rep the 3GMG brand. Straight from the Meadowbrook, made for the streets.</p>
           </AnimatedSection>
-
-          {/* Merch grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {MERCH_ITEMS.map((item, i) => (
               <AnimatedSection key={item.name} delay={i * 0.1}>
                 <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                  {/* Product image placeholder */}
                   <div className={`aspect-square bg-gradient-to-br ${item.color} flex items-center justify-center relative overflow-hidden`}>
-                    {item.tag && (
-                      <div className="absolute top-3 left-3 px-3 py-1 bg-[#D4A843] text-[#0a0a0a] text-[10px] font-bold tracking-widest uppercase rounded-sm">
-                        {item.tag}
-                      </div>
-                    )}
+                    {item.tag && <div className="absolute top-3 left-3 px-3 py-1 bg-[#D4A843] text-[#0a0a0a] text-[10px] font-bold tracking-widest uppercase rounded-sm">{item.tag}</div>}
                     <div className="text-center">
                       <ShoppingBag className="size-12 text-[#D4A843]/30 mx-auto mb-2 group-hover:scale-110 transition-transform duration-500" />
                       <p className="text-[#888078] text-xs tracking-widest uppercase">Coming Soon</p>
                     </div>
                   </div>
-
-                  {/* Product info */}
                   <div className="p-4">
                     <h3 className="font-bold text-sm text-[#f0ece4] mb-1">{item.name}</h3>
                     <p className="text-[#D4A843] font-display text-xl tracking-wider">{item.price}</p>
@@ -653,62 +890,60 @@ export function GraffitiLandingPage() {
               </AnimatedSection>
             ))}
           </div>
-
-          {/* Coming soon notice */}
           <AnimatedSection delay={0.5} className="text-center mt-12">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-sm border border-[#D4A843]/20 bg-[#141414]">
               <div className="w-2 h-2 rounded-full bg-[#D4A843] animate-pulse" />
-              <p className="text-[#c8c0b0] text-sm tracking-wider">
-                Full merch store launching soon — stay tuned
-              </p>
+              <p className="text-[#c8c0b0] text-sm tracking-wider">Full merch store launching soon — stay tuned</p>
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Street divider */}
       <div className="street-divider mx-auto max-w-4xl" />
 
       {/* ═══════════════════════════════════════════════════
-          CONNECT / SOCIAL LINKS SECTION
+          NOTIFY / SIGNUP SECTION (Feature 9)
+          ═══════════════════════════════════════════════════ */}
+      <section className="relative py-24 md:py-32 bg-[#0a0a0a]/90 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <AnimatedSection>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+              <span className="text-red-400 text-xs font-bold tracking-widest uppercase">DON'T MISS A THING</span>
+            </div>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
+              GET<br /><span className="text-gold-gradient">NOTIFIED</span>
+            </h2>
+            <p className="text-[#c8c0b0] max-w-xl mx-auto text-lg leading-relaxed mb-10">
+              Be the first to know when we go live, drop new episodes, or release merch. No spam — just heat.
+            </p>
+            <EmailSignup />
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <div className="street-divider mx-auto max-w-4xl" />
+
+      {/* ═══════════════════════════════════════════════════
+          CONNECT / SOCIAL LINKS
           ═══════════════════════════════════════════════════ */}
       <section id="connect" className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
-            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">
-              Stay Connected
-            </p>
-            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">
-              TAP IN<br />
-              <span className="text-gold-gradient">WITH ME</span>
-            </h2>
-            <p className="text-[#c8c0b0] max-w-xl mx-auto text-lg leading-relaxed">
-              Follow the movement across all platforms. Don't miss a single episode,
-              interview, or drop.
-            </p>
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">Stay Connected</p>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">TAP IN<br /><span className="text-gold-gradient">WITH ME</span></h2>
+            <p className="text-[#c8c0b0] max-w-xl mx-auto text-lg leading-relaxed">Follow the movement across all platforms.</p>
           </AnimatedSection>
-
-          {/* Social link cards */}
           <div className="grid sm:grid-cols-2 gap-4">
             {SOCIALS.map((social, i) => (
               <AnimatedSection key={social.name} delay={i * 0.1}>
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-5 p-6 rounded-sm glow-border bg-[#141414] hover:border-[#D4A843]/40 hover:bg-[#1a1a1a] transition-all duration-500"
-                >
+                <a href={social.url} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-5 p-6 rounded-sm glow-border bg-[#141414] hover:border-[#D4A843]/40 hover:bg-[#1a1a1a] transition-all duration-500">
                   <div className="shrink-0 w-14 h-14 rounded-sm bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center group-hover:bg-[#D4A843]/20 transition-colors duration-500">
                     <social.icon className="size-6 text-[#D4A843]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-[#f0ece4] mb-0.5">{social.name}</h3>
-                    {social.followers && (
-                      <p className="text-[#888078] text-sm">{social.followers} followers</p>
-                    )}
-                    {!social.followers && (
-                      <p className="text-[#888078] text-sm">Follow for updates</p>
-                    )}
+                    <p className="text-[#888078] text-sm">{social.followers ? `${social.followers} followers` : "Follow for updates"}</p>
                   </div>
                   <ExternalLink className="size-5 text-[#888078] group-hover:text-[#D4A843] transition-colors shrink-0" />
                 </a>
@@ -724,55 +959,37 @@ export function GraffitiLandingPage() {
       <footer className="relative border-t border-[#D4A843]/10 bg-[#0a0a0a]/90 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            {/* Logo */}
             <div className="flex flex-col items-center md:items-start gap-3">
               <img src="/images/logo-3gmg-graffiti.png" alt="3GMG" className="h-12 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.3)]" />
               <div className="flex items-center gap-2 text-[#888078] text-sm">
-                <MapPin className="size-3.5" />
-                <span>Fort Worth, Texas</span>
+                <MapPin className="size-3.5" /><span>Fort Worth, Texas</span>
               </div>
             </div>
-
-            {/* Nav links */}
             <div className="flex flex-wrap justify-center gap-6">
               {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-[#888078] hover:text-[#D4A843] transition-colors tracking-wider uppercase"
-                >
-                  {link.label}
-                </a>
+                <a key={link.href} href={link.href} className="text-sm text-[#888078] hover:text-[#D4A843] transition-colors tracking-wider uppercase">{link.label}</a>
               ))}
             </div>
-
-            {/* Socials */}
             <div className="flex items-center gap-4">
               {SOCIALS.map((s) => (
-                <a
-                  key={s.name}
-                  href={s.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#888078] hover:text-[#D4A843] transition-colors"
-                >
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#888078] hover:text-[#D4A843] transition-colors">
                   <s.icon className="size-5" />
                 </a>
               ))}
             </div>
           </div>
-
           <div className="mt-10 pt-6 border-t border-[#D4A843]/5 text-center">
             <p className="text-[#888078]/60 text-xs tracking-wider">
               &copy; {new Date().getFullYear()} 3GMG Meadowbrook Montrell. All Rights Reserved.
-              <span className="mx-2">&bull;</span>
-              Fort Worth, TX
-              <span className="mx-2">&bull;</span>
-              The Hood's Paparazzi
+              <span className="mx-2">&bull;</span>Fort Worth, TX
+              <span className="mx-2">&bull;</span>The Hood's Paparazzi
             </p>
           </div>
         </div>
       </footer>
+
+      {/* Feature 4: Floating Audio Player */}
+      <FloatingAudioPlayer />
     </div>
   );
 }
