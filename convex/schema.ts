@@ -594,6 +594,13 @@ const schema = defineSchema({
     .index("by_featured", ["isFeatured"]),
 
   // ─── 32. Site Settings (theme, preferences) ───────────────
+  // ─── Admin Sessions (server-side auth) ─────────────────────
+  adminSessions: defineTable({
+    token: v.string(),
+    createdAt: v.string(),
+    expiresAt: v.string(),
+  }).index("by_token", ["token"]),
+
   siteSettings: defineTable({
     key: v.string(),
     value: v.string(),
