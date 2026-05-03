@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
 import { ThemeToggle } from "../components/ThemeToggle";
@@ -158,7 +158,11 @@ const SOCIAL_FEED_VIDEOS = [
    SCROLLING NEWS TICKER (Feature 6)
    ══════════════════════════════════════════════════════════ */
 function NewsTicker() {
-  const items = TICKER_DEFAULTS;
+  const liveItems = useQuery(api.admin.getActiveTickerItems);
+  // Use live Convex data if available, fall back to defaults
+  const items = liveItems && liveItems.length > 0
+    ? liveItems.map((t) => t.text)
+    : TICKER_DEFAULTS;
   const doubled = [...items, ...items];
 
   return (
@@ -179,7 +183,11 @@ function NewsTicker() {
    LIVE COUNTDOWN TIMER (Feature 2)
    ══════════════════════════════════════════════════════════ */
 function LiveCountdown() {
-  // Demo: next live session = next Friday at 8 PM CST
+  // Pull real upcoming sessions from Convex
+  const upcomingSessions = useQuery(api.contentLib.getUpcomingLiveSessions);
+  const currentLive = useQuery(api.contentLib.getCurrentLiveSession);
+
+  // Fallback: next Friday at 8 PM CST if no sessions scheduled
   const getNextFriday = useCallback(() => {
     const now = new Date();
     const nextFriday = new Date(now);
@@ -189,7 +197,8 @@ function LiveCountdown() {
     return nextFriday;
   }, []);
 
-  const [target] = useState(getNextFriday);
+  const nextSession = upcomingSessions?.[0];
+  const target = nextSession ? new Date(nextSession.scheduledAt) : getNextFriday();
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
@@ -207,11 +216,28 @@ function LiveCountdown() {
     return () => clearInterval(id);
   }, [target]);
 
+  // If currently live, show a GO LIVE button instead of countdown
+  if (currentLive) {
+    return (
+      <a
+        href={currentLive.streamUrl || "#"}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-3 px-6 py-3 rounded-sm bg-red-600/90 border border-red-500 backdrop-blur-sm hover:bg-red-500 transition-all duration-300 shadow-[0_0_20px_rgba(239,68,68,0.4)] animate-pulse"
+      >
+        <div className="w-3 h-3 rounded-full bg-white animate-ping" />
+        <span className="text-white text-sm font-bold tracking-widest uppercase">🔴 LIVE NOW — {currentLive.title || "JOIN STREAM"}</span>
+      </a>
+    );
+  }
+
   return (
     <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-sm bg-[#0a0a0a]/80 border border-red-500/30 backdrop-blur-sm">
       <div className="flex items-center gap-1.5">
         <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
-        <span className="text-red-400 text-xs font-bold tracking-widest uppercase">NEXT LIVE</span>
+        <span className="text-red-400 text-xs font-bold tracking-widest uppercase">
+          {nextSession ? "NEXT LIVE" : "NEXT LIVE"}
+        </span>
       </div>
       <div className="flex items-center gap-1 font-display text-xl tracking-wider text-[#f0ece4]">
         <span className="bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#D4A843]/10">{String(timeLeft.d).padStart(2, "0")}</span>
@@ -222,6 +248,11 @@ function LiveCountdown() {
         <span className="text-[#D4A843]">:</span>
         <span className="bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#D4A843]/10">{String(timeLeft.s).padStart(2, "0")}</span>
       </div>
+      {nextSession?.guestName && (
+        <span className="text-[#D4A843] text-xs font-medium tracking-wider ml-1 hidden sm:inline">
+          w/ {nextSession.guestName}
+        </span>
+      )}
     </div>
   );
 }
