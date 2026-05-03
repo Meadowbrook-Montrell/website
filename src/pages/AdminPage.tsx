@@ -337,7 +337,7 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
       )}
 
       {/* Mobile sidebar */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-[#0d0d0d] border-r border-[#D4A843]/10 z-50 transform transition-transform lg:hidden ${
+      <aside className={`fixed top-0 left-0 h-full w-72 bg-[#0d0d0d] border-r border-[#D4A843]/10 z-50 transform transition-transform lg:hidden ${
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
         <div className="flex items-center justify-between p-4 border-b border-[#D4A843]/10">
@@ -358,7 +358,7 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
 
       {/* Desktop sidebar */}
       <aside className={`hidden lg:flex flex-col fixed top-0 left-0 h-screen bg-[#0d0d0d] border-r border-[#D4A843]/10 z-30 transition-all duration-200 ${
-        collapsed ? "w-16" : "w-56"
+        collapsed ? "w-16" : "w-64"
       }`}>
         {sidebarContent}
       </aside>
@@ -424,7 +424,7 @@ export function AdminPage() {
       />
 
       {/* Main content area */}
-      <div className={`transition-all duration-200 ${sidebarCollapsed ? "lg:ml-16" : "lg:ml-56"}`}>
+      <div className={`transition-all duration-200 ${sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"}`}>
         {/* Top bar */}
         <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-lg border-b border-[#D4A843]/10">
           <div className="flex items-center justify-between h-14 px-4 sm:px-6">
@@ -463,7 +463,7 @@ export function AdminPage() {
         </div>
 
         {/* Page content */}
-        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl">
+        <div className="p-4 sm:p-6 lg:px-12 lg:py-8 max-w-6xl mx-auto">
 
           {/* ─── Overview Tab ─── */}
           {activeTab === "overview" && (
