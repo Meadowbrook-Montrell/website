@@ -103,6 +103,138 @@
   --chart-5: #B8922E;
 }
 
+/* ═══ LIGHT MODE ═══ */
+:root:not(.dark) {
+  --background: #f5f0e8;
+  --foreground: #1a1612;
+  --card: #ffffff;
+  --card-foreground: #1a1612;
+  --popover: #ffffff;
+  --popover-foreground: #1a1612;
+  --primary: #B8922E;
+  --primary-foreground: #ffffff;
+  --secondary: #ebe5d9;
+  --secondary-foreground: #3d3529;
+  --muted: #ebe5d9;
+  --muted-foreground: #6b6357;
+  --accent: #B8922E;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #fafafa;
+  --success: #16a34a;
+  --success-foreground: #fafafa;
+  --warning: #B8922E;
+  --warning-foreground: #ffffff;
+  --info: #0284c7;
+  --info-foreground: #ffffff;
+  --border: rgba(184, 146, 46, 0.2);
+  --input: rgba(184, 146, 46, 0.12);
+  --ring: #B8922E;
+  --sidebar: #f5f0e8;
+  --sidebar-foreground: #1a1612;
+  --sidebar-primary: #B8922E;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ebe5d9;
+  --sidebar-accent-foreground: #1a1612;
+  --sidebar-border: rgba(184, 146, 46, 0.2);
+  --sidebar-ring: #B8922E;
+}
+
+/* ═══ Light mode color overrides for hardcoded Tailwind values ═══ */
+:root:not(.dark) body {
+  background: #f5f0e8 !important;
+  color: #1a1612 !important;
+}
+
+/* Nav, sections, cards — swap black backgrounds to light */
+:root:not(.dark) .bg-\[\#0a0a0a\],
+:root:not(.dark) .bg-\[\#0a0a0a\]\/95,
+:root:not(.dark) .bg-\[\#0a0a0a\]\/98 {
+  background-color: rgba(245, 240, 232, 0.97) !important;
+}
+
+:root:not(.dark) .bg-\[\#141414\],
+:root:not(.dark) .bg-\[\#141414\]\/80 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+:root:not(.dark) .bg-\[\#1a1a1a\] {
+  background-color: #ebe5d9 !important;
+}
+
+:root:not(.dark) .bg-\[\#1e1e1e\] {
+  background-color: #e5ded2 !important;
+}
+
+/* Text color swaps */
+:root:not(.dark) .text-white {
+  color: #1a1612 !important;
+}
+
+:root:not(.dark) .text-\[\#c8c0b0\] {
+  color: #3d3529 !important;
+}
+
+:root:not(.dark) .text-\[\#888078\] {
+  color: #6b6357 !important;
+}
+
+:root:not(.dark) .text-\[\#f0ece4\] {
+  color: #1a1612 !important;
+}
+
+/* Gold stays gold (slightly deeper for contrast on light bg) */
+:root:not(.dark) .text-\[\#D4A843\] {
+  color: #9e7b20 !important;
+}
+
+/* Borders */
+:root:not(.dark) .border-\[\#D4A843\]\/10,
+:root:not(.dark) .border-\[\#D4A843\]\/15,
+:root:not(.dark) .border-\[\#D4A843\]\/20 {
+  border-color: rgba(158, 123, 32, 0.2) !important;
+}
+
+:root:not(.dark) .border-\[\#333\] {
+  border-color: rgba(158, 123, 32, 0.15) !important;
+}
+
+/* Backdrop blur containers in light mode */
+:root:not(.dark) .backdrop-blur-md,
+:root:not(.dark) .backdrop-blur-lg {
+  background-color: rgba(245, 240, 232, 0.92) !important;
+}
+
+/* Shadow adjustments */
+:root:not(.dark) .shadow-black\/20 {
+  --tw-shadow-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Fixed background — add a light overlay */
+:root:not(.dark) [style*="background-attachment: fixed"] {
+  filter: brightness(1.3) saturate(0.8);
+}
+
+/* Dark overlays → light overlays */
+:root:not(.dark) [style*="rgba(10,10,10,0."] {
+  background: rgba(245, 240, 232, 0.85) !important;
+}
+
+/* Keep graffiti logo visible in light mode */
+:root:not(.dark) .drop-shadow-\[0_0_8px_rgba\(212\,168\,67\,0\.4\)\],
+:root:not(.dark) .drop-shadow-\[0_0_6px_rgba\(212\,168\,67\,0\.3\)\],
+:root:not(.dark) .drop-shadow-\[0_0_8px_rgba\(212\,168\,67\,0\.3\)\] {
+  filter: drop-shadow(0 0 8px rgba(158, 123, 32, 0.5));
+}
+
+/* Scrollbar in light mode */
+:root:not(.dark) ::-webkit-scrollbar-track {
+  background: #ebe5d9;
+}
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #c9b88a;
+}
+
 /* Force dark mode always */
 .dark {
   --background: #0a0a0a;

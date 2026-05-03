@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
+import { ThemeToggle } from "../components/ThemeToggle";
 import {
   Facebook,
   Instagram,
@@ -575,6 +576,7 @@ export function GraffitiLandingPage() {
 
             </div>
             <div className="hidden md:flex items-center gap-3">
+              <ThemeToggle />
               <a href="/search" className="text-[#888078] hover:text-[#D4A843] transition-colors duration-300" title="Search">
                 <Search className="size-5" />
               </a>
@@ -599,7 +601,8 @@ export function GraffitiLandingPage() {
                 </a>
               ))}
 
-              <div className="flex gap-4 pt-4 border-t border-[#D4A843]/10">
+              <div className="flex items-center gap-4 pt-4 border-t border-[#D4A843]/10">
+                <ThemeToggle />
                 {SOCIALS.map((s) => (
                   <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#888078] hover:text-[#D4A843]">
                     <s.icon className="size-5" />

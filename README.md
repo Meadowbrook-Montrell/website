@@ -1,79 +1,97 @@
-import { useRef } from "react";
-import { usePersistFn } from "./usePersistFn";
+# Meadowbrook Montrell — 3GMG Official Site
 
-export interface UseCompositionReturn<
-  T extends HTMLInputElement | HTMLTextAreaElement,
-> {
-  onCompositionStart: React.CompositionEventHandler<T>;
-  onCompositionEnd: React.CompositionEventHandler<T>;
-  onKeyDown: React.KeyboardEventHandler<T>;
-  isComposing: () => boolean;
-}
+The official website for **Meadowbrook Montrell** aka *The Hood's Paparazzi* — content creator, podcaster, songwriter, and street reporter from Fort Worth, Texas.
 
-export interface UseCompositionOptions<
-  T extends HTMLInputElement | HTMLTextAreaElement,
-> {
-  onKeyDown?: React.KeyboardEventHandler<T>;
-  onCompositionStart?: React.CompositionEventHandler<T>;
-  onCompositionEnd?: React.CompositionEventHandler<T>;
-}
+## 🔗 Live Preview
+[https://preview-meadowbrook-montrell-55dec75d.viktor.space/v2](https://preview-meadowbrook-montrell-55dec75d.viktor.space/v2)
 
-type TimerResponse = ReturnType<typeof setTimeout>;
+## Features
 
-export function useComposition<
-  T extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement,
->(options: UseCompositionOptions<T> = {}): UseCompositionReturn<T> {
-  const {
-    onKeyDown: originalOnKeyDown,
-    onCompositionStart: originalOnCompositionStart,
-    onCompositionEnd: originalOnCompositionEnd,
-  } = options;
+- **Landing Page** — Dark/gold street theme with real Fort Worth Stock Yards photography & 3GMG graffiti branding
+- **Content Library** — 40+ embedded YouTube videos (full episodes + shorts) with category filters
+- **Photo Gallery** — Masonry layout with lightbox viewer, sourced from YouTube thumbnails
+- **Live Sessions** — Banner promoting upcoming live interview sessions
+- **Merch Section** — Coming soon merchandise showcase
+- **Connect** — Links to YouTube, Facebook, Instagram, TikTok
+- **Convex Backend** — Content management with `content` and `liveSessions` tables
 
-  const c = useRef(false);
-  const timer = useRef<TimerResponse | null>(null);
-  const timer2 = useRef<TimerResponse | null>(null);
+## Tech Stack
 
-  const onCompositionStart = usePersistFn((e: React.CompositionEvent<T>) => {
-    if (timer.current) {
-      clearTimeout(timer.current);
-      timer.current = null;
-    }
-    if (timer2.current) {
-      clearTimeout(timer2.current);
-      timer2.current = null;
-    }
-    c.current = true;
-    originalOnCompositionStart?.(e);
-  });
+- **Frontend**: React + TypeScript + Tailwind CSS + Vite
+- **Backend**: [Convex](https://convex.dev) (real-time database)
+- **Hosting**: Vercel (via Viktor Spaces)
 
-  const onCompositionEnd = usePersistFn((e: React.CompositionEvent<T>) => {
-    timer.current = setTimeout(() => {
-      timer2.current = setTimeout(() => {
-        c.current = false;
-      });
-    });
-    originalOnCompositionEnd?.(e);
-  });
+## Pages
 
-  const onKeyDown = usePersistFn((e: React.KeyboardEvent<T>) => {
-    if (
-      c.current &&
-      (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey))
-    ) {
-      e.stopPropagation();
-      return;
-    }
-    originalOnKeyDown?.(e);
-  });
+| Route | Page |
+|-------|------|
+| `/` | Original landing page (clean version) |
+| `/v2` | Main landing page (graffiti/street version) |
+| `/library` | Full content library with all videos |
+| `/gallery` | Photo gallery with lightbox |
 
-  const isComposing = usePersistFn(() => {
-    return c.current;
-  });
+## Setup
 
-  return {
-    onCompositionStart,
-    onCompositionEnd,
-    onKeyDown,
-    isComposing,
-  };
-}
+### 1. Clone the repo
+```bash
+git clone https://github.com/Meadowbrook-Montrell/website.git
+cd website
+```
+
+### 2. Install dependencies
+```bash
+npm install
+# or
+bun install
+```
+
+### 3. Set up Convex
+Create a `.env.local` file from the example:
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` and add your Convex deploy key:
+```
+VITE_CONVEX_URL=https://effervescent-parrot-556.convex.cloud
+CONVEX_DEPLOY_KEY=dev:effervescent-parrot-556|<your-token>
+CONVEX_DEPLOYMENT=dev:effervescent-parrot-556
+```
+
+### 4. Deploy Convex functions
+```bash
+npx convex deploy --cmd 'echo skip' --cmd-url-env-var-name VITE_CONVEX_URL -y
+```
+
+### 5. Run locally
+```bash
+npm run dev
+```
+
+## Project Structure
+
+```
+├── convex/              # Convex backend (schema, queries, mutations)
+│   ├── schema.ts        # Database schema (content, liveSessions, users)
+│   ├── contentLib.ts    # Content library queries/mutations
+│   └── ...
+├── public/
+│   └── images/          # Site assets (hero, logos, avatars, icons)
+├── src/
+│   ├── pages/
+│   │   ├── GraffitiLandingPage.tsx   # Main page (v2)
+│   │   ├── LandingPage.tsx           # Original page
+│   │   ├── LibraryPage.tsx           # Content library
+│   │   └── GalleryPage.tsx           # Photo gallery
+│   ├── App.tsx           # Routes
+│   └── main.tsx          # Entry point
+└── index.html
+```
+
+## Credits
+
+Built by [Viktor AI](https://getviktor.com) for Meadowbrook Montrell / 3GMG.
+
+---
+
+*3GMG • Fort Worth, TX • The Hood's Paparazzi*

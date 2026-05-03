@@ -14,19 +14,22 @@ import { CommunityPage } from "./pages/CommunityPage";
 import { BlogPage } from "./pages/BlogPage";
 import { EventsPage } from "./pages/EventsPage";
 import { SearchPage } from "./pages/SearchPage";
+import { EpisodePage } from "./pages/EpisodePage";
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark" switchable={false}>
+      <ThemeProvider defaultTheme="dark" switchable={true}>
         <Toaster />
         <Routes>
           <Route path="/" element={<GraffitiLandingPage />} />
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/episode/:id" element={<EpisodePage />} />
           <Route path="/admin" element={<AdminGate><AdminPage /></AdminGate>} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/media-kit" element={<MediaKitPage />} />

@@ -19,6 +19,13 @@ export const listContent = query({
   },
 });
 
+export const getContentById = query({
+  args: { id: v.id("content") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
 export const getFeaturedContent = query({
   args: {},
   handler: async (ctx) => {
