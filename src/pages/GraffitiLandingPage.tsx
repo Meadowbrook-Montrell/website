@@ -509,7 +509,7 @@ export function GraffitiLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden landing-crosshair">
+    <div id="main-content" className="min-h-screen text-[#f0ece4] overflow-x-hidden landing-crosshair">
       {/* Feature 8: Custom cursor CSS via style tag */}
       <style>{`
         @keyframes ticker {
