@@ -7,7 +7,7 @@ import { api } from "../../convex/_generated/api";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, MessageSquare, Heart, Pin, Send, Star,
-  Lightbulb, HelpCircle, MessageCircle, Filter,
+  Lightbulb, HelpCircle, MessageCircle, Filter, Mic,
 } from "lucide-react";
 
 const typeConfig: Record<string, { label: string; icon: React.ElementType; color: string }> = {
@@ -180,7 +180,7 @@ export function CommunityPage() {
         {/* Posts */}
         <div className="space-y-4">
           {/* Pinned posts */}
-          {pinnedPosts.map((post) => {
+          {pinnedPosts.map((post: any) => {
             const config = typeConfig[post.type] || typeConfig.message;
             return (
               <div key={post._id} className="bg-[#141414]/90 backdrop-blur-sm border border-[#D4A843]/30 rounded-sm p-5 relative">
@@ -197,6 +197,19 @@ export function CommunityPage() {
                   </div>
                 </div>
                 <p className="text-[#ccc] text-sm leading-relaxed">{post.message}</p>
+                {/* Admin Reply */}
+                {post.adminReply && (
+                  <div className="mt-4 pl-4 border-l-2 border-[#D4A843]/50 bg-[#D4A843]/5 rounded-r-sm p-3">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="w-5 h-5 rounded-full bg-[#D4A843] flex items-center justify-center">
+                        <Mic className="size-3 text-[#0a0a0a]" />
+                      </div>
+                      <span className="text-xs font-bold text-[#D4A843] tracking-wider uppercase">Montrell</span>
+                      {post.adminReplyAt && <span className="text-[10px] text-[#555]">• {timeAgo(post.adminReplyAt)}</span>}
+                    </div>
+                    <p className="text-[#ddd] text-sm leading-relaxed">{post.adminReply}</p>
+                  </div>
+                )}
                 <button
                   onClick={() => likePost({ id: post._id })}
                   className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#888078] hover:text-red-400 transition-colors"
@@ -208,7 +221,7 @@ export function CommunityPage() {
           })}
 
           {/* Regular posts */}
-          {regularPosts.map((post) => {
+          {regularPosts.map((post: any) => {
             const config = typeConfig[post.type] || typeConfig.message;
             return (
               <div key={post._id} className="bg-[#141414]/90 backdrop-blur-sm border border-[#333] rounded-sm p-5 hover:border-[#D4A843]/20 transition-all">
@@ -222,6 +235,19 @@ export function CommunityPage() {
                   </div>
                 </div>
                 <p className="text-[#ccc] text-sm leading-relaxed">{post.message}</p>
+                {/* Admin Reply */}
+                {post.adminReply && (
+                  <div className="mt-4 pl-4 border-l-2 border-[#D4A843]/50 bg-[#D4A843]/5 rounded-r-sm p-3">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="w-5 h-5 rounded-full bg-[#D4A843] flex items-center justify-center">
+                        <Mic className="size-3 text-[#0a0a0a]" />
+                      </div>
+                      <span className="text-xs font-bold text-[#D4A843] tracking-wider uppercase">Montrell</span>
+                      {post.adminReplyAt && <span className="text-[10px] text-[#555]">• {timeAgo(post.adminReplyAt)}</span>}
+                    </div>
+                    <p className="text-[#ddd] text-sm leading-relaxed">{post.adminReply}</p>
+                  </div>
+                )}
                 <button
                   onClick={() => likePost({ id: post._id })}
                   className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#888078] hover:text-red-400 transition-colors"
