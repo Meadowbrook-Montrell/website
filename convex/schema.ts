@@ -214,6 +214,8 @@ const schema = defineSchema({
     isApproved: v.boolean(),
     isPinned: v.optional(v.boolean()),
     likes: v.optional(v.number()),
+    adminReply: v.optional(v.string()),
+    adminReplyAt: v.optional(v.string()),
     createdAt: v.string(),
   })
     .index("by_approved", ["isApproved"])
