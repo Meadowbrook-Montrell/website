@@ -246,7 +246,7 @@ const CATEGORIES: { key: GalleryCategory; label: string; icon: typeof Camera }[]
 
 /* ─── Nav links ─── */
 const NAV_LINKS = [
-  { label: "HOME", href: "/v2" },
+  { label: "HOME", href: "/" },
   { label: "LIBRARY", href: "/library" },
   { label: "GALLERY", href: "/gallery" },
 ];
@@ -445,7 +445,7 @@ export function GalleryPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
-            <a href="/v2" className="flex items-center gap-3 group">
+            <a href="/" className="flex items-center gap-3 group">
               <img
                 src="/images/logo-3gmg-graffiti.png"
                 alt="3GMG"

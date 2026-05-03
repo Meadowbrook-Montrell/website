@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
 import {
   Facebook,
   Instagram,
@@ -363,9 +364,7 @@ export function LandingPage() {
           {/* Featured Episode — embedded */}
           <AnimatedSection delay={0.2} className="max-w-4xl mx-auto mb-10">
             <div className="relative rounded-sm overflow-hidden glow-border bg-gradient-to-br from-[#1a1a1a] to-[#111]">
-              <div className="aspect-video">
-                <iframe src="https://www.youtube.com/embed/ufUQcipbtmw?rel=0" title="Yung Deco Speaks On More Albums Than Lil Flip" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-              </div>
+              <SmartYouTubeEmbed videoId="ufUQcipbtmw" title="Yung Deco Speaks On More Albums Than Lil Flip" />
               <div className="p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-[#D4A843]/20 text-[#D4A843] border border-[#D4A843]/30">★ LATEST EPISODE</span>
@@ -387,18 +386,14 @@ export function LandingPage() {
           <AnimatedSection delay={0.3} className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video">
-                  <iframe src="https://www.youtube.com/embed/ETyWsOCWxtg?rel=0" title="Twisted Black Before Video Shoot With Shaq" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
+                <SmartYouTubeEmbed videoId="ETyWsOCWxtg" title="Twisted Black Before Video Shoot With Shaq" />
                 <div className="p-4">
                   <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">INTERVIEW</span>
                   <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">TWISTED BLACK CONNECTING WITH THE PEOPLE</h4>
                 </div>
               </div>
               <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video">
-                  <iframe src="https://www.youtube.com/embed/q5IEpbLpvno?rel=0" title="DFW Shaka Exposes Pandora Strip Club Promoters" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
+                <SmartYouTubeEmbed videoId="q5IEpbLpvno" title="DFW Shaka Exposes Pandora Strip Club Promoters" />
                 <div className="p-4">
                   <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET REPORTING</span>
                   <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">DFW SHAKA EXPOSES PANDORA STRIP CLUB PROMOTERS</h4>
@@ -436,9 +431,7 @@ export function LandingPage() {
             {/* Street Interviews */}
             <AnimatedSection delay={0.1}>
               <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video">
-                  <iframe src="https://www.youtube.com/embed/0BbxgRKk_sU?rel=0" title="DFW Shaka & Fort Worth Legend McHenry" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
+                <SmartYouTubeEmbed videoId="0BbxgRKk_sU" title="DFW Shaka & Fort Worth Legend McHenry" />
                 <div className="p-6">
                   <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">INTERVIEW</span>
                   <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mt-2 mb-2">DFW SHAKA & FORT WORTH LEGEND MCHENRY</h3>
@@ -450,9 +443,7 @@ export function LandingPage() {
             {/* Street Reporting */}
             <AnimatedSection delay={0.2}>
               <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video">
-                  <iframe src="https://www.youtube.com/embed/of9vm8OHu0c?rel=0" title="3GMG TAMUNO On Booker T Block" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
+                <SmartYouTubeEmbed videoId="of9vm8OHu0c" title="3GMG TAMUNO On Booker T Block" />
                 <div className="p-6">
                   <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET REPORTING</span>
                   <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mt-2 mb-2">3GMG TAMUNO ON BOOKER T BLOCK</h3>
@@ -464,9 +455,7 @@ export function LandingPage() {
             {/* Music */}
             <AnimatedSection delay={0.3}>
               <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video">
-                  <iframe src="https://www.youtube.com/embed/Mvb41IsSHEM?rel=0" title="Twisted Black Performing I'm A Fool Wit It" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
+                <SmartYouTubeEmbed videoId="Mvb41IsSHEM" title="Twisted Black Performing I'm A Fool Wit It" />
                 <div className="p-6">
                   <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">MUSIC & PERFORMANCE</span>
                   <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mt-2 mb-2">TWISTED BLACK — "I'M A FOOL WIT IT"</h3>

@@ -17,7 +17,44 @@ import {
   Star,
   Clock,
   Mail,
+  Calendar,
+  Handshake,
+  DollarSign,
+  FileText,
+  Link2,
+  Mic,
+  ShoppingBag,
+  FolderOpen,
+  CheckSquare,
+  Podcast,
+  Palette,
+  Bell,
+  Send,
 } from "lucide-react";
+import {
+  OpsOverviewTab,
+  CalendarTab,
+  GuestCRMTab,
+  BookingsTab,
+  SponsorsTab,
+  RevenueTab,
+  NewslettersTab,
+  ShowNotesTab,
+  LinksTab,
+  CommunityTab,
+  MetricsTab,
+} from "./AdminOpsPage";
+import {
+  FinancialTab,
+  MerchTab,
+  EmailCampaignTab,
+  DocumentsTab,
+  TasksTab,
+  PodcastRSSTab,
+  AnalyticsTab,
+  BrandKitTab,
+  NotificationsTab,
+} from "./CommandCenterTabs";
 
 /* ─── Stat Card ─── */
 function StatCard({ icon: Icon, label, value, color = "gold", trend }: {
@@ -49,6 +86,7 @@ function StatCard({ icon: Icon, label, value, color = "gold", trend }: {
 export function AdminPage() {
   // All Convex queries
   const stats = useQuery(api.admin.getDashboardStats);
+  const unreadCount = useQuery(api.commandCenter.getUnreadCount);
   const subscribers = useQuery(api.admin.listSubscribers);
   const tickerItems = useQuery(api.admin.listTickerItems);
   const guests = useQuery(api.admin.listGuests);
@@ -79,7 +117,7 @@ export function AdminPage() {
   const [newSessionTitle, setNewSessionTitle] = useState("");
   const [newSessionDate, setNewSessionDate] = useState("");
   const [newSessionPlatform, setNewSessionPlatform] = useState("youtube");
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "live" | "ticker" | "guests" | "subscribers">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "live" | "ticker" | "guests" | "subscribers" | "ops-overview" | "calendar" | "guest-crm" | "bookings" | "sponsors" | "revenue" | "newsletters" | "shownotes" | "links" | "community" | "metrics" | "financial" | "merch" | "email-campaigns" | "documents" | "tasks" | "podcast-rss" | "analytics" | "brand-kit" | "notifications">("overview");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
@@ -87,7 +125,7 @@ export function AdminPage() {
       <div className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-lg border-b border-[#D4A843]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
-            <a href="/v2" className="flex items-center gap-2 text-[#888078] hover:text-[#D4A843] transition-colors">
+            <a href="/" className="flex items-center gap-2 text-[#888078] hover:text-[#D4A843] transition-colors">
               <ArrowLeft className="size-4" /> <span className="text-sm hidden sm:inline">Back to Site</span>
             </a>
             <div className="h-6 w-px bg-[#D4A843]/20" />
@@ -95,9 +133,17 @@ export function AdminPage() {
               <span className="text-[#D4A843]">3GMG</span> ADMIN
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs text-[#888078]">Connected to Convex</span>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setActiveTab("notifications")} className="relative text-[#888078] hover:text-[#D4A843] transition-colors">
+              <Bell className="size-5" />
+              {(unreadCount ?? 0) > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{unreadCount}</span>
+              )}
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs text-[#888078]">Connected to Convex</span>
+            </div>
           </div>
         </div>
       </div>
@@ -112,19 +158,46 @@ export function AdminPage() {
             { id: "ticker" as const, label: "News Ticker", icon: MessageSquare },
             { id: "guests" as const, label: "Guests", icon: Star },
             { id: "subscribers" as const, label: "Subscribers", icon: Users },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                activeTab === tab.id
-                  ? "bg-[#D4A843] text-[#0a0a0a]"
-                  : "bg-[#141414] text-[#888078] hover:text-[#f0ece4] border border-[#D4A843]/10 hover:border-[#D4A843]/30"
-              }`}
-            >
-              <tab.icon className="size-4" /> {tab.label}
-            </button>
-          ))}
+            { id: "divider" as const, label: "", icon: BarChart3 },
+            { id: "ops-overview" as const, label: "Ops Overview", icon: TrendingUp },
+            { id: "calendar" as const, label: "Calendar", icon: Calendar },
+            { id: "guest-crm" as const, label: "Guest CRM", icon: Users },
+            { id: "bookings" as const, label: "Bookings", icon: Mic },
+            { id: "sponsors" as const, label: "Sponsors", icon: Handshake },
+            { id: "revenue" as const, label: "Revenue", icon: DollarSign },
+            { id: "newsletters" as const, label: "Newsletters", icon: Mail },
+            { id: "shownotes" as const, label: "Show Notes", icon: FileText },
+            { id: "links" as const, label: "Link-in-Bio", icon: Link2 },
+            { id: "community" as const, label: "Community", icon: MessageSquare },
+            { id: "metrics" as const, label: "Social Metrics", icon: TrendingUp },
+            { id: "divider2" as const, label: "", icon: BarChart3 },
+            { id: "financial" as const, label: "Finances", icon: DollarSign },
+            { id: "merch" as const, label: "Merch Store", icon: ShoppingBag },
+            { id: "email-campaigns" as const, label: "Email Campaigns", icon: Send },
+            { id: "documents" as const, label: "Contracts", icon: FolderOpen },
+            { id: "tasks" as const, label: "Tasks", icon: CheckSquare },
+            { id: "podcast-rss" as const, label: "Podcast RSS", icon: Podcast },
+            { id: "analytics" as const, label: "Analytics", icon: BarChart3 },
+            { id: "brand-kit" as const, label: "Brand Kit", icon: Palette },
+            { id: "notifications" as const, label: "Notifications", icon: Bell },
+          ].map((tab) => {
+            if (tab.id === "divider" || tab.id === "divider2") {
+              return <div key={tab.id} className="w-full h-px bg-[#D4A843]/10 my-2" />;
+            }
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  activeTab === tab.id
+                    ? "bg-[#D4A843] text-[#0a0a0a]"
+                    : "bg-[#141414] text-[#888078] hover:text-[#f0ece4] border border-[#D4A843]/10 hover:border-[#D4A843]/30"
+                }`}
+              >
+                <tab.icon className="size-4" /> {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* ─── Overview Tab ─── */}
@@ -519,6 +592,30 @@ export function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* ─── Operations Tabs ─── */}
+        {activeTab === "ops-overview" && <OpsOverviewTab />}
+        {activeTab === "calendar" && <CalendarTab />}
+        {activeTab === "guest-crm" && <GuestCRMTab />}
+        {activeTab === "bookings" && <BookingsTab />}
+        {activeTab === "sponsors" && <SponsorsTab />}
+        {activeTab === "revenue" && <RevenueTab />}
+        {activeTab === "newsletters" && <NewslettersTab />}
+        {activeTab === "shownotes" && <ShowNotesTab />}
+        {activeTab === "links" && <LinksTab />}
+        {activeTab === "community" && <CommunityTab />}
+        {activeTab === "metrics" && <MetricsTab />}
+
+        {/* ─── Command Center v2 Tabs ─── */}
+        {activeTab === "financial" && <FinancialTab />}
+        {activeTab === "merch" && <MerchTab />}
+        {activeTab === "email-campaigns" && <EmailCampaignTab />}
+        {activeTab === "documents" && <DocumentsTab />}
+        {activeTab === "tasks" && <TasksTab />}
+        {activeTab === "podcast-rss" && <PodcastRSSTab />}
+        {activeTab === "analytics" && <AnalyticsTab />}
+        {activeTab === "brand-kit" && <BrandKitTab />}
+        {activeTab === "notifications" && <NotificationsTab />}
       </div>
     </div>
   );
