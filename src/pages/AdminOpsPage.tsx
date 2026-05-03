@@ -818,13 +818,25 @@ export function CommunityTab() {
   const approve = useMutation(api.operations.approveCommunityPost);
   const pin = useMutation(api.operations.pinCommunityPost);
   const deletePost = useMutation(api.operations.deleteCommunityPost);
+  const replyPost = useMutation(api.operations.replyCommunityPost);
   const [filter, setFilter] = useState<string>("pending");
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
-  const filtered = posts?.filter((p) => {
+  const filtered = posts?.filter((p: any) => {
     if (filter === "pending") return !p.isApproved;
     if (filter === "approved") return p.isApproved;
+    if (filter === "replied") return p.adminReply;
+    if (filter === "unreplied") return !p.adminReply && p.isApproved;
     return true;
   }) || [];
+
+  const handleReply = async (postId: any) => {
+    if (!replyText.trim()) return;
+    await replyPost({ id: postId, adminReply: replyText.trim() });
+    setReplyingTo(null);
+    setReplyText("");
+  };
 
   return (
     <div className="space-y-4">
@@ -835,35 +847,91 @@ export function CommunityTab() {
         </a>
       </div>
 
-      <div className="flex gap-2">
-        {["pending", "approved", "all"].map((f) => (
-          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 text-xs font-bold tracking-widest uppercase rounded-sm ${filter === f ? "bg-[#D4A843] text-[#0a0a0a]" : "bg-[#141414] text-[#888078] border border-[#333]"}`}>
-            {f} ({f === "pending" ? posts?.filter((p) => !p.isApproved).length || 0 : f === "approved" ? posts?.filter((p) => p.isApproved).length || 0 : posts?.length || 0})
+      <div className="flex gap-2 flex-wrap">
+        {[
+          { key: "pending", label: "Pending", count: posts?.filter((p: any) => !p.isApproved).length || 0 },
+          { key: "approved", label: "Approved", count: posts?.filter((p: any) => p.isApproved).length || 0 },
+          { key: "unreplied", label: "Needs Reply", count: posts?.filter((p: any) => !p.adminReply && p.isApproved).length || 0 },
+          { key: "replied", label: "Replied", count: posts?.filter((p: any) => p.adminReply).length || 0 },
+          { key: "all", label: "All", count: posts?.length || 0 },
+        ].map((f) => (
+          <button key={f.key} onClick={() => setFilter(f.key)} className={`px-3 py-1.5 text-xs font-bold tracking-widest uppercase rounded-sm ${filter === f.key ? "bg-[#D4A843] text-[#0a0a0a]" : "bg-[#141414] text-[#888078] border border-[#333]"}`}>
+            {f.label} ({f.count})
           </button>
         ))}
       </div>
 
-      {filtered.map((post) => (
+      {filtered.map((post: any) => (
         <Card key={post._id}>
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold">{post.authorName}</span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#333] text-[#888]">{post.type}</span>
                 {post.isPinned && <Pin className="size-3 text-[#D4A843]" />}
                 {!post.isApproved && <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">PENDING</span>}
+                {post.adminReply && <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">REPLIED ✓</span>}
               </div>
               <p className="text-sm text-[#ccc] mt-2">{post.message}</p>
               <div className="text-xs text-[#555] mt-1">❤️ {post.likes || 0} • {new Date(post.createdAt).toLocaleDateString()}</div>
+
+              {/* Existing admin reply */}
+              {post.adminReply && (
+                <div className="mt-3 pl-3 border-l-2 border-[#D4A843]/40 bg-[#D4A843]/5 rounded-r-sm p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-[#D4A843]">Montrell's Reply</span>
+                    <span className="text-[10px] text-[#555]">{post.adminReplyAt ? new Date(post.adminReplyAt).toLocaleDateString() : ""}</span>
+                  </div>
+                  <p className="text-sm text-[#ddd]">{post.adminReply}</p>
+                  <button
+                    onClick={() => { setReplyingTo(post._id); setReplyText(post.adminReply || ""); }}
+                    className="mt-2 text-[10px] text-[#D4A843] hover:text-[#E8C767] uppercase tracking-widest"
+                  >
+                    Edit Reply
+                  </button>
+                </div>
+              )}
+
+              {/* Reply form */}
+              {replyingTo === post._id && (
+                <div className="mt-3 space-y-2">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    placeholder="Write your reply..."
+                    rows={3}
+                    className="w-full bg-[#0a0a0a]/60 border border-[#D4A843]/30 rounded-sm px-3 py-2 text-sm text-[#f0ece4] placeholder-[#555] focus:border-[#D4A843] focus:outline-none resize-none"
+                    maxLength={500}
+                  />
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleReply(post._id)}
+                      className="px-4 py-1.5 bg-[#D4A843] text-[#0a0a0a] text-xs font-bold tracking-widest uppercase rounded-sm hover:bg-[#E8C767]"
+                    >
+                      {post.adminReply ? "Update Reply" : "Post Reply"}
+                    </button>
+                    <button
+                      onClick={() => { setReplyingTo(null); setReplyText(""); }}
+                      className="px-4 py-1.5 text-xs text-[#888] hover:text-[#ccc] uppercase tracking-widest"
+                    >
+                      Cancel
+                    </button>
+                    <span className="text-[10px] text-[#555] ml-auto">{replyText.length}/500</span>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               {!post.isApproved ? (
-                <button onClick={() => approve({ id: post._id, isApproved: true })} className="p-1.5 bg-green-500/20 text-green-400 rounded-sm hover:bg-green-500/30"><Check className="size-4" /></button>
+                <button onClick={() => approve({ id: post._id, isApproved: true })} className="p-1.5 bg-green-500/20 text-green-400 rounded-sm hover:bg-green-500/30" title="Approve"><Check className="size-4" /></button>
               ) : (
-                <button onClick={() => approve({ id: post._id, isApproved: false })} className="p-1.5 bg-yellow-500/20 text-yellow-400 rounded-sm hover:bg-yellow-500/30"><Eye className="size-4" /></button>
+                <button onClick={() => approve({ id: post._id, isApproved: false })} className="p-1.5 bg-yellow-500/20 text-yellow-400 rounded-sm hover:bg-yellow-500/30" title="Unapprove"><Eye className="size-4" /></button>
               )}
-              <button onClick={() => pin({ id: post._id, isPinned: !post.isPinned })} className={`p-1.5 rounded-sm ${post.isPinned ? "bg-[#D4A843]/20 text-[#D4A843]" : "bg-[#333]/50 text-[#555]"}`}><Pin className="size-4" /></button>
-              <button onClick={() => deletePost({ id: post._id })} className="text-red-400/50 hover:text-red-400"><Trash2 className="size-4" /></button>
+              {!replyingTo || replyingTo !== post._id ? (
+                <button onClick={() => { setReplyingTo(post._id); setReplyText(post.adminReply || ""); }} className="p-1.5 bg-blue-500/20 text-blue-400 rounded-sm hover:bg-blue-500/30" title="Reply"><MessageSquare className="size-4" /></button>
+              ) : null}
+              <button onClick={() => pin({ id: post._id, isPinned: !post.isPinned })} className={`p-1.5 rounded-sm ${post.isPinned ? "bg-[#D4A843]/20 text-[#D4A843]" : "bg-[#333]/50 text-[#555]"}`} title="Pin"><Pin className="size-4" /></button>
+              <button onClick={() => deletePost({ id: post._id })} className="text-red-400/50 hover:text-red-400" title="Delete"><Trash2 className="size-4" /></button>
             </div>
           </div>
         </Card>
