@@ -772,6 +772,150 @@ const schema = defineSchema({
   })
     .index("by_code", ["code"])
     .index("by_active", ["isActive"]),
+
+  // ═══════════════════════════════════════════════════════════
+  //   PHASE 3 FEATURES — 15 New Modules
+  // ═══════════════════════════════════════════════════════════
+
+  // ─── 31b. Expenses Tracker ────────────────────────────────
+  expenses: defineTable({
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    category: v.string(), // "equipment" | "travel" | "studio" | "software" | "marketing" | "food" | "other"
+    amount: v.number(),
+    vendor: v.optional(v.string()),
+    receipt: v.optional(v.string()), // URL to receipt image
+    date: v.string(),
+    isRecurring: v.optional(v.boolean()),
+    isDeductible: v.optional(v.boolean()),
+    mileage: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_category", ["category"])
+    .index("by_date", ["date"]),
+
+  // ─── 32b. Contracts & E-Sign ──────────────────────────────
+  contracts: defineTable({
+    title: v.string(),
+    party: v.string(), // guest, sponsor, venue, etc.
+    partyEmail: v.optional(v.string()),
+    type: v.string(), // "guest-release" | "sponsorship" | "nda" | "vendor" | "custom"
+    status: v.string(), // "draft" | "sent" | "viewed" | "signed" | "expired" | "cancelled"
+    content: v.optional(v.string()), // the actual contract text
+    signedAt: v.optional(v.string()),
+    expiresAt: v.optional(v.string()),
+    amount: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_type", ["type"]),
+
+  // ─── 33. AI Content Prompts / Generated Content ───────────
+  aiContent: defineTable({
+    sourceTitle: v.string(), // video title, episode, etc.
+    type: v.string(), // "description" | "caption" | "blog-post" | "show-notes" | "email" | "thread"
+    platform: v.optional(v.string()), // "youtube" | "instagram" | "tiktok" | "twitter" | "email"
+    generatedText: v.string(),
+    isSaved: v.optional(v.boolean()),
+    isUsed: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_type", ["type"]),
+
+  // ─── 34. Follow-Up Reminders ──────────────────────────────
+  followUps: defineTable({
+    contactName: v.string(),
+    contactEmail: v.optional(v.string()),
+    contactType: v.string(), // "guest" | "sponsor" | "source" | "collaborator" | "vendor"
+    reason: v.string(),
+    dueDate: v.string(),
+    status: v.string(), // "pending" | "completed" | "snoozed" | "cancelled"
+    priority: v.optional(v.string()), // "high" | "medium" | "low"
+    notes: v.optional(v.string()),
+    completedAt: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_dueDate", ["dueDate"]),
+
+  // ─── 35. Publishing Pipeline ──────────────────────────────
+  pipeline: defineTable({
+    title: v.string(),
+    contentType: v.string(), // "episode" | "short" | "blog" | "social-post" | "podcast"
+    stage: v.string(), // "idea" | "filming" | "editing" | "review" | "scheduling" | "published"
+    platforms: v.optional(v.string()), // comma-separated
+    scheduledDate: v.optional(v.string()),
+    publishedDate: v.optional(v.string()),
+    publishUrl: v.optional(v.string()),
+    assignedTo: v.optional(v.string()),
+    thumbnail: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_stage", ["stage"])
+    .index("by_contentType", ["contentType"]),
+
+  // ─── 36. Fan Q&A (public) ─────────────────────────────────
+  fanQA: defineTable({
+    fanName: v.string(),
+    fanEmail: v.optional(v.string()),
+    question: v.string(),
+    answer: v.optional(v.string()),
+    answeredAt: v.optional(v.string()),
+    isApproved: v.boolean(),
+    isFeatured: v.optional(v.boolean()),
+    upvotes: v.optional(v.number()),
+    category: v.optional(v.string()), // "podcast" | "personal" | "fort-worth" | "business" | "general"
+    createdAt: v.string(),
+  })
+    .index("by_approved", ["isApproved"])
+    .index("by_featured", ["isFeatured"]),
+
+  // ─── 37. Fan Leaderboard ──────────────────────────────────
+  fanPoints: defineTable({
+    fanName: v.string(),
+    fanEmail: v.optional(v.string()),
+    points: v.number(),
+    level: v.optional(v.string()), // "rookie" | "regular" | "vip" | "legend"
+    communityPosts: v.optional(v.number()),
+    eventAttendances: v.optional(v.number()),
+    questionsAsked: v.optional(v.number()),
+    referrals: v.optional(v.number()),
+    lastActive: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_points", ["points"]),
+
+  // ─── 38. Breaking News Alerts ─────────────────────────────
+  breakingAlerts: defineTable({
+    headline: v.string(),
+    message: v.optional(v.string()),
+    linkUrl: v.optional(v.string()),
+    linkText: v.optional(v.string()),
+    severity: v.string(), // "breaking" | "urgent" | "info"
+    isActive: v.boolean(),
+    expiresAt: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_active", ["isActive"]),
+
+  // ─── 39. Exclusive / Members-Only Content ─────────────────
+  exclusiveContent: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    contentType: v.string(), // "video" | "audio" | "article" | "download" | "early-access"
+    contentUrl: v.optional(v.string()),
+    youtubeId: v.optional(v.string()),
+    thumbnailUrl: v.optional(v.string()),
+    accessLevel: v.string(), // "subscriber" | "member" | "donor" | "merch-buyer"
+    isPublished: v.boolean(),
+    publishedAt: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_accessLevel", ["accessLevel"])
+    .index("by_published", ["isPublished"]),
 });
 
 export default schema;

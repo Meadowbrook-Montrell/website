@@ -16,6 +16,10 @@ import { EventsPage } from "./pages/EventsPage";
 import { SearchPage } from "./pages/SearchPage";
 import { EpisodePage } from "./pages/EpisodePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import PodcastPage from "./pages/PodcastPage";
+import FanQAPage from "./pages/FanQAPage";
+import ShopPage from "./pages/ShopPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 function App() {
   return (
@@ -36,6 +40,10 @@ function App() {
           <Route path="/media-kit" element={<MediaKitPage />} />
           <Route path="/link" element={<LinkBioPage />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/podcast" element={<PodcastPage />} />
+          <Route path="/qa" element={<FanQAPage />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </ThemeProvider>

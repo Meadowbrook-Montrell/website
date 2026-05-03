@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
+import BreakingAlertBanner from "../components/BreakingAlertBanner";
 import { ThemeToggle } from "../components/ThemeToggle";
 import {
   Facebook,
@@ -107,14 +108,15 @@ const SOCIALS = [
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
-  { label: "Podcast", href: "#podcast" },
+  { label: "Podcast", href: "/podcast" },
   { label: "Library", href: "/library" },
   { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
   { label: "Events", href: "/events" },
   { label: "Community", href: "/community" },
+  { label: "Q&A", href: "/qa" },
+  { label: "Shop", href: "/shop" },
   { label: "Book", href: "/booking" },
-  { label: "Merch", href: "#merch" },
   { label: "Connect", href: "#connect" },
 ];
 
@@ -510,6 +512,8 @@ export function GraffitiLandingPage() {
 
   return (
     <div id="main-content" className="min-h-screen text-[#f0ece4] overflow-x-hidden landing-crosshair">
+      {/* Breaking News Alert Banner */}
+      <BreakingAlertBanner />
       {/* Feature 8: Custom cursor CSS via style tag */}
       <style>{`
         @keyframes ticker {

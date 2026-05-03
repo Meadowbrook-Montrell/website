@@ -31,6 +31,11 @@ import {
   AudienceAnalyticsTab, WorkflowsTab, ContactsTab,
   StoryTrackerTab, MerchFulfillmentTab, PromoCodesTab,
 } from "./PowerUpTabs";
+import {
+  ExpenseTrackerTab, ContractsTab, AIContentTab, RevenueDashboardTab,
+  FollowUpsTab, PipelineTab, AlertsTab, FanQAAdminTab,
+  ExclusiveContentTab, LeaderboardAdminTab,
+} from "./Phase3Tabs";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAVIGATION CONFIG — organized by workflow
@@ -45,7 +50,9 @@ type TabId =
   | "calendar" | "tasks" | "guests" | "guest-crm" | "team" | "waivers" | "documents" | "workflows"
   | "brand-kit" | "links" | "analytics"
   | "notifications"
-  | "ops-overview";
+  | "ops-overview"
+  | "expenses" | "contracts" | "ai-content" | "revenue-dash" | "follow-ups" | "pipeline"
+  | "alerts" | "fan-qa" | "exclusive" | "leaderboard";
 
 interface NavItem {
   id: TabId;
@@ -83,6 +90,8 @@ const sidebarGroups: NavGroup[] = [
       { id: "podcast-rss", label: "Podcast RSS", icon: Podcast },
       { id: "shownotes", label: "Show Notes", icon: FileText },
       { id: "content-schedule", label: "Content Calendar", icon: CalendarDays },
+      { id: "ai-content", label: "AI Content", icon: Zap },
+      { id: "pipeline", label: "Pipeline", icon: ArrowLeft },
     ],
   },
   {
@@ -93,6 +102,7 @@ const sidebarGroups: NavGroup[] = [
       { id: "story-tracker", label: "Story Tracker", icon: BookOpen },
       { id: "ticker", label: "News Ticker", icon: MessageSquare },
       { id: "contacts", label: "Contacts / Sources", icon: Users },
+      { id: "alerts", label: "Breaking Alerts", icon: Bell },
     ],
   },
   {
@@ -107,6 +117,9 @@ const sidebarGroups: NavGroup[] = [
       { id: "metrics", label: "Social Metrics", icon: TrendingUp },
       { id: "audience-analytics", label: "Audience Stats", icon: Eye },
       { id: "membership", label: "Memberships", icon: Crown },
+      { id: "fan-qa", label: "Fan Q&A", icon: MessageSquare },
+      { id: "leaderboard", label: "Leaderboard", icon: Star },
+      { id: "exclusive", label: "Exclusive Content", icon: Crown },
     ],
   },
   {
@@ -121,6 +134,8 @@ const sidebarGroups: NavGroup[] = [
       { id: "bookings", label: "Bookings", icon: Mic },
       { id: "donations", label: "Tip Jar", icon: Heart },
       { id: "promo-codes", label: "Promo Codes", icon: Tag },
+      { id: "expenses", label: "Expenses", icon: FileText },
+      { id: "revenue-dash", label: "Revenue Dashboard", icon: BarChart3 },
     ],
   },
   {
@@ -143,8 +158,10 @@ const sidebarGroups: NavGroup[] = [
       { id: "guest-crm", label: "Guest CRM", icon: UserCog },
       { id: "team", label: "Crew", icon: Users },
       { id: "waivers", label: "Waivers", icon: ClipboardList },
-      { id: "documents", label: "Contracts", icon: FolderOpen },
+      { id: "documents", label: "Documents", icon: FolderOpen },
+      { id: "contracts", label: "Contracts & E-Sign", icon: FileText },
       { id: "workflows", label: "Workflows", icon: Zap },
+      { id: "follow-ups", label: "Follow-Ups", icon: Clock },
     ],
   },
   {
@@ -779,6 +796,18 @@ export function AdminPage() {
           {activeTab === "story-tracker" && <StoryTrackerTab />}
           {activeTab === "merch-fulfillment" && <MerchFulfillmentTab />}
           {activeTab === "promo-codes" && <PromoCodesTab />}
+
+          {/* ─── Phase 3 Tabs ─── */}
+          {activeTab === "expenses" && <ExpenseTrackerTab />}
+          {activeTab === "contracts" && <ContractsTab />}
+          {activeTab === "ai-content" && <AIContentTab />}
+          {activeTab === "revenue-dash" && <RevenueDashboardTab />}
+          {activeTab === "follow-ups" && <FollowUpsTab />}
+          {activeTab === "pipeline" && <PipelineTab />}
+          {activeTab === "alerts" && <AlertsTab />}
+          {activeTab === "fan-qa" && <FanQAAdminTab />}
+          {activeTab === "exclusive" && <ExclusiveContentTab />}
+          {activeTab === "leaderboard" && <LeaderboardAdminTab />}
         </div>
       </div>
     </div>
