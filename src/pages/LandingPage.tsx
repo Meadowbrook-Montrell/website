@@ -3,9 +3,9 @@ import {
   Facebook,
   Instagram,
   Youtube,
-  Mic,
+
   Video,
-  Newspaper,
+
   ShoppingBag,
   MapPin,
   ChevronDown,
@@ -271,18 +271,10 @@ export function LandingPage() {
       <section id="about" className="relative py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Photo placeholder */}
+            {/* About photo */}
             <AnimatedSection>
-              <div className="relative aspect-[3/4] max-w-md mx-auto lg:mx-0 rounded-sm overflow-hidden glow-border group">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <div className="w-32 h-32 rounded-full bg-[#D4A843]/10 border-2 border-dashed border-[#D4A843]/30 flex items-center justify-center mx-auto mb-6">
-                      <span className="text-4xl">📸</span>
-                    </div>
-                    <p className="text-[#D4A843]/60 text-sm tracking-widest uppercase">Your Photo Here</p>
-                    <p className="text-[#888078] text-xs mt-2">Upload coming soon</p>
-                  </div>
-                </div>
+              <div className="relative max-w-md mx-auto lg:mx-0 rounded-sm overflow-hidden">
+                <img src="/images/montrell-about.webp" alt="Meadowbrook Montrell - 3GMG - The Hood's Paparazzi" className="w-full h-auto rounded-sm hover:scale-[1.02] transition-transform duration-700" />
                 {/* Gold corner accents */}
                 <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#D4A843]/40" />
                 <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#D4A843]/40" />
@@ -368,67 +360,50 @@ export function LandingPage() {
             </p>
           </AnimatedSection>
 
-          {/* Podcast player card */}
-          <AnimatedSection delay={0.2} className="max-w-3xl mx-auto">
+          {/* Featured Episode — embedded */}
+          <AnimatedSection delay={0.2} className="max-w-4xl mx-auto mb-10">
             <div className="relative rounded-sm overflow-hidden glow-border bg-gradient-to-br from-[#1a1a1a] to-[#111]">
-              <div className="p-8 md:p-12">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                  {/* Podcast artwork placeholder */}
-                  <div className="shrink-0 w-48 h-48 md:w-56 md:h-56 rounded-sm overflow-hidden bg-gradient-to-br from-[#D4A843]/20 to-[#0a0a0a] border border-[#D4A843]/20 flex items-center justify-center">
-                    <div className="text-center">
-                      <Mic className="size-16 text-[#D4A843]/60 mx-auto mb-3" />
-                      <p className="font-display text-xl text-[#D4A843] tracking-wider">MAKE IT</p>
-                      <p className="font-display text-xl text-[#D4A843] tracking-wider">MAKE SENSE</p>
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="text-center md:text-left flex-1">
-                    <h3 className="font-display text-2xl md:text-3xl text-[#f0ece4] tracking-wider mb-3">
-                      LATEST EPISODES
-                    </h3>
-                    <p className="text-[#c8c0b0] leading-relaxed mb-6">
-                      Tune in as Meadowbrook Montrell sits down with community leaders,
-                      artists, and everyday people to break down the topics that matter most.
-                      New episodes dropping regularly.
-                    </p>
-
-                    {/* Listen platforms */}
-                    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                      <a
-                        href="https://www.youtube.com/@Meadowbrookmontrell"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300"
-                      >
-                        <Youtube className="size-4" />
-                        YouTube
-                      </a>
-                      <a
-                        href="https://www.facebook.com/montrell.wilson.884042"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"
-                      >
-                        <Facebook className="size-4" />
-                        Facebook
-                      </a>
-                      <a
-                        href="https://www.tiktok.com/@meadowbrookmontrellmedia"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"
-                      >
-                        <TikTokIcon className="size-4" />
-                        TikTok
-                      </a>
-                    </div>
-                  </div>
+              <div className="aspect-video">
+                <iframe src="https://www.youtube.com/embed/ufUQcipbtmw?rel=0" title="Yung Deco Speaks On More Albums Than Lil Flip" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+              </div>
+              <div className="p-6 md:p-8">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-[#D4A843]/20 text-[#D4A843] border border-[#D4A843]/30">★ LATEST EPISODE</span>
+                  <span className="text-[#888078] text-xs">9:25</span>
+                </div>
+                <h3 className="font-display text-xl md:text-2xl text-[#f0ece4] tracking-wider mb-2">YUNG DECO SPEAKS ON MORE ALBUMS THAN LIL FLIP, HATE IN HIS OWN CITY</h3>
+                <p className="text-[#888078] text-sm leading-relaxed mb-4">Meadowbrook Montrell sits down with Yung Deco to talk discography, city politics, and the grind.</p>
+                <div className="flex flex-wrap gap-3">
+                  <a href="https://www.youtube.com/@Meadowbrookmontrell" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4A843] text-[#0a0a0a] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300"><Youtube className="size-4" /> YouTube</a>
+                  <a href="https://www.facebook.com/montrell.wilson.884042" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"><Facebook className="size-4" /> Facebook</a>
+                  <a href="https://www.tiktok.com/@meadowbrookmontrellmedia" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#D4A843]/30 text-[#D4A843] font-bold text-xs tracking-widest uppercase rounded-sm hover:bg-[#D4A843]/10 transition-all duration-300"><TikTokIcon className="size-4" /> TikTok</a>
                 </div>
               </div>
-
-              {/* Decorative bottom bar */}
               <div className="h-1 bg-gradient-to-r from-[#D4A843] via-[#E8C767] to-[#D4A843]" />
+            </div>
+          </AnimatedSection>
+
+          {/* More Episodes */}
+          <AnimatedSection delay={0.3} className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
+                <div className="aspect-video">
+                  <iframe src="https://www.youtube.com/embed/ETyWsOCWxtg?rel=0" title="Twisted Black Before Video Shoot With Shaq" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                </div>
+                <div className="p-4">
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">INTERVIEW</span>
+                  <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">TWISTED BLACK CONNECTING WITH THE PEOPLE</h4>
+                </div>
+              </div>
+              <div className="rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500">
+                <div className="aspect-video">
+                  <iframe src="https://www.youtube.com/embed/q5IEpbLpvno?rel=0" title="DFW Shaka Exposes Pandora Strip Club Promoters" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                </div>
+                <div className="p-4">
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET REPORTING</span>
+                  <h4 className="font-display text-sm text-[#f0ece4] tracking-wider mt-2 line-clamp-2">DFW SHAKA EXPOSES PANDORA STRIP CLUB PROMOTERS</h4>
+                </div>
+              </div>
             </div>
           </AnimatedSection>
         </div>
@@ -456,34 +431,18 @@ export function LandingPage() {
             </p>
           </AnimatedSection>
 
-          {/* Content cards */}
+          {/* Content cards — real embedded videos */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Street Interviews */}
             <AnimatedSection delay={0.1}>
               <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-900/10 to-transparent" />
-                  <div className="relative text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/30 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-500">
-                      <Mic className="size-7 text-[#D4A843]" />
-                    </div>
-                    <p className="text-[#888078] text-xs tracking-widest uppercase">Video Content</p>
-                  </div>
+                <div className="aspect-video">
+                  <iframe src="https://www.youtube.com/embed/0BbxgRKk_sU?rel=0" title="DFW Shaka & Fort Worth Legend McHenry" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 </div>
                 <div className="p-6">
-                  <h3 className="font-display text-2xl text-[#f0ece4] tracking-wider mb-2">STREET INTERVIEWS</h3>
-                  <p className="text-[#888078] text-sm leading-relaxed mb-4">
-                    Raw, unscripted conversations with people from all walks of life.
-                    Real questions, real answers, real stories from the block.
-                  </p>
-                  <a
-                    href="https://www.youtube.com/@Meadowbrookmontrell"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium hover:text-[#E8C767] transition-colors"
-                  >
-                    Watch Now <ExternalLink className="size-3.5" />
-                  </a>
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">INTERVIEW</span>
+                  <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mt-2 mb-2">DFW SHAKA & FORT WORTH LEGEND MCHENRY</h3>
+                  <p className="text-[#888078] text-sm leading-relaxed">Raw, unscripted conversations with people from all walks of life.</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -491,59 +450,27 @@ export function LandingPage() {
             {/* Street Reporting */}
             <AnimatedSection delay={0.2}>
               <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-900/10 to-transparent" />
-                  <div className="relative text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/30 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-500">
-                      <Newspaper className="size-7 text-[#D4A843]" />
-                    </div>
-                    <p className="text-[#888078] text-xs tracking-widest uppercase">Video Content</p>
-                  </div>
+                <div className="aspect-video">
+                  <iframe src="https://www.youtube.com/embed/of9vm8OHu0c?rel=0" title="3GMG TAMUNO On Booker T Block" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 </div>
                 <div className="p-6">
-                  <h3 className="font-display text-2xl text-[#f0ece4] tracking-wider mb-2">STREET REPORTING</h3>
-                  <p className="text-[#888078] text-sm leading-relaxed mb-4">
-                    Breaking down what's happening in Fort Worth and beyond. Community news,
-                    local events, and stories that matter — covered by someone who lives it.
-                  </p>
-                  <a
-                    href="https://www.facebook.com/montrell.wilson.884042"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium hover:text-[#E8C767] transition-colors"
-                  >
-                    Watch Now <ExternalLink className="size-3.5" />
-                  </a>
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">STREET REPORTING</span>
+                  <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mt-2 mb-2">3GMG TAMUNO ON BOOKER T BLOCK</h3>
+                  <p className="text-[#888078] text-sm leading-relaxed">From the block — community coverage the way it should be done.</p>
                 </div>
               </div>
             </AnimatedSection>
 
-            {/* Music / Songwriting */}
+            {/* Music */}
             <AnimatedSection delay={0.3}>
               <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
-                <div className="aspect-video bg-gradient-to-br from-[#1a1a1a] to-[#0e0e0e] flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-transparent" />
-                  <div className="relative text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/30 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-500">
-                      <Video className="size-7 text-[#D4A843]" />
-                    </div>
-                    <p className="text-[#888078] text-xs tracking-widest uppercase">Video Content</p>
-                  </div>
+                <div className="aspect-video">
+                  <iframe src="https://www.youtube.com/embed/Mvb41IsSHEM?rel=0" title="Twisted Black Performing I'm A Fool Wit It" className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 </div>
                 <div className="p-6">
-                  <h3 className="font-display text-2xl text-[#f0ece4] tracking-wider mb-2">MUSIC & MORE</h3>
-                  <p className="text-[#888078] text-sm leading-relaxed mb-4">
-                    Beyond the mic and camera, Montrell is a songwriter at heart.
-                    Original tracks, creative content, and everything in between.
-                  </p>
-                  <a
-                    href="https://www.tiktok.com/@meadowbrookmontrellmedia"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium hover:text-[#E8C767] transition-colors"
-                  >
-                    Check It Out <ExternalLink className="size-3.5" />
-                  </a>
+                  <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">MUSIC & PERFORMANCE</span>
+                  <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mt-2 mb-2">TWISTED BLACK — "I'M A FOOL WIT IT"</h3>
+                  <p className="text-[#888078] text-sm leading-relaxed">Original performances, live music, and creative content from the scene.</p>
                 </div>
               </div>
             </AnimatedSection>

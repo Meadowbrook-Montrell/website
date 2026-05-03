@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import {
   Facebook,
   Instagram,
@@ -134,14 +136,17 @@ const GUEST_DEFAULTS = [
   { name: "Fort Worth Legend McHenry", title: "OG / Legend", quote: "The streets remember everything.", youtubeId: "0BbxgRKk_sU" },
 ];
 
-/* Short clips from YouTube */
+/* Short clips from YouTube — real content */
 const SOCIAL_FEED_VIDEOS = [
-  { id: "dXpHHjXHMfI", title: "On The Block With 3GMG" },
-  { id: "WdmVpGrLt7E", title: "Fort Worth Street Stories" },
-  { id: "UfqjFAriKQA", title: "Community First Always" },
-  { id: "SPIr9bP1a0Q", title: "Real Talk No Filter" },
-  { id: "Cj2FkbYCmqE", title: "Making Moves in FTW" },
-  { id: "DP3vIkCAY7g", title: "3GMG In The Building" },
+  { id: "of9vm8OHu0c", title: "3GMG TAMUNO On Booker T Block", platform: "YouTube" },
+  { id: "o9fF-4SYo00", title: "2 Chainz Stops in Fort Worth", platform: "YouTube" },
+  { id: "HgJznP2LATA", title: "ThirdGate Tamuno Tappin In With HeadHuncho Amir", platform: "YouTube" },
+  { id: "Mvb41IsSHEM", title: "Twisted Black — \"I'm A Fool Wit It\"", platform: "YouTube" },
+  { id: "FSjcJB0GjT0", title: "Two Legends From Different Era", platform: "YouTube" },
+  { id: "QeVyLrkqci4", title: "MO3 Showed Love to Fort Worth", platform: "YouTube" },
+  { id: "pVGl7kCNSnI", title: "Taco Bell Employee Opens Fire", platform: "YouTube" },
+  { id: "G__yVg07kSg", title: "TERRIBLE Experience Meeting Beyoncé's Mother", platform: "YouTube" },
+  { id: "K41_4LTlzww", title: "LIFE SENTENCE For A Crime You Didn't Do?", platform: "YouTube" },
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -339,11 +344,16 @@ function GuestCarousel() {
 function EmailSignup() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const addSubscriber = useMutation(api.admin.addSubscriber);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    // Would call addSubscriber mutation here
+    try {
+      await addSubscriber({ email, source: "hero" });
+    } catch (err) {
+      console.error("Failed to subscribe:", err);
+    }
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setEmail("");
@@ -808,9 +818,9 @@ export function GraffitiLandingPage() {
             <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">The latest from across all platforms — always fresh, always real.</p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {SOCIAL_FEED_VIDEOS.map((vid, i) => (
-              <AnimatedSection key={vid.id} delay={0.1 + i * 0.05}>
+              <AnimatedSection key={vid.id} delay={0.1 + i * 0.04}>
                 <div className="group rounded-sm overflow-hidden bg-[#141414]/80 border border-[#D4A843]/10 hover:border-[#D4A843]/30 transition-all duration-500 hover:shadow-[0_0_20px_rgba(212,168,67,0.1)]">
                   <div className="aspect-video relative">
                     <img
@@ -821,7 +831,7 @@ export function GraffitiLandingPage() {
                     />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <a
-                        href={`https://www.youtube.com/watch?v=${vid.id}`}
+                        href={`https://www.youtube.com/shorts/${vid.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-14 h-14 rounded-full bg-[#D4A843] text-[#0a0a0a] flex items-center justify-center hover:scale-110 transition-transform"
@@ -831,7 +841,7 @@ export function GraffitiLandingPage() {
                     </div>
                     {/* Platform badge */}
                     <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#0a0a0a]/80 backdrop-blur-sm rounded text-[9px] font-bold text-red-400 tracking-widest uppercase flex items-center gap-1">
-                      <Youtube className="size-3" /> YouTube
+                      <Youtube className="size-3" /> {vid.platform}
                     </div>
                   </div>
                   <div className="p-3">
