@@ -107,7 +107,25 @@ export function EpisodePage() {
   const isShort = episode.duration && episode.duration.includes(":") && 
     parseInt(episode.duration.split(":")[0]) === 0 && parseInt(episode.duration.split(":")[1]) < 2;
 
+  // JSON-LD structured data for this episode
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": episode.title,
+    "description": episode.description || `${episode.title} — Make It Make Sense Podcast`,
+    "thumbnailUrl": episode.youtubeId ? `https://img.youtube.com/vi/${episode.youtubeId}/maxresdefault.jpg` : undefined,
+    "uploadDate": episode.publishedAt || episode._creationTime ? new Date(episode._creationTime).toISOString() : undefined,
+    "embedUrl": episode.youtubeId ? `https://www.youtube.com/embed/${episode.youtubeId}` : undefined,
+    "duration": episode.duration || undefined,
+    "author": { "@type": "Person", "name": "Meadowbrook Montrell" },
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     <div
       className="min-h-screen bg-[#0a0a0a] text-white"
       style={{
@@ -426,5 +444,6 @@ export function EpisodePage() {
         </footer>
       </div>
     </div>
+    </>
   );
 }
