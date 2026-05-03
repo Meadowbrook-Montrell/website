@@ -1,6 +1,41 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
+// ─── Admin Auth (server-side password validation) ───
+// Password is checked server-side only — not exposed in client bundle
+const ADMIN_PASSWORD = "3GMG817!";
+
+export const verifyAdminPassword = mutation({
+  args: { password: v.string() },
+  handler: async (ctx, args) => {
+    if (args.password !== ADMIN_PASSWORD) {
+      return { success: false, token: null };
+    }
+    // Generate a random session token
+    const token = Math.random().toString(36).slice(2) + Date.now().toString(36) + Math.random().toString(36).slice(2);
+    const now = new Date();
+    const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+    await ctx.db.insert("adminSessions", {
+      token,
+      createdAt: now.toISOString(),
+      expiresAt: expires.toISOString(),
+    });
+    return { success: true, token };
+  },
+});
+
+export const validateAdminSession = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("adminSessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+    if (!session) return false;
+    return new Date(session.expiresAt) > new Date();
+  },
+});
+
 // ─── Subscribers ───
 
 export const listSubscribers = query({
