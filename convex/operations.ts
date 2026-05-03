@@ -509,6 +509,16 @@ export const likeCommunityPost = mutation({
   },
 });
 
+export const replyCommunityPost = mutation({
+  args: { id: v.id("communityPosts"), adminReply: v.string() },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      adminReply: args.adminReply,
+      adminReplyAt: new Date().toISOString(),
+    });
+  },
+});
+
 export const deleteCommunityPost = mutation({
   args: { id: v.id("communityPosts") },
   handler: async (ctx, args) => { await ctx.db.delete(args.id); },
