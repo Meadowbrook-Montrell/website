@@ -1,35 +1,60 @@
 /**
  * Password gate for admin pages.
- * Stores auth in sessionStorage so user stays logged in per browser session.
+ * Password is validated SERVER-SIDE via Convex mutation.
+ * Session token stored in sessionStorage for persistence.
  */
 import { useState } from "react";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
-const ADMIN_PASSWORD = "3GMG817!";
-const STORAGE_KEY = "3gmg_admin_auth";
+const STORAGE_KEY = "3gmg_admin_token";
 
 export function AdminGate({ children }: { children: React.ReactNode }) {
-  const [authenticated, setAuthenticated] = useState(() => {
-    return sessionStorage.getItem(STORAGE_KEY) === "true";
-  });
+  const [token] = useState(() => sessionStorage.getItem(STORAGE_KEY) || "");
+  const sessionValid = useQuery(
+    api.admin.validateAdminSession,
+    token ? { token } : "skip"
+  );
+  const verifyPassword = useMutation(api.admin.verifyAdminPassword);
+
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem(STORAGE_KEY, "true");
-      setAuthenticated(true);
-      setError(false);
-    } else {
+    setLoading(true);
+    try {
+      const result = await verifyPassword({ password });
+      if (result.success && result.token) {
+        sessionStorage.setItem(STORAGE_KEY, result.token);
+        window.location.reload(); // reload to pick up new token
+      } else {
+        setError(true);
+        setPassword("");
+      }
+    } catch {
       setError(true);
       setPassword("");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (authenticated) {
+  // If we have a valid session, show admin content
+  if (token && sessionValid === true) {
     return <>{children}</>;
+  }
+
+  // Still loading session check
+  if (token && sessionValid === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-[#f0ece4]">
+        <Loader2 className="size-8 text-[#D4A843] animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -61,6 +86,7 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
                 onChange={(e) => { setPassword(e.target.value); setError(false); }}
                 placeholder="Password"
                 autoFocus
+                disabled={loading}
                 className={`w-full bg-[#0a0a0a] border rounded-sm px-4 py-3 pr-10 text-[#f0ece4] placeholder-[#555] focus:outline-none transition-colors ${
                   error ? "border-red-500 focus:border-red-500" : "border-[#333] focus:border-[#D4A843]"
                 }`}
@@ -80,9 +106,10 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all"
+              disabled={loading}
+              className="w-full py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all disabled:opacity-50"
             >
-              Enter
+              {loading ? "Verifying..." : "Enter"}
             </button>
           </form>
 
