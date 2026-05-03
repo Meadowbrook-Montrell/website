@@ -30,6 +30,10 @@ import {
   Palette,
   Bell,
   Send,
+  Crown,
+  ClipboardList,
+  UserCog,
+  CalendarDays,
 } from "lucide-react";
 import {
   OpsOverviewTab,
@@ -55,6 +59,13 @@ import {
   BrandKitTab,
   NotificationsTab,
 } from "./CommandCenterTabs";
+import {
+  InvoiceTab,
+  WaiversTab,
+  ContentScheduleTab,
+  TeamTab,
+  MembershipTab,
+} from "./BusinessOpsTabs";
 
 /* ─── Stat Card ─── */
 function StatCard({ icon: Icon, label, value, color = "gold", trend }: {
@@ -117,7 +128,7 @@ export function AdminPage() {
   const [newSessionTitle, setNewSessionTitle] = useState("");
   const [newSessionDate, setNewSessionDate] = useState("");
   const [newSessionPlatform, setNewSessionPlatform] = useState("youtube");
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "live" | "ticker" | "guests" | "subscribers" | "ops-overview" | "calendar" | "guest-crm" | "bookings" | "sponsors" | "revenue" | "newsletters" | "shownotes" | "links" | "community" | "metrics" | "financial" | "merch" | "email-campaigns" | "documents" | "tasks" | "podcast-rss" | "analytics" | "brand-kit" | "notifications">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "live" | "ticker" | "guests" | "subscribers" | "ops-overview" | "calendar" | "guest-crm" | "bookings" | "sponsors" | "revenue" | "newsletters" | "shownotes" | "links" | "community" | "metrics" | "financial" | "merch" | "email-campaigns" | "documents" | "tasks" | "podcast-rss" | "analytics" | "brand-kit" | "notifications" | "invoices" | "waivers" | "content-schedule" | "team" | "membership">("overview");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
@@ -171,6 +182,12 @@ export function AdminPage() {
             { id: "community" as const, label: "Community", icon: MessageSquare },
             { id: "metrics" as const, label: "Social Metrics", icon: TrendingUp },
             { id: "divider2" as const, label: "", icon: BarChart3 },
+            { id: "invoices" as const, label: "Invoices", icon: FileText },
+            { id: "waivers" as const, label: "Waivers", icon: ClipboardList },
+            { id: "content-schedule" as const, label: "Content Calendar", icon: CalendarDays },
+            { id: "team" as const, label: "Crew", icon: UserCog },
+            { id: "membership" as const, label: "Memberships", icon: Crown },
+            { id: "divider3" as const, label: "", icon: BarChart3 },
             { id: "financial" as const, label: "Finances", icon: DollarSign },
             { id: "merch" as const, label: "Merch Store", icon: ShoppingBag },
             { id: "email-campaigns" as const, label: "Email Campaigns", icon: Send },
@@ -181,7 +198,7 @@ export function AdminPage() {
             { id: "brand-kit" as const, label: "Brand Kit", icon: Palette },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
           ].map((tab) => {
-            if (tab.id === "divider" || tab.id === "divider2") {
+            if (tab.id === "divider" || tab.id === "divider2" || tab.id === "divider3") {
               return <div key={tab.id} className="w-full h-px bg-[#D4A843]/10 my-2" />;
             }
             return (
@@ -605,6 +622,13 @@ export function AdminPage() {
         {activeTab === "links" && <LinksTab />}
         {activeTab === "community" && <CommunityTab />}
         {activeTab === "metrics" && <MetricsTab />}
+
+        {/* ─── Business Operations v2 Tabs ─── */}
+        {activeTab === "invoices" && <InvoiceTab />}
+        {activeTab === "waivers" && <WaiversTab />}
+        {activeTab === "content-schedule" && <ContentScheduleTab />}
+        {activeTab === "team" && <TeamTab />}
+        {activeTab === "membership" && <MembershipTab />}
 
         {/* ─── Command Center v2 Tabs ─── */}
         {activeTab === "financial" && <FinancialTab />}

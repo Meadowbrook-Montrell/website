@@ -391,6 +391,215 @@ const schema = defineSchema({
   })
     .index("by_type", ["type"]),
 
+  // ═══════════════════════════════════════════════════════════
+  //   PHASE 3 — Business Ops + Consumer Features (12 new)
+  // ═══════════════════════════════════════════════════════════
+
+  // ─── 21. Invoices (branded, PDF-ready) ────────────────────
+  invoices: defineTable({
+    invoiceNumber: v.string(),
+    clientName: v.string(),
+    clientEmail: v.optional(v.string()),
+    clientCompany: v.optional(v.string()),
+    items: v.array(v.object({
+      description: v.string(),
+      quantity: v.number(),
+      rate: v.number(),
+      amount: v.number(),
+    })),
+    subtotal: v.number(),
+    tax: v.optional(v.number()),
+    total: v.number(),
+    status: v.string(), // "draft" | "sent" | "paid" | "overdue" | "cancelled"
+    issueDate: v.string(),
+    dueDate: v.string(),
+    paidDate: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    sponsorId: v.optional(v.id("sponsors")),
+    guestId: v.optional(v.id("guestCRM")),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_client", ["clientName"]),
+
+  // ─── 22. Media Releases / Waivers ────────────────────────
+  waivers: defineTable({
+    type: v.string(), // "media-release" | "interview-consent" | "filming-permit" | "liability-waiver" | "nda"
+    guestName: v.string(),
+    guestEmail: v.optional(v.string()),
+    guestPhone: v.optional(v.string()),
+    description: v.optional(v.string()),
+    episodeTitle: v.optional(v.string()),
+    locationFilmed: v.optional(v.string()),
+    dateFilmed: v.optional(v.string()),
+    status: v.string(), // "pending" | "signed" | "expired" | "revoked"
+    signedAt: v.optional(v.string()),
+    signatureData: v.optional(v.string()), // base64 signature image
+    ipAddress: v.optional(v.string()),
+    guestCRMId: v.optional(v.id("guestCRM")),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_guest", ["guestName"]),
+
+  // ─── 23. Content Schedule (multi-platform calendar) ──────
+  contentSchedule: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    platform: v.string(), // "youtube" | "tiktok" | "instagram" | "facebook" | "twitter" | "website" | "all"
+    contentType: v.string(), // "video" | "short" | "reel" | "story" | "post" | "live" | "blog" | "podcast"
+    status: v.string(), // "idea" | "filming" | "editing" | "scheduled" | "posted" | "cancelled"
+    scheduledDate: v.string(),
+    scheduledTime: v.optional(v.string()),
+    publishedUrl: v.optional(v.string()),
+    thumbnailUrl: v.optional(v.string()),
+    assignee: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    linkedContentId: v.optional(v.id("content")),
+    createdAt: v.string(),
+  })
+    .index("by_date", ["scheduledDate"])
+    .index("by_platform", ["platform"])
+    .index("by_status", ["status"]),
+
+  // ─── 24. Team / Crew Members ──────────────────────────────
+  teamMembers: defineTable({
+    name: v.string(),
+    role: v.string(), // "editor" | "cameraman" | "producer" | "social-manager" | "designer" | "writer" | "other"
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    rate: v.optional(v.number()), // per hour or per project
+    rateType: v.optional(v.string()), // "hourly" | "per-project" | "salary"
+    isActive: v.boolean(),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_role", ["role"])
+    .index("by_active", ["isActive"]),
+
+  // ─── 25. Time Entries (crew hours) ────────────────────────
+  timeEntries: defineTable({
+    teamMemberId: v.id("teamMembers"),
+    date: v.string(),
+    hours: v.number(),
+    description: v.string(),
+    project: v.optional(v.string()),
+    status: v.string(), // "logged" | "approved" | "paid"
+    amount: v.optional(v.number()),
+    createdAt: v.string(),
+  })
+    .index("by_member", ["teamMemberId"])
+    .index("by_date", ["date"])
+    .index("by_status", ["status"]),
+
+  // ─── 26. Membership Tiers ─────────────────────────────────
+  membershipTiers: defineTable({
+    name: v.string(),
+    price: v.number(), // monthly
+    description: v.string(),
+    perks: v.array(v.string()),
+    color: v.optional(v.string()),
+    isActive: v.boolean(),
+    order: v.number(),
+    createdAt: v.string(),
+  }).index("by_active", ["isActive"]),
+
+  // ─── 27. Members (subscriptions) ──────────────────────────
+  members: defineTable({
+    name: v.string(),
+    email: v.string(),
+    tierId: v.id("membershipTiers"),
+    status: v.string(), // "active" | "paused" | "cancelled" | "expired"
+    startDate: v.string(),
+    nextBillingDate: v.optional(v.string()),
+    totalPaid: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_tier", ["tierId"])
+    .index("by_status", ["status"])
+    .index("by_email", ["email"]),
+
+  // ─── 28. Blog Posts ───────────────────────────────────────
+  blogPosts: defineTable({
+    title: v.string(),
+    slug: v.string(),
+    excerpt: v.optional(v.string()),
+    body: v.string(), // markdown
+    coverImageUrl: v.optional(v.string()),
+    category: v.string(), // "street-story" | "opinion" | "behind-the-scenes" | "news" | "interview-recap"
+    tags: v.optional(v.array(v.string())),
+    isPublished: v.boolean(),
+    publishedAt: v.optional(v.string()),
+    views: v.optional(v.number()),
+    authorName: v.optional(v.string()),
+    relatedEpisodeId: v.optional(v.id("content")),
+    createdAt: v.string(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_published", ["isPublished"])
+    .index("by_category", ["category"]),
+
+  // ─── 29. Public Events (live shows, pop-ups, etc) ────────
+  publicEvents: defineTable({
+    title: v.string(),
+    description: v.string(),
+    eventType: v.string(), // "live-show" | "pop-up" | "meet-greet" | "recording" | "panel" | "other"
+    date: v.string(),
+    time: v.optional(v.string()),
+    endTime: v.optional(v.string()),
+    location: v.optional(v.string()),
+    address: v.optional(v.string()),
+    isVirtual: v.optional(v.boolean()),
+    streamUrl: v.optional(v.string()),
+    ticketUrl: v.optional(v.string()),
+    ticketPrice: v.optional(v.number()),
+    isFree: v.optional(v.boolean()),
+    imageUrl: v.optional(v.string()),
+    maxAttendees: v.optional(v.number()),
+    rsvpCount: v.optional(v.number()),
+    isPublished: v.boolean(),
+    createdAt: v.string(),
+  })
+    .index("by_date", ["date"])
+    .index("by_published", ["isPublished"]),
+
+  // ─── 30. Event RSVPs ──────────────────────────────────────
+  eventRsvps: defineTable({
+    eventId: v.id("publicEvents"),
+    name: v.string(),
+    email: v.string(),
+    phone: v.optional(v.string()),
+    attendees: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_event", ["eventId"])
+    .index("by_email", ["email"]),
+
+  // ─── 31. Fan Submissions (questions, tips, shoutouts) ────
+  fanSubmissions: defineTable({
+    name: v.string(),
+    email: v.optional(v.string()),
+    type: v.string(), // "question" | "story-tip" | "shoutout" | "topic-request" | "feedback"
+    message: v.string(),
+    isApproved: v.boolean(),
+    isFeatured: v.optional(v.boolean()),
+    adminResponse: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_type", ["type"])
+    .index("by_approved", ["isApproved"])
+    .index("by_featured", ["isFeatured"]),
+
+  // ─── 32. Site Settings (theme, preferences) ───────────────
+  siteSettings: defineTable({
+    key: v.string(),
+    value: v.string(),
+    updatedAt: v.string(),
+  }).index("by_key", ["key"]),
+
   // ─── 20. Notifications ────────────────────────────────────
   notifications: defineTable({
     type: v.string(), // "booking" | "subscriber" | "community" | "sponsor" | "order" | "system"

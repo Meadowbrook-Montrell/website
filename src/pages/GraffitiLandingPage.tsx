@@ -21,6 +21,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Quote,
+  Search,
+  MessageSquare,
+  Heart,
+  TrendingUp,
+  Flame,
 } from "lucide-react";
 
 /* ─── tiny TikTok icon (lucide doesn't have one) ─── */
@@ -110,6 +115,8 @@ const NAV_LINKS = [
   { label: "Podcast", href: "#podcast" },
   { label: "Library", href: "/library" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
+  { label: "Events", href: "/events" },
   { label: "Community", href: "/community" },
   { label: "Book", href: "/booking" },
   { label: "Merch", href: "#merch" },
@@ -395,6 +402,67 @@ function EmailSignup() {
 }
 
 /* ══════════════════════════════════════════════════════════
+   FAN SUBMISSION FORM
+   ══════════════════════════════════════════════════════════ */
+function FanSubmissionForm() {
+  const [form, setForm] = useState({ name: "", email: "", type: "shoutout", message: "" });
+  const [submitted, setSubmitted] = useState(false);
+  const submitFan = useMutation(api.consumer.submitFanMessage);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.message) return;
+    try {
+      await submitFan({
+        name: form.name,
+        email: form.email || undefined,
+        type: form.type,
+        message: form.message,
+      });
+    } catch (err) {
+      console.error("Failed to submit:", err);
+    }
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 5000);
+    setForm({ name: "", email: "", type: "shoutout", message: "" });
+  };
+
+  if (submitted) {
+    return (
+      <div className="text-center py-8 px-6 rounded-sm border border-green-500/30 bg-green-500/10">
+        <Heart className="size-8 text-green-400 mx-auto mb-3" />
+        <p className="text-green-400 font-bold text-sm tracking-wider mb-1">MESSAGE SENT! 🔥</p>
+        <p className="text-[#888078] text-xs">If it's real, it gets featured. Stay tuned.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
+      <div className="grid grid-cols-2 gap-3">
+        <input placeholder="Your name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+          className="bg-[#141414] border border-[#D4A843]/20 rounded-sm px-4 py-3 text-sm text-[#f0ece4] placeholder:text-[#888078]/60 focus:border-[#D4A843]/50 focus:outline-none" required />
+        <input placeholder="Email (optional)" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+          className="bg-[#141414] border border-[#D4A843]/20 rounded-sm px-4 py-3 text-sm text-[#f0ece4] placeholder:text-[#888078]/60 focus:border-[#D4A843]/50 focus:outline-none" />
+      </div>
+      <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
+        className="w-full bg-[#141414] border border-[#D4A843]/20 rounded-sm px-4 py-3 text-sm text-[#f0ece4] focus:border-[#D4A843]/50 focus:outline-none">
+        <option value="shoutout">🔥 Shoutout</option>
+        <option value="question">❓ Question for Montrell</option>
+        <option value="story-tip">📰 Story Tip</option>
+        <option value="topic-request">🎙️ Topic Request</option>
+        <option value="feedback">💬 Feedback</option>
+      </select>
+      <textarea placeholder="Drop your message..." rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+        className="w-full bg-[#141414] border border-[#D4A843]/20 rounded-sm px-4 py-3 text-sm text-[#f0ece4] placeholder:text-[#888078]/60 focus:border-[#D4A843]/50 focus:outline-none resize-none" required />
+      <button type="submit" className="w-full py-3.5 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,168,67,0.3)]">
+        <MessageSquare className="size-4 inline mr-2" /> SUBMIT
+      </button>
+    </form>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
    MAIN COMPONENT
    ══════════════════════════════════════════════════════════ */
 export function GraffitiLandingPage() {
@@ -507,6 +575,10 @@ export function GraffitiLandingPage() {
 
             </div>
             <div className="hidden md:flex items-center gap-3">
+              <a href="/search" className="text-[#888078] hover:text-[#D4A843] transition-colors duration-300" title="Search">
+                <Search className="size-5" />
+              </a>
+              <div className="w-px h-4 bg-[#D4A843]/20" />
               {SOCIALS.map((s) => (
                 <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#888078] hover:text-[#D4A843] transition-colors duration-300" title={s.name}>
                   <s.icon className="size-5" />
@@ -897,6 +969,74 @@ export function GraffitiLandingPage() {
               <p className="text-[#c8c0b0] text-sm tracking-wider">Full merch store launching soon — stay tuned</p>
             </div>
           </AnimatedSection>
+        </div>
+      </section>
+
+      <div className="street-divider mx-auto max-w-4xl" />
+
+      {/* ═══════════════════════════════════════════════════
+          TRENDING NOW SECTION
+          ═══════════════════════════════════════════════════ */}
+      <section className="relative py-24 md:py-32 bg-[#0a0a0a]/85 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-16">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Flame className="size-5 text-orange-400 animate-pulse" />
+              <p className="text-orange-400 text-sm font-medium tracking-[0.3em] uppercase">Hot Right Now</p>
+            </div>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">TRENDING<br /><span className="text-gold-gradient">NOW</span></h2>
+            <p className="text-[#c8c0b0] max-w-2xl mx-auto text-lg leading-relaxed">The latest drops and most popular content from 3GMG.</p>
+          </AnimatedSection>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SOCIAL_FEED_VIDEOS.slice(0, 6).map((video, i) => (
+              <AnimatedSection key={video.id} delay={i * 0.08}>
+                <div className="group relative rounded-sm overflow-hidden glow-border bg-[#141414] hover:border-[#D4A843]/30 transition-all duration-500">
+                  <div className="relative aspect-video overflow-hidden">
+                    <img
+                      src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
+                      alt={video.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/80 via-transparent to-transparent" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <a href={`https://www.youtube.com/shorts/${video.id}`} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#D4A843] flex items-center justify-center shadow-lg shadow-[#D4A843]/30">
+                        <Play className="size-6 text-[#0a0a0a] ml-1" />
+                      </a>
+                    </div>
+                    <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-orange-500/90 rounded text-[9px] font-bold text-white uppercase tracking-wider">
+                      <TrendingUp className="size-3" /> Trending
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold text-[#f0ece4] line-clamp-2 group-hover:text-[#D4A843] transition-colors">{video.title}</h3>
+                    <p className="text-[10px] text-[#888078] mt-2 tracking-wider uppercase">{video.platform}</p>
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+          <AnimatedSection delay={0.5} className="text-center mt-10">
+            <a href="/library" className="inline-flex items-center gap-2 px-8 py-3 bg-[#D4A843] text-[#0a0a0a] font-bold text-sm tracking-widest uppercase rounded-sm hover:bg-[#E8C767] transition-all">
+              View Full Library →
+            </a>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <div className="street-divider mx-auto max-w-4xl" />
+
+      {/* ═══════════════════════════════════════════════════
+          FAN INTERACTION WALL
+          ═══════════════════════════════════════════════════ */}
+      <section className="relative py-24 md:py-32 bg-[#0a0a0a]/80 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-16">
+            <p className="text-[#D4A843] text-sm font-medium tracking-[0.3em] uppercase mb-4">From The People</p>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-[#f0ece4] tracking-wider mb-4">FAN<br /><span className="text-gold-gradient">WALL</span></h2>
+            <p className="text-[#c8c0b0] max-w-xl mx-auto text-lg leading-relaxed">Got a question, story tip, or shoutout? Drop it here — the best ones get featured.</p>
+          </AnimatedSection>
+          <FanSubmissionForm />
         </div>
       </section>
 

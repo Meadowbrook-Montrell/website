@@ -11,6 +11,9 @@ import { BookingPage } from "./pages/BookingPage";
 import { MediaKitPage } from "./pages/MediaKitPage";
 import { LinkBioPage } from "./pages/LinkBioPage";
 import { CommunityPage } from "./pages/CommunityPage";
+import { BlogPage } from "./pages/BlogPage";
+import { EventsPage } from "./pages/EventsPage";
+import { SearchPage } from "./pages/SearchPage";
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/" element={<GraffitiLandingPage />} />
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/admin" element={<AdminGate><AdminPage /></AdminGate>} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/media-kit" element={<MediaKitPage />} />
