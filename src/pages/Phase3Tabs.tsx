@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Component, type ReactNode } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import {
@@ -7,6 +7,27 @@ import {
   ChevronDown, Filter, TrendingUp, TrendingDown, Award,
   MessageSquare, Shield, Sparkles, Bell, ExternalLink,
 } from "lucide-react";
+
+/* ─── Tab Error Boundary: prevents one broken tab from crashing the admin ─── */
+export class TabErrorBoundary extends Component<{ name: string; children: ReactNode }, { hasError: boolean; error?: Error }> {
+  state = { hasError: false, error: undefined as Error | undefined };
+  static getDerivedStateFromError(error: Error) { return { hasError: true, error }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="text-center py-16">
+          <AlertTriangle className="size-12 text-red-400 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-[#f0ece4] mb-2">{this.props.name} hit an error</h3>
+          <p className="text-sm text-[#888] max-w-md mx-auto mb-4">{this.state.error?.message || "Something went wrong loading this tab."}</p>
+          <button onClick={() => this.setState({ hasError: false, error: undefined })} className="bg-[#D4A843] text-[#0a0a0a] font-bold text-sm rounded px-5 py-2.5 hover:bg-[#E8C767] transition-all">
+            Try Again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 /* ─── shared card style ─── */
 const card = "border border-[#D4A843]/15 rounded-lg bg-[#141414]/80";

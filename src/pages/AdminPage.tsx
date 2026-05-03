@@ -34,7 +34,7 @@ import {
 import {
   ExpenseTrackerTab, ContractsTab, AIContentTab, RevenueDashboardTab,
   FollowUpsTab, PipelineTab, AlertsTab, FanQAAdminTab,
-  ExclusiveContentTab, LeaderboardAdminTab,
+  ExclusiveContentTab, LeaderboardAdminTab, TabErrorBoundary as Phase3Safe,
 } from "./Phase3Tabs";
 
 /* ═══════════════════════════════════════════════════════════
@@ -798,16 +798,16 @@ export function AdminPage() {
           {activeTab === "promo-codes" && <PromoCodesTab />}
 
           {/* ─── Phase 3 Tabs ─── */}
-          {activeTab === "expenses" && <ExpenseTrackerTab />}
-          {activeTab === "contracts" && <ContractsTab />}
-          {activeTab === "ai-content" && <AIContentTab />}
-          {activeTab === "revenue-dash" && <RevenueDashboardTab />}
-          {activeTab === "follow-ups" && <FollowUpsTab />}
-          {activeTab === "pipeline" && <PipelineTab />}
-          {activeTab === "alerts" && <AlertsTab />}
-          {activeTab === "fan-qa" && <FanQAAdminTab />}
-          {activeTab === "exclusive" && <ExclusiveContentTab />}
-          {activeTab === "leaderboard" && <LeaderboardAdminTab />}
+          {activeTab === "expenses" && <Phase3Safe name="Expense Tracker"><ExpenseTrackerTab /></Phase3Safe>}
+          {activeTab === "contracts" && <Phase3Safe name="Contracts"><ContractsTab /></Phase3Safe>}
+          {activeTab === "ai-content" && <Phase3Safe name="AI Content"><AIContentTab /></Phase3Safe>}
+          {activeTab === "revenue-dash" && <Phase3Safe name="Revenue Dashboard"><RevenueDashboardTab /></Phase3Safe>}
+          {activeTab === "follow-ups" && <Phase3Safe name="Follow-Ups"><FollowUpsTab /></Phase3Safe>}
+          {activeTab === "pipeline" && <Phase3Safe name="Pipeline"><PipelineTab /></Phase3Safe>}
+          {activeTab === "alerts" && <Phase3Safe name="Breaking Alerts"><AlertsTab /></Phase3Safe>}
+          {activeTab === "fan-qa" && <Phase3Safe name="Fan Q&A"><FanQAAdminTab /></Phase3Safe>}
+          {activeTab === "exclusive" && <Phase3Safe name="Exclusive Content"><ExclusiveContentTab /></Phase3Safe>}
+          {activeTab === "leaderboard" && <Phase3Safe name="Leaderboard"><LeaderboardAdminTab /></Phase3Safe>}
         </div>
       </div>
     </div>

@@ -192,12 +192,12 @@ export const getUnifiedRevenue = query({ args: {}, handler: async (ctx) => {
   const expenses = await ctx.db.query("expenses").collect();
   const orders = await ctx.db.query("merchOrders").collect();
 
-  const totalDonations = donations.reduce((s, d) => s + d.amount, 0);
+  const totalDonations = donations.reduce((s, d) => s + (d.amount || 0), 0);
   const totalSponsors = sponsors.reduce((s, sp) => s + (sp.amount || 0), 0);
-  const totalInvoices = invoices.filter(i => i.status === "paid").reduce((s, i) => s + i.amount, 0);
-  const totalRevenue = revenue.reduce((s, r) => s + r.amount, 0);
-  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
-  const totalMerch = orders.filter(o => o.status === "delivered").reduce((s, o) => s + (o.total || 0), 0);
+  const totalInvoices = invoices.filter(i => i.status === "paid").reduce((s, i) => s + ((i as any).total || (i as any).amount || 0), 0);
+  const totalRevenue = revenue.reduce((s, r) => s + (r.amount || 0), 0);
+  const totalExpenses = expenses.reduce((s, e) => s + (e.amount || 0), 0);
+  const totalMerch = orders.filter(o => o.status === "delivered").reduce((s, o) => s + ((o as any).total || 0), 0);
 
   const grossIncome = totalDonations + totalSponsors + totalInvoices + totalRevenue + totalMerch;
 
