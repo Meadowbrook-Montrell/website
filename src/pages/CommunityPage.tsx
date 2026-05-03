@@ -102,7 +102,7 @@ export function CommunityPage() {
             {submitted ? (
               <div className="text-center py-4">
                 <div className="text-[#D4A843] font-display text-xl tracking-wider mb-2">POSTED! ✓</div>
-                <p className="text-[#888078] text-sm">Your message will appear after review. Stay real.</p>
+                <p className="text-[#888078] text-sm">Your message is now live on the wall. Stay real.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
