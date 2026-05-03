@@ -4,12 +4,13 @@
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Calendar, Clock, Send, Mic, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, Send, Mic, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function BookingPage() {
   const addBooking = useMutation(api.operations.addBooking);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [form, setForm] = useState({
     guestName: "",
     email: "",
@@ -23,17 +24,22 @@ export function BookingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addBooking({
-      guestName: form.guestName,
-      email: form.email,
-      phone: form.phone || undefined,
-      socialHandle: form.socialHandle || undefined,
-      topic: form.topic,
-      preferredDate: form.preferredDate,
-      preferredTime: form.preferredTime || undefined,
-      message: form.message || undefined,
-    });
-    setSubmitted(true);
+    setSubmitError(false);
+    try {
+      await addBooking({
+        guestName: form.guestName,
+        email: form.email,
+        phone: form.phone || undefined,
+        socialHandle: form.socialHandle || undefined,
+        topic: form.topic,
+        preferredDate: form.preferredDate,
+        preferredTime: form.preferredTime || undefined,
+        message: form.message || undefined,
+      });
+      setSubmitted(true);
+    } catch {
+      setSubmitError(true);
+    }
   };
 
   return (
@@ -182,6 +188,13 @@ export function BookingPage() {
                 />
               </div>
             </div>
+
+            {submitError && (
+              <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/30 rounded-sm text-red-400 text-sm">
+                <AlertCircle className="size-4 shrink-0" />
+                Submission failed. Please check your connection and try again.
+              </div>
+            )}
 
             <button
               type="submit"
