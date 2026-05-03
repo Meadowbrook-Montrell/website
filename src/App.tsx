@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -15,6 +15,7 @@ import { BlogPage } from "./pages/BlogPage";
 import { EventsPage } from "./pages/EventsPage";
 import { SearchPage } from "./pages/SearchPage";
 import { EpisodePage } from "./pages/EpisodePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
           <Route path="/media-kit" element={<MediaKitPage />} />
           <Route path="/link" element={<LinkBioPage />} />
           <Route path="/community" element={<CommunityPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </ThemeProvider>
     </ErrorBoundary>
