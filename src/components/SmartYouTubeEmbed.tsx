@@ -1,12 +1,14 @@
 /**
- * SmartYouTubeEmbed — YouTube embed with smart playback control
- * using the official YouTube IFrame Player API.
+ * SmartYouTubeEmbed — YouTube embed with facade pattern for performance.
  *
  * Features:
+ * - FACADE: Shows lightweight thumbnail + play button first (no iframe loaded)
+ * - Only loads YouTube iframe on user click → saves 1-2MB JS per video
  * - Auto-pauses when another video starts playing
  * - Auto-pauses when scrolled out of viewport
  */
 import { useEffect, useRef, useCallback, useState } from "react";
+import { Play } from "lucide-react";
 
 /* ── Global YouTube IFrame API loader ─────────────────────── */
 let ytApiReady = false;
@@ -23,7 +25,6 @@ function loadYouTubeAPI(): Promise<void> {
     if (ytApiLoading) return;
     ytApiLoading = true;
 
-    // The API calls this global when ready
     (window as any).onYouTubeIframeAPIReady = () => {
       ytApiReady = true;
       ytReadyCallbacks.forEach((cb) => cb());
@@ -56,6 +57,7 @@ interface SmartYouTubeEmbedProps {
   title?: string;
   className?: string;
   aspectClass?: string;
+  autoFacade?: boolean; // default true — show thumbnail first, load on click
 }
 
 declare global {
@@ -69,11 +71,13 @@ export function SmartYouTubeEmbed({
   title = "",
   className = "",
   aspectClass = "aspect-video",
+  autoFacade = true,
 }: SmartYouTubeEmbedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerDivRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   const instanceId = useRef(`yt-${videoId}-${++idCounter}`);
+  const [activated, setActivated] = useState(!autoFacade);
   const [isReady, setIsReady] = useState(false);
 
   const pauseVideo = useCallback(() => {
@@ -84,8 +88,9 @@ export function SmartYouTubeEmbed({
     }
   }, []);
 
-  // Initialize YouTube player
+  // Initialize YouTube player only after activation
   useEffect(() => {
+    if (!activated) return;
     const id = instanceId.current;
     let destroyed = false;
 
@@ -99,6 +104,7 @@ export function SmartYouTubeEmbed({
           enablejsapi: 1,
           origin: window.location.origin,
           modestbranding: 1,
+          autoplay: autoFacade ? 1 : 0, // auto-play after facade click
         },
         events: {
           onReady: () => {
@@ -110,7 +116,6 @@ export function SmartYouTubeEmbed({
           },
           onStateChange: (event: any) => {
             if (destroyed) return;
-            // YT.PlayerState.PLAYING === 1
             if (event.data === 1) {
               pauseAllExcept(id);
             }
@@ -129,10 +134,11 @@ export function SmartYouTubeEmbed({
       }
       playerRef.current = null;
     };
-  }, [videoId, pauseVideo]);
+  }, [videoId, pauseVideo, activated, autoFacade]);
 
   // IntersectionObserver — pause when scrolled out of view
   useEffect(() => {
+    if (!activated) return;
     const container = containerRef.current;
     if (!container) return;
 
@@ -147,12 +153,34 @@ export function SmartYouTubeEmbed({
 
     observer.observe(container);
     return () => observer.disconnect();
-  }, [pauseVideo]);
+  }, [pauseVideo, activated]);
 
   return (
-    <div ref={containerRef} className={`${aspectClass} ${className} relative bg-black`}>
-      {/* Placeholder while loading */}
-      {!isReady && (
+    <div ref={containerRef} className={`${aspectClass} ${className} relative bg-black overflow-hidden`}>
+      {/* Facade: lightweight thumbnail + play button */}
+      {!activated && (
+        <button
+          onClick={() => setActivated(true)}
+          className="absolute inset-0 w-full h-full group cursor-pointer z-10"
+          aria-label={`Play ${title || "video"}`}
+        >
+          <img
+            src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+            alt={title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#D4A843]/90 group-hover:bg-[#D4A843] flex items-center justify-center shadow-[0_0_30px_rgba(212,168,67,0.4)] group-hover:scale-110 transition-all duration-300">
+              <Play className="size-7 sm:size-9 text-[#0a0a0a] ml-1" fill="currentColor" />
+            </div>
+          </div>
+        </button>
+      )}
+
+      {/* Loading spinner (shows briefly after click, before player is ready) */}
+      {activated && !isReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#141414]">
           <img
             src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
@@ -164,8 +192,9 @@ export function SmartYouTubeEmbed({
           </div>
         </div>
       )}
-      {/* YouTube player will be injected here */}
-      <div ref={playerDivRef} className="w-full h-full" />
+
+      {/* YouTube player injected here only after activation */}
+      {activated && <div ref={playerDivRef} className="w-full h-full" />}
     </div>
   );
 }
