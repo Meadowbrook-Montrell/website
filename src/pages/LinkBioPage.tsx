@@ -3,7 +3,7 @@
  */
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { ExternalLink, Youtube, Music, Mic, ShoppingBag, Radio, Play } from "lucide-react";
+import { ExternalLink, Youtube, Music, Mic, ShoppingBag, Radio, Play, ArrowLeft } from "lucide-react";
 import type { Id } from "../../convex/_generated/dataModel";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -51,6 +51,11 @@ export function LinkBioPage() {
       <div className="absolute inset-0 bg-black/85" />
 
       <div className="relative z-10 max-w-md mx-auto px-4 py-12">
+        {/* Back to Home */}
+        <a href="/" className="inline-flex items-center gap-2 text-[#D4A843] hover:text-[#E8C767] text-sm mb-6 transition-colors">
+          <ArrowLeft className="size-4" /> Back to Home
+        </a>
+
         {/* Profile */}
         <div className="text-center mb-8">
           <img
