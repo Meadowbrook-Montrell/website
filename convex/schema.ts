@@ -621,6 +621,157 @@ const schema = defineSchema({
   })
     .index("by_read", ["isRead"])
     .index("by_type", ["type"]),
+
+  // ═══════════════════════════════════════════════════════════
+  //   POWER-UP FEATURES — 10 New Modules
+  // ═══════════════════════════════════════════════════════════
+
+  // ─── 21. Media Library / Asset Manager ────────────────────
+  mediaAssets: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    fileUrl: v.string(),
+    thumbnailUrl: v.optional(v.string()),
+    fileType: v.string(), // "image" | "video" | "audio" | "document"
+    fileSize: v.optional(v.number()),
+    tags: v.optional(v.string()), // comma-separated
+    project: v.optional(v.string()), // episode name, event, etc.
+    isFavorite: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_type", ["fileType"])
+    .index("by_project", ["project"]),
+
+  // ─── 22. Tip Jar / Donations ──────────────────────────────
+  donations: defineTable({
+    donorName: v.string(),
+    donorEmail: v.optional(v.string()),
+    amount: v.number(),
+    platform: v.string(), // "cashapp" | "paypal" | "venmo" | "stripe" | "other"
+    message: v.optional(v.string()),
+    isAnonymous: v.optional(v.boolean()),
+    isShoutout: v.optional(v.boolean()), // show on community wall
+    createdAt: v.string(),
+  })
+    .index("by_platform", ["platform"]),
+
+  // ─── 23. Live Stream Command Center ───────────────────────
+  liveStreams: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    scheduledAt: v.string(),
+    platforms: v.string(), // comma-separated: "youtube,facebook,tiktok"
+    status: v.string(), // "scheduled" | "live" | "ended" | "cancelled"
+    thumbnailUrl: v.optional(v.string()),
+    streamUrl: v.optional(v.string()),
+    chatModeration: v.optional(v.string()), // "strict" | "moderate" | "open"
+    checklist: v.optional(v.string()), // JSON array of {item, done}
+    peakViewers: v.optional(v.number()),
+    totalViewers: v.optional(v.number()),
+    duration: v.optional(v.number()), // minutes
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 24. Clip Generator Queue ─────────────────────────────
+  clipQueue: defineTable({
+    sourceTitle: v.string(),
+    sourceUrl: v.optional(v.string()),
+    startTime: v.string(), // "01:23:45"
+    endTime: v.string(),
+    clipTitle: v.string(),
+    description: v.optional(v.string()),
+    status: v.string(), // "queued" | "editing" | "exported" | "posted"
+    platforms: v.optional(v.string()), // comma-separated platforms posted to
+    exportUrl: v.optional(v.string()),
+    priority: v.optional(v.string()), // "high" | "medium" | "low"
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 25. Audience Analytics ───────────────────────────────
+  audienceSnapshots: defineTable({
+    date: v.string(),
+    totalVisitors: v.optional(v.number()),
+    uniqueVisitors: v.optional(v.number()),
+    topPage: v.optional(v.string()),
+    topReferrer: v.optional(v.string()),
+    subscriberCount: v.optional(v.number()),
+    communityPosts: v.optional(v.number()),
+    donationTotal: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_date", ["date"]),
+
+  // ─── 26. Automated Workflows ──────────────────────────────
+  workflows: defineTable({
+    name: v.string(),
+    trigger: v.string(), // "new_subscriber" | "new_community_post" | "new_booking" | "new_donation" | "scheduled"
+    action: v.string(), // "send_email" | "slack_notify" | "auto_approve" | "send_waiver" | "add_notification"
+    config: v.optional(v.string()), // JSON config for the action
+    isActive: v.boolean(),
+    lastTriggered: v.optional(v.string()),
+    triggerCount: v.optional(v.number()),
+    createdAt: v.string(),
+  })
+    .index("by_trigger", ["trigger"])
+    .index("by_active", ["isActive"]),
+
+  // ─── 27. Contacts / Source Database ───────────────────────
+  contacts: defineTable({
+    name: v.string(),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    role: v.string(), // "source" | "collaborator" | "videographer" | "sponsor" | "venue" | "media" | "other"
+    organization: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    lastInteraction: v.optional(v.string()),
+    followUpDate: v.optional(v.string()),
+    isFavorite: v.optional(v.boolean()),
+    tags: v.optional(v.string()), // comma-separated
+    createdAt: v.string(),
+  })
+    .index("by_role", ["role"]),
+
+  // ─── 28. Story / Assignment Tracker ───────────────────────
+  stories: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    status: v.string(), // "lead" | "researching" | "filming" | "editing" | "published" | "killed"
+    priority: v.string(), // "urgent" | "high" | "medium" | "low"
+    source: v.optional(v.string()), // who tipped it
+    location: v.optional(v.string()),
+    assignedTo: v.optional(v.string()),
+    dueDate: v.optional(v.string()),
+    publishUrl: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    tags: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_priority", ["priority"]),
+
+  // ─── 29b. Merch Fulfillment (extends existing merchOrders + merchProducts) ──
+
+  // ─── 30. Affiliate & Promo Code Manager ───────────────────
+  promoCodes: defineTable({
+    code: v.string(),
+    type: v.string(), // "affiliate" | "discount" | "referral"
+    discountPercent: v.optional(v.number()),
+    discountAmount: v.optional(v.number()),
+    partner: v.optional(v.string()), // sponsor/affiliate name
+    commissionPercent: v.optional(v.number()),
+    totalUses: v.optional(v.number()),
+    totalRevenue: v.optional(v.number()),
+    totalCommission: v.optional(v.number()),
+    isActive: v.boolean(),
+    expiresAt: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_code", ["code"])
+    .index("by_active", ["isActive"]),
 });
 
 export default schema;

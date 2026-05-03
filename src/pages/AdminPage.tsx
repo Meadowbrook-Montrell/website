@@ -34,6 +34,13 @@ import {
   ClipboardList,
   UserCog,
   CalendarDays,
+  Image,
+  Heart,
+  Scissors,
+  Zap,
+  BookOpen,
+  Package,
+  Tag,
 } from "lucide-react";
 import {
   OpsOverviewTab,
@@ -66,6 +73,18 @@ import {
   TeamTab,
   MembershipTab,
 } from "./BusinessOpsTabs";
+import {
+  MediaLibraryTab,
+  DonationsTab,
+  LiveStreamTab,
+  ClipQueueTab,
+  AudienceAnalyticsTab,
+  WorkflowsTab,
+  ContactsTab,
+  StoryTrackerTab,
+  MerchFulfillmentTab,
+  PromoCodesTab,
+} from "./PowerUpTabs";
 
 /* ─── Stat Card ─── */
 function StatCard({ icon: Icon, label, value, color = "gold", trend }: {
@@ -128,7 +147,7 @@ export function AdminPage() {
   const [newSessionTitle, setNewSessionTitle] = useState("");
   const [newSessionDate, setNewSessionDate] = useState("");
   const [newSessionPlatform, setNewSessionPlatform] = useState("youtube");
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "live" | "ticker" | "guests" | "subscribers" | "ops-overview" | "calendar" | "guest-crm" | "bookings" | "sponsors" | "revenue" | "newsletters" | "shownotes" | "links" | "community" | "metrics" | "financial" | "merch" | "email-campaigns" | "documents" | "tasks" | "podcast-rss" | "analytics" | "brand-kit" | "notifications" | "invoices" | "waivers" | "content-schedule" | "team" | "membership">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "live" | "ticker" | "guests" | "subscribers" | "ops-overview" | "calendar" | "guest-crm" | "bookings" | "sponsors" | "revenue" | "newsletters" | "shownotes" | "links" | "community" | "metrics" | "financial" | "merch" | "email-campaigns" | "documents" | "tasks" | "podcast-rss" | "analytics" | "brand-kit" | "notifications" | "invoices" | "waivers" | "content-schedule" | "team" | "membership" | "media-library" | "donations" | "live-streams" | "clip-queue" | "audience-analytics" | "workflows" | "contacts" | "story-tracker" | "merch-fulfillment" | "promo-codes">("overview");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
@@ -197,8 +216,19 @@ export function AdminPage() {
             { id: "analytics" as const, label: "Analytics", icon: BarChart3 },
             { id: "brand-kit" as const, label: "Brand Kit", icon: Palette },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
+            { id: "divider4" as const, label: "", icon: BarChart3 },
+            { id: "media-library" as const, label: "Media Library", icon: Image },
+            { id: "donations" as const, label: "Tip Jar", icon: Heart },
+            { id: "live-streams" as const, label: "Stream HQ", icon: Radio },
+            { id: "clip-queue" as const, label: "Clip Queue", icon: Scissors },
+            { id: "audience-analytics" as const, label: "Audience", icon: Eye },
+            { id: "workflows" as const, label: "Workflows", icon: Zap },
+            { id: "contacts" as const, label: "Contacts", icon: Users },
+            { id: "story-tracker" as const, label: "Stories", icon: BookOpen },
+            { id: "merch-fulfillment" as const, label: "Fulfillment", icon: Package },
+            { id: "promo-codes" as const, label: "Promo Codes", icon: Tag },
           ].map((tab) => {
-            if (tab.id === "divider" || tab.id === "divider2" || tab.id === "divider3") {
+            if (tab.id === "divider" || tab.id === "divider2" || tab.id === "divider3" || tab.id === "divider4") {
               return <div key={tab.id} className="w-full h-px bg-[#D4A843]/10 my-2" />;
             }
             return (
@@ -640,6 +670,18 @@ export function AdminPage() {
         {activeTab === "analytics" && <AnalyticsTab />}
         {activeTab === "brand-kit" && <BrandKitTab />}
         {activeTab === "notifications" && <NotificationsTab />}
+
+        {/* ─── Power-Up Feature Tabs ─── */}
+        {activeTab === "media-library" && <MediaLibraryTab />}
+        {activeTab === "donations" && <DonationsTab />}
+        {activeTab === "live-streams" && <LiveStreamTab />}
+        {activeTab === "clip-queue" && <ClipQueueTab />}
+        {activeTab === "audience-analytics" && <AudienceAnalyticsTab />}
+        {activeTab === "workflows" && <WorkflowsTab />}
+        {activeTab === "contacts" && <ContactsTab />}
+        {activeTab === "story-tracker" && <StoryTrackerTab />}
+        {activeTab === "merch-fulfillment" && <MerchFulfillmentTab />}
+        {activeTab === "promo-codes" && <PromoCodesTab />}
       </div>
     </div>
   );
