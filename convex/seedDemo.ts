@@ -21,7 +21,11 @@ export const clearAll = mutation({
       "fanSubmissions","notifications",
       "audioFiles","aiArtwork","lyrics","sampleClearances","stemsVault","masteringQC",
       "distributions","royaltyEntries","syncLicenses","playlistPitches","musicVideos",
-      "rolloutSteps","pressKits","producerCollabs","arPipeline","aiLyricsLogs","aiMasteringLogs"
+      "rolloutSteps","pressKits","producerCollabs","arPipeline","aiLyricsLogs","aiMasteringLogs",
+      "featureVerses","vocalSessions","setlists","tourShows","musicRights","moodBoards",
+      "vocalHealth","soundKits","beatLeases","gearInventory","productionTemplates",
+      "soundDesigns","producerAnalytics","feedbackReviews","contractMemos","referenceTracks",
+      "chordProgressions","dawProjects","revenueGoals","collabCalendar"
     ] as const;
     const counts: Record<string, number> = {};
     for (const table of tables) {
@@ -722,6 +726,123 @@ export const seedAll = mutation({
     // 74. AI Mastering Logs
     await ins("aiMasteringLogs", { trackTitle: "Block Report", artist: "Montrell", inputFormat: "wav", lufsTarget: -14, status: "complete", suggestedEQ: "Low shelf +2dB @ 60Hz for sub presence, Dip -1.5dB @ 350Hz to reduce mud, High shelf +1dB @ 10kHz for air", suggestedCompression: "Ratio 4:1, Attack 5ms, Release 80ms, Threshold -16dB, Soft knee", suggestedLimiter: "Ceiling -1.0dB True Peak, Release 40ms, Lookahead 5ms", loudnessAnalysis: "Integrated: -14.2 LUFS, Short-term peak: -10.8 LUFS, LRA: 7.2 LU, True Peak: -0.9 dBTP", referenceTrack: "Metro Boomin - Creepin'" });
     await ins("aiMasteringLogs", { trackTitle: "Golden Hour", artist: "Montrell", inputFormat: "flac", lufsTarget: -13, status: "complete", suggestedEQ: "Boost +1dB @ 3kHz for vocal presence, Cut -2dB @ 200Hz, Shelf +0.5dB @ 12kHz", suggestedCompression: "Ratio 2.5:1, Attack 15ms, Release 120ms, Threshold -20dB", suggestedLimiter: "Ceiling -0.5dB True Peak, Release 60ms", loudnessAnalysis: "Integrated: -13.1 LUFS, Short-term peak: -9.5 LUFS, LRA: 9.1 LU, True Peak: -0.4 dBTP" });
+
+    // ────────────────────────────────────────────────
+    // 75–94. MUSIC PRODUCTION PHASE 3 (20 tables)
+    // ────────────────────────────────────────────────
+
+    // 75. Feature Verses
+    await ins("featureVerses", { trackTitle: "Block Report Remix", artist: "Montrell", featureArtist: "Lil Durk", direction: "sent", status: "requested", fee: 10000, deadline: "2026-06-01", contactEmail: "mgmt@lildurk.com", notes: "Reached out through mutual contact. Waiting on response." });
+    await ins("featureVerses", { trackTitle: "Golden Hour Deluxe", artist: "Montrell", featureArtist: "SZA", direction: "sent", status: "accepted", fee: 15000, deadline: "2026-05-20", notes: "SZA's team confirmed. Sending stems this week." });
+    await ins("featureVerses", { trackTitle: "Street Prophets EP", artist: "Rico Blaze", featureArtist: "Montrell", direction: "received", status: "recording", notes: "Montrell laying down 16 bars for closing track." });
+    await ins("featureVerses", { trackTitle: "Summer Anthem", artist: "Montrell", featureArtist: "Roddy Ricch", direction: "sent", status: "declined", notes: "Schedule conflict. Will revisit for next project." });
+
+    // 76. Vocal Sessions
+    await ins("vocalSessions", { trackTitle: "Block Report", artist: "Montrell", sessionDate: "2026-04-15", engineer: "Alex Tumay", studio: "3rd Gate Studio A", takesRecorded: 12, bestTake: "Take 7", vocalChain: "Neumann U87 → Neve 1073 → LA-2A → Pro Tools", micUsed: "Neumann U87", preamp: "Neve 1073", compressor: "LA-2A", rating: 5, status: "completed", notes: "Incredible session. Nailed verse 1 on take 7." });
+    await ins("vocalSessions", { trackTitle: "Golden Hour Hook", artist: "Montrell", sessionDate: "2026-04-22", engineer: "Mike Dean", studio: "3rd Gate Studio A", takesRecorded: 8, bestTake: "Take 3", micUsed: "Sony C-800G", preamp: "Avalon 737", rating: 4, status: "comped", notes: "Comp from takes 3 and 5. Smooth delivery." });
+    await ins("vocalSessions", { trackTitle: "New Single TBD", artist: "Montrell", sessionDate: "2026-05-10", studio: "3rd Gate Studio B", status: "scheduled", notes: "Block 6 hours for experimental session." });
+
+    // 77. Setlists
+    await ins("setlists", { showName: "Deep Ellum Music Fest", artist: "Montrell", venue: "Deep Ellum Outdoor Stage", showDate: "2026-06-21", songs: JSON.stringify([{ title: "Block Report", bpm: 140, key: "Gm", duration: "3:42" }, { title: "Golden Hour", bpm: 95, key: "Dm", duration: "4:05" }, { title: "Street Prophets (feat. Rico Blaze)", bpm: 130, key: "Am", duration: "3:18" }, { title: "Night Shift", bpm: 120, key: "Em", duration: "3:30" }, { title: "Block Report Remix", bpm: 140, key: "Gm", duration: "4:00" }]), totalDuration: "18:35", status: "rehearsed" });
+    await ins("setlists", { showName: "Festival Template - 30min Set", artist: "Montrell", songs: JSON.stringify([{ title: "Intro/Night Shift", bpm: 120, duration: "2:00" }, { title: "Block Report", bpm: 140, duration: "3:42" }, { title: "Golden Hour", bpm: 95, duration: "4:05" }, { title: "Freestyle Segment", bpm: 130, duration: "3:00" }, { title: "New Single", bpm: 110, duration: "3:30" }, { title: "Block Report Remix (Closer)", bpm: 140, duration: "4:00" }]), totalDuration: "20:17", isTemplate: true, status: "draft", notes: "Base template for 30-min festival sets. Adjust for crowd energy." });
+
+    // 78. Tour Shows
+    await ins("tourShows", { showName: "Deep Ellum Music Fest", artist: "Montrell", venue: "Deep Ellum Outdoor Stage", city: "Dallas, TX", showDate: "2026-06-21", showTime: "9:00 PM", status: "confirmed", guarantee: 5000, capacity: 500, promoter: "DJ Mike", promoterEmail: "djmike@events.com", riderNotes: "2 cases of water, towels, private dressing room, 4 guest list spots", travelNotes: "Local show — 30 min drive from studio" });
+    await ins("tourShows", { showName: "SXSW Showcase", artist: "Montrell", venue: "Mohawk", city: "Austin, TX", showDate: "2026-03-14", showTime: "11:00 PM", status: "completed", guarantee: 2000, merch_revenue: 1800, expenses: 600, ticketsSold: 350, capacity: 400, promoter: "Austin Live", settlementStatus: "paid" });
+    await ins("tourShows", { showName: "Houston Hip-Hop Fest", artist: "Montrell", venue: "House of Blues", city: "Houston, TX", showDate: "2026-07-12", status: "pending", guarantee: 3500, capacity: 800, promoter: "H-Town Events", notes: "Awaiting contract. Negotiating merch split." });
+    await ins("tourShows", { showName: "Rico Blaze - Local Opener", artist: "Rico Blaze", venue: "Trees", city: "Dallas, TX", showDate: "2026-05-28", status: "confirmed", guarantee: 500, capacity: 200, notes: "Opening for regional headliner. Good exposure." });
+
+    // 79. Music Rights
+    await ins("musicRights", { title: "Block Report", artist: "Montrell", rightType: "publishing", pro: "BMI", ipiNumber: "00123456789", publisherName: "3rd Gate Publishing", splitPercent: 100, registrationDate: "2026-04-01", registrationId: "BMI-2026-BR001", status: "registered", territory: "Worldwide" });
+    await ins("musicRights", { title: "Block Report", artist: "Montrell", rightType: "master", status: "registered", notes: "100% owned by 3rd Gate Music Group", territory: "Worldwide" });
+    await ins("musicRights", { title: "Golden Hour", artist: "Montrell", rightType: "publishing", pro: "BMI", splitPercent: 80, publisherName: "3rd Gate Publishing", status: "registered", notes: "20% to co-writer Jay Script" });
+    await ins("musicRights", { title: "Street Prophets", artist: "Rico Blaze", rightType: "copyright", status: "pending", notes: "Need to file copyright registration" });
+
+    // 80. Mood Boards
+    await ins("moodBoards", { title: "Block Report Visual Identity", project: "Block Report", artist: "Montrell", boardType: "album", description: "Dark, gritty Fort Worth aesthetic. Neon accents against brick and concrete. Night photography. Graffiti textures.", colorPalette: JSON.stringify(["#1a1a2e", "#e94560", "#f5a623", "#16213e", "#0f3460"]), fonts: "Bebas Neue, Oswald, Impact", referenceNotes: "Think Travis Scott Astroworld meets early Kanye Graduation era. Urban decay meets luxury.", status: "approved" });
+    await ins("moodBoards", { title: "Golden Hour Campaign", project: "Golden Hour", boardType: "single", description: "Warm golden tones, sunset photography, open landscapes, intimate close-ups", colorPalette: JSON.stringify(["#f5a623", "#f7dc6f", "#e67e22", "#2c3e50", "#ecf0f1"]), fonts: "Playfair Display, Lato", status: "in-progress" });
+    await ins("moodBoards", { title: "3GMG Brand Refresh", boardType: "brand", description: "Modern, clean, premium. Black and gold with graffiti accents. Professional but street-authentic.", colorPalette: JSON.stringify(["#000000", "#f5a623", "#ffffff", "#1a1a1a", "#333333"]), status: "brainstorming" });
+
+    // 81. Vocal Health
+    await ins("vocalHealth", { artist: "Montrell", date: "2026-05-04", entryType: "session", sessionDuration: 180, vocalCondition: "excellent", hydrationLevel: "good", warmUpDone: true, warmUpRoutine: "Lip trills, scales, humming (15 min)", notes: "Great session. Voice felt strong throughout." });
+    await ins("vocalHealth", { artist: "Montrell", date: "2026-05-03", entryType: "rest-day", vocalCondition: "good", hydrationLevel: "good", notes: "Full rest day before tomorrow's session." });
+    await ins("vocalHealth", { artist: "Montrell", date: "2026-05-02", entryType: "session", sessionDuration: 240, vocalCondition: "strained", hydrationLevel: "moderate", warmUpDone: false, notes: "Pushed too hard. Need to take tomorrow off. Skipped warm-up — don't do that again." });
+    await ins("vocalHealth", { artist: "Montrell", date: "2026-05-01", entryType: "warm-up", warmUpDone: true, warmUpRoutine: "Steam inhale, lip trills, gentle scales, 20 min total", vocalCondition: "good" });
+
+    // 82. Sound Kits
+    await ins("soundKits", { title: "3rd Gate Drill Pack Vol. 1", producer: "Jay Script", kitType: "drum-kit", genre: "Drill / Trap", soundCount: 120, price: 29.99, downloads: 450, revenue: 13496, description: "Hard-hitting drill drums. 808s, percs, hi-hats, and kicks designed for dark production.", tags: "drill,808,dark,trap", status: "published" });
+    await ins("soundKits", { title: "Golden Hour Loop Pack", producer: "Silk The Plug", kitType: "loop-pack", genre: "R&B / Melodic", soundCount: 40, price: 19.99, downloads: 210, revenue: 4198, description: "Smooth melodic loops perfect for R&B and soul production.", tags: "r&b,loops,melodic,smooth", status: "published" });
+    await ins("soundKits", { title: "Fort Worth Bass Pack", producer: "Jay Script", kitType: "one-shots", genre: "Trap", soundCount: 60, price: 14.99, status: "draft", description: "Custom 808 sub bass collection. Saturated, distorted, and clean variants." });
+
+    // 83. Beat Leases
+    await ins("beatLeases", { beatTitle: "Midnight Run", producer: "Jay Script", buyer: "Indie Artist A", buyerEmail: "indie@email.com", leaseType: "wav", price: 100, status: "sold", licensePeriod: "1 year", streamLimit: 500000, purchaseDate: "2026-04-10" });
+    await ins("beatLeases", { beatTitle: "Midnight Run", producer: "Jay Script", leaseType: "exclusive", price: 3000, status: "available", notes: "WAV lease sold, exclusive still available" });
+    await ins("beatLeases", { beatTitle: "Dark Streets", producer: "Jay Script", buyer: "Up-and-Comer B", leaseType: "mp3", price: 30, status: "sold", licensePeriod: "1 year", streamLimit: 100000, purchaseDate: "2026-03-28" });
+    await ins("beatLeases", { beatTitle: "Summer Glow", producer: "Silk The Plug", leaseType: "trackout", price: 200, status: "negotiating", notes: "Artist wants custom changes to melody. Discussing price." });
+
+    // 84. Gear Inventory
+    await ins("gearInventory", { name: "Neumann U87", category: "mic", manufacturer: "Neumann", serialNumber: "U87-2024-3456", purchaseDate: "2024-06-15", purchasePrice: 3200, warrantyExpiry: "2026-06-15", condition: "excellent", location: "Studio A", notes: "Primary vocal mic" });
+    await ins("gearInventory", { name: "Neve 1073 Preamp", category: "preamp", manufacturer: "Neve", serialNumber: "NEVE-1073-8901", purchaseDate: "2024-09-01", purchasePrice: 2800, condition: "excellent", location: "Studio A" });
+    await ins("gearInventory", { name: "FL Studio 24 Producer", category: "daw", manufacturer: "Image-Line", licenseKey: "FL24-XXXX-XXXX-XXXX", purchaseDate: "2025-01-10", purchasePrice: 199, condition: "new", notes: "Lifetime free updates" });
+    await ins("gearInventory", { name: "Yamaha HS8 (Pair)", category: "monitors", manufacturer: "Yamaha", purchaseDate: "2024-03-20", purchasePrice: 700, condition: "good", location: "Studio B" });
+    await ins("gearInventory", { name: "FabFilter Pro-Q 3", category: "plugin", manufacturer: "FabFilter", licenseKey: "FBF-PQ3-XXXX", purchaseDate: "2025-02-14", purchasePrice: 179, condition: "new", notes: "Go-to EQ plugin for mixing" });
+    await ins("gearInventory", { name: "Apollo Twin X", category: "interface", manufacturer: "Universal Audio", serialNumber: "UAD-ATX-7654", purchaseDate: "2024-11-01", purchasePrice: 1099, warrantyExpiry: "2026-11-01", condition: "excellent", location: "Studio A" });
+
+    // 85. Production Templates
+    await ins("productionTemplates", { title: "Drill Session Starter", producer: "Jay Script", daw: "FL Studio", templateType: "session", genre: "Drill", bpmRange: "130-145", description: "Pre-routed drill template with 808 bus, percussion rack, and vocal chain ready to go.", plugins: JSON.stringify(["Serum", "FabFilter Pro-Q 3", "CamelCrusher", "Valhalla VintageVerb"]), trackCount: 24, isShared: true, tags: "drill,trap,dark" });
+    await ins("productionTemplates", { title: "Vocal Recording Chain", producer: "Alex Tumay", daw: "Pro Tools", templateType: "vocal-chain", genre: "Hip-Hop", description: "Standard vocal recording chain: U87 → 1073 → LA-2A → Pro Tools with de-esser, EQ, and light compression on input.", plugins: JSON.stringify(["Waves CLA-2A", "FabFilter Pro-DS", "Sonnox Oxford EQ"]), isShared: true });
+    await ins("productionTemplates", { title: "R&B Mixing Template", producer: "Silk The Plug", daw: "Logic Pro", templateType: "mixing-chain", genre: "R&B / Melodic", description: "Full mix template with vocal bus, instrument buses, and master chain. Warm, polished sound.", plugins: JSON.stringify(["Waves SSL Comp", "Soundtoys Decapitator", "FabFilter Pro-L 2"]), trackCount: 48 });
+
+    // 86. Sound Designs
+    await ins("soundDesigns", { title: "808 Growl Bass", producer: "Jay Script", category: "bass", synth: "Serum", processingChain: "Serum → CamelCrusher (British Clean) → Fruity Parametric EQ (low cut @ 30Hz, boost @ 55Hz) → Soundgoodizer", description: "Deep growling 808 with harmonic saturation. Perfect for drill beats.", genre: "Drill", tags: "808,bass,growl,drill", isFavorite: true });
+    await ins("soundDesigns", { title: "Atmospheric Pad", producer: "Silk The Plug", category: "pad", synth: "Omnisphere", processingChain: "Omnisphere → Valhalla Shimmer → Soundtoys MicroShift → Light compression", layering: "Layer 1: Choir patch, Layer 2: Analog pad, Layer 3: Subtle noise texture", genre: "R&B", tags: "pad,atmosphere,chill" });
+    await ins("soundDesigns", { title: "Vinyl Crackle Texture", producer: "Jay Script", category: "texture", processingChain: "iZotope Vinyl → EQ (roll off above 8kHz) → Light reverb", description: "Lo-fi vinyl noise for intros and transitions", tags: "lo-fi,vinyl,texture,ambient" });
+
+    // 87. Producer Analytics
+    await ins("producerAnalytics", { producer: "Jay Script", period: "2026-Q1", totalBeats: 45, beatsSold: 18, totalRevenue: 12500, leaseRevenue: 3500, exclusiveRevenue: 9000, topGenre: "Drill", topBeat: "Midnight Run", conversionRate: 12, avgBeatPrice: 694 });
+    await ins("producerAnalytics", { producer: "Silk The Plug", period: "2026-Q1", totalBeats: 30, beatsSold: 8, totalRevenue: 4800, leaseRevenue: 2800, exclusiveRevenue: 2000, topGenre: "R&B", topBeat: "Golden Hour Loop", conversionRate: 8, avgBeatPrice: 600 });
+
+    // 88. Feedback Reviews
+    await ins("feedbackReviews", { trackTitle: "Block Report - Mix v3", artist: "Montrell", project: "Block Report", submittedBy: "Jay Script", reviewers: JSON.stringify(["Montrell", "Alex Tumay"]), feedbackType: "mix-review", comments: JSON.stringify([{ timestamp: "1:32", author: "Montrell", text: "808 needs more punch here. Feels thin compared to the reference." }, { timestamp: "2:15", author: "Alex Tumay", text: "Vocal sits perfectly in this section. Great balance." }, { timestamp: "0:45", author: "Montrell", text: "Hi-hat pattern is fire. Keep this exactly as is." }]), status: "changes-requested", priority: "high", dueDate: "2026-05-08" });
+    await ins("feedbackReviews", { trackTitle: "Golden Hour - Vocal Comp", artist: "Montrell", submittedBy: "Mike Dean", feedbackType: "vocal-comp", comments: JSON.stringify([{ author: "Mike Dean", text: "Take 3 verse is stronger than take 5. Use take 3 for the final." }]), status: "approved", priority: "medium" });
+    await ins("feedbackReviews", { trackTitle: "New Single - Arrangement", artist: "Montrell", submittedBy: "Montrell", feedbackType: "arrangement", status: "awaiting-review", priority: "medium", dueDate: "2026-05-12", comments: JSON.stringify([]) });
+
+    // 89. Contract Memos
+    await ins("contractMemos", { title: "Block Report - Beat License", contractType: "beat-lease", parties: JSON.stringify(["3rd Gate Music Group", "Jay Script Productions"]), terms: "Exclusive beat license for 'Block Report'. Full ownership of master recording to 3GMG. Producer receives 20% publishing and 3% of master royalties.", fee: 5000, startDate: "2026-03-01", status: "signed", signedByAll: true });
+    await ins("contractMemos", { title: "SZA Feature Agreement", contractType: "feature", parties: JSON.stringify(["3rd Gate Music Group", "TDE / RCA Records"]), terms: "16-bar feature verse on Golden Hour Deluxe. One-time fee, no backend royalties. Credit as 'feat. SZA' on all platforms.", fee: 15000, startDate: "2026-05-01", endDate: "2026-12-31", status: "sent" });
+    await ins("contractMemos", { title: "HBO Euphoria Sync License", contractType: "sync", parties: JSON.stringify(["3rd Gate Music Group", "HBO Entertainment"]), terms: "Background use of 'Block Report' in Season 4, Episode 3. Worldwide TV and streaming rights for 2 years.", fee: 15000, startDate: "2026-06-01", endDate: "2028-06-01", status: "signed", signedByAll: true });
+    await ins("contractMemos", { title: "Rico Blaze - Artist Agreement", contractType: "management", parties: JSON.stringify(["3rd Gate Music Group", "Rico Blaze"]), terms: "2-year artist development deal. 3GMG provides production, marketing, and distribution support. 70/30 split on net revenue.", startDate: "2026-01-01", endDate: "2027-12-31", status: "signed", signedByAll: true });
+
+    // 90. Reference Tracks
+    await ins("referenceTracks", { title: "Creepin'", originalArtist: "Metro Boomin ft. The Weeknd", forProject: "Block Report", forArtist: "Montrell", referenceAspect: "mix", bpm: 130, genre: "Dark Trap", notes: "Reference for low-end balance and vocal space. The 808 sits perfectly under the vocal without competing. Study the stereo width of the synths.", spotifyUrl: "https://open.spotify.com/track/2dHHgzDwk4BJdRYgS9VFMo" });
+    await ins("referenceTracks", { title: "Blinding Lights", originalArtist: "The Weeknd", forProject: "Golden Hour", referenceAspect: "energy", bpm: 171, genre: "Synth-Pop", notes: "Energy reference for the hook. That driving synth energy — our version will be more hip-hop but same euphoric build." });
+    await ins("referenceTracks", { title: "HUMBLE.", originalArtist: "Kendrick Lamar", forArtist: "Montrell", referenceAspect: "drums", bpm: 150, genre: "Hip-Hop", notes: "Drum reference. That punchy, dry kick pattern with minimal reverb. Our drums should hit this hard." });
+    await ins("referenceTracks", { title: "No Role Modelz", originalArtist: "J. Cole", forArtist: "Montrell", referenceAspect: "vocal-tone", bpm: 100, genre: "Hip-Hop", notes: "Vocal delivery reference. Natural, conversational flow. Not too processed. Keep it raw." });
+
+    // 91. Chord Progressions
+    await ins("chordProgressions", { title: "Classic Drill Progression", key: "Gm", scale: "minor", chords: "Gm — Eb — Cm — D", genre: "Drill", bpm: 140, mood: "dark", usedIn: "Block Report", notes: "Standard minor progression. The D major at the end creates tension that resolves back to Gm.", isFavorite: true });
+    await ins("chordProgressions", { title: "Golden Hour Sunset", key: "D", scale: "major", chords: "D — A — Bm — G", genre: "R&B / Pop", bpm: 95, mood: "uplifting", usedIn: "Golden Hour", notes: "Classic I-V-vi-IV. Timeless feel. Works perfectly with the warm vocal tone." });
+    await ins("chordProgressions", { title: "Jazzy Bounce", key: "Fm", scale: "dorian", chords: "Fm7 — Bb7 — Ebmaj7 — Ab", genre: "Neo-Soul / Hip-Hop", bpm: 85, mood: "chill", notes: "Dorian mode gives it that jazzy feel without being too complex. Great for smooth beats." });
+    await ins("chordProgressions", { title: "Trap Anthem", key: "Am", scale: "minor", chords: "Am — F — G — Em", genre: "Trap", bpm: 130, mood: "hype", isFavorite: true });
+
+    // 92. DAW Projects
+    await ins("dawProjects", { title: "Block Report - Final", artist: "Montrell", producer: "Jay Script", daw: "FL Studio", version: "v3.2-master", bpm: 140, key: "Gm", trackCount: 32, fileSize: "2.8 GB", backupStatus: "backed-up", collaborators: "Jay Script, Alex Tumay", plugins: JSON.stringify(["Serum", "FabFilter Pro-Q 3", "CamelCrusher", "Waves CLA-2A", "Valhalla VintageVerb"]), lastModified: "2026-04-28" });
+    await ins("dawProjects", { title: "Golden Hour - Mix Session", artist: "Montrell", producer: "Silk The Plug", daw: "Logic Pro", version: "v2.1-mix", bpm: 95, key: "Dm", trackCount: 48, fileSize: "4.1 GB", backupStatus: "backed-up", plugins: JSON.stringify(["Omnisphere", "Kontakt", "FabFilter Pro-L 2"]), lastModified: "2026-04-25" });
+    await ins("dawProjects", { title: "Street Prophets EP - Session", artist: "Rico Blaze", producer: "Jay Script", daw: "FL Studio", version: "v1.0", bpm: 130, trackCount: 28, fileSize: "1.9 GB", backupStatus: "local-only", lastModified: "2026-05-01", notes: "NEEDS CLOUD BACKUP — only on studio desktop right now" });
+    await ins("dawProjects", { title: "Beat Ideas - May 2026", producer: "Jay Script", daw: "FL Studio", trackCount: 15, fileSize: "800 MB", backupStatus: "needs-backup", lastModified: "2026-05-03", notes: "Collection of 15 beat sketches. Need to sort and back up." });
+
+    // 93. Revenue Goals
+    await ins("revenueGoals", { name: "Q2 2026 Streaming Revenue", artist: "Montrell", period: "2026-Q2", targetAmount: 25000, currentAmount: 12500, category: "streaming", milestones: JSON.stringify([{ label: "Block Report 5M streams", amount: 20000, reached: false }, { label: "Golden Hour 2M streams", amount: 8000, reached: true }, { label: "Catalog 1M total", amount: 4000, reached: true }]), notes: "Block Report launch should push us past the target." });
+    await ins("revenueGoals", { name: "Beat Sales - Q2", producer: "Jay Script", period: "2026-Q2", targetAmount: 15000, currentAmount: 8200, category: "beats", milestones: JSON.stringify([{ label: "10 leases sold", amount: 3000, reached: true }, { label: "2 exclusives sold", amount: 6000, reached: true }, { label: "5 exclusives sold", amount: 15000, reached: false }]) });
+    await ins("revenueGoals", { name: "Live Shows Revenue - Summer", artist: "Montrell", period: "2026-Q2", targetAmount: 15000, currentAmount: 5000, category: "shows", milestones: JSON.stringify([{ label: "SXSW completed", amount: 2000, reached: true }, { label: "Deep Ellum Fest", amount: 5000, reached: false }, { label: "Houston Fest", amount: 3500, reached: false }]) });
+    await ins("revenueGoals", { name: "Sync Licensing Target", artist: "Montrell", period: "2026", targetAmount: 50000, currentAmount: 15000, category: "sync", milestones: JSON.stringify([{ label: "HBO Euphoria deal", amount: 15000, reached: true }, { label: "Nike commercial", amount: 25000, reached: false }, { label: "Video game placement", amount: 10000, reached: false }]) });
+
+    // 94. Collab Calendar
+    await ins("collabCalendar", { title: "Block Report Remix Session", sessionDate: "2026-05-12", startTime: "7:00 PM", endTime: "11:00 PM", studio: "3rd Gate Studio A", participants: JSON.stringify(["Montrell", "Jay Script", "Alex Tumay"]), project: "Block Report Remix", sessionType: "recording", status: "confirmed", timezone: "America/Chicago" });
+    await ins("collabCalendar", { title: "Golden Hour x SZA Recording", sessionDate: "2026-05-20", startTime: "2:00 PM", endTime: "8:00 PM", studio: "Remote / File Exchange", participants: JSON.stringify(["Montrell", "SZA", "Silk The Plug"]), project: "Golden Hour Deluxe", sessionType: "recording", status: "scheduled", timezone: "America/Chicago", notes: "SZA recording remotely. Sending stems by 5/18." });
+    await ins("collabCalendar", { title: "Beat Making Session", sessionDate: "2026-05-15", startTime: "3:00 PM", endTime: "9:00 PM", studio: "3rd Gate Studio B", participants: JSON.stringify(["Jay Script", "Thunder Tracks"]), project: "Q3 Beats", sessionType: "production", status: "confirmed", timezone: "America/Chicago" });
+    await ins("collabCalendar", { title: "Mixing Review - Block Report", sessionDate: "2026-05-08", startTime: "4:00 PM", endTime: "6:00 PM", studio: "3rd Gate Studio A", participants: JSON.stringify(["Alex Tumay", "Montrell"]), project: "Block Report", sessionType: "mixing", status: "scheduled" });
+    await ins("collabCalendar", { title: "Songwriting Camp", sessionDate: "2026-06-01", startTime: "12:00 PM", endTime: "10:00 PM", studio: "3rd Gate Studio A + B", participants: JSON.stringify(["Montrell", "Jay Script", "Melody Queen", "Rico Blaze"]), sessionType: "writing", status: "scheduled", notes: "Full-day songwriting camp. Catering ordered. Goal: 3-4 new songs." });
 
     return { success: errors.length === 0, counts, errors: errors.slice(0, 20) };
   },

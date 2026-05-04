@@ -56,6 +56,13 @@ import {
   SyncLicensingTab, PlaylistPitchTab, MusicVideoPlannerTab, RolloutPlannerTab,
   PressKitTab, ProducerCollabTab, ARPipelineTab, AiLyricsAssistantTab, AiMasteringTab,
 } from "./MusicAdvancedTabs";
+import {
+  FeatureVerseTab, VocalSessionTab, SetlistBuilderTab, TourShowTab,
+  MusicRightsTab, MoodBoardTab, VocalHealthTab, SoundKitTab, BeatLeaseTab,
+  GearInventoryTab, ProductionTemplateTab, SoundDesignTab, ProducerAnalyticsTab,
+  FeedbackReviewTab, ContractMemoTab, ReferenceTrackTab, ChordProgressionTab,
+  DawProjectTab, RevenueGoalTab, CollabCalendarTab,
+} from "./MusicAdvancedTabs2";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAVIGATION CONFIG — organized by workflow
@@ -81,7 +88,13 @@ type TabId =
   | "mp-audio-files" | "mp-ai-artwork" | "mp-lyrics" | "mp-sample-clearance"
   | "mp-stems-vault" | "mp-mastering-qc" | "mp-distribution" | "mp-royalties"
   | "mp-sync-licensing" | "mp-playlist-pitch" | "mp-music-videos" | "mp-rollout"
-  | "mp-press-kit" | "mp-producer-collab" | "mp-ar-pipeline" | "mp-ai-lyrics" | "mp-ai-mastering";
+  | "mp-press-kit" | "mp-producer-collab" | "mp-ar-pipeline" | "mp-ai-lyrics" | "mp-ai-mastering"
+  | "mp-feature-verses" | "mp-vocal-sessions" | "mp-setlists" | "mp-tour-shows"
+  | "mp-music-rights" | "mp-mood-boards" | "mp-vocal-health"
+  | "mp-sound-kits" | "mp-beat-leases" | "mp-gear-inventory"
+  | "mp-prod-templates" | "mp-sound-design" | "mp-producer-analytics"
+  | "mp-feedback" | "mp-contracts" | "mp-ref-tracks"
+  | "mp-chord-progressions" | "mp-daw-projects" | "mp-revenue-goals" | "mp-collab-calendar";
 
 interface NavItem {
   id: TabId;
@@ -136,6 +149,26 @@ const sidebarGroups: NavGroup[] = [
       { id: "mp-ar-pipeline", label: "A&R Pipeline", icon: Target },
       { id: "mp-ai-lyrics", label: "AI Lyrics", icon: Sparkles },
       { id: "mp-ai-mastering", label: "AI Mastering", icon: Activity },
+      { id: "mp-feature-verses", label: "Feature Verses", icon: Handshake },
+      { id: "mp-vocal-sessions", label: "Vocal Sessions", icon: Mic },
+      { id: "mp-setlists", label: "Setlist Builder", icon: ClipboardList },
+      { id: "mp-tour-shows", label: "Tour & Shows", icon: Globe },
+      { id: "mp-music-rights", label: "Rights & Publishing", icon: Shield },
+      { id: "mp-mood-boards", label: "Mood Boards", icon: Palette },
+      { id: "mp-vocal-health", label: "Vocal Health", icon: Heart },
+      { id: "mp-sound-kits", label: "Sound Kits", icon: Package },
+      { id: "mp-beat-leases", label: "Beat Leases", icon: Tag },
+      { id: "mp-gear-inventory", label: "Gear Inventory", icon: Settings },
+      { id: "mp-prod-templates", label: "Prod Templates", icon: FolderOpen },
+      { id: "mp-sound-design", label: "Sound Design Lab", icon: Zap },
+      { id: "mp-producer-analytics", label: "Producer Analytics", icon: BarChart3 },
+      { id: "mp-feedback", label: "Feedback Hub", icon: MessageSquare },
+      { id: "mp-contracts", label: "Contracts & Deals", icon: FileText },
+      { id: "mp-ref-tracks", label: "Reference Tracks", icon: Headphones },
+      { id: "mp-chord-progressions", label: "Chord & Scale", icon: Music },
+      { id: "mp-daw-projects", label: "DAW Archive", icon: FolderOpen },
+      { id: "mp-revenue-goals", label: "Revenue Goals", icon: Target },
+      { id: "mp-collab-calendar", label: "Collab Calendar", icon: Calendar },
     ],
   },
   {
@@ -1043,6 +1076,26 @@ export function AdminPage() {
           {activeTab === "mp-ar-pipeline" && <MPSafe name="A&R Pipeline"><ARPipelineTab /></MPSafe>}
           {activeTab === "mp-ai-lyrics" && <MPSafe name="AI Lyrics"><AiLyricsAssistantTab /></MPSafe>}
           {activeTab === "mp-ai-mastering" && <MPSafe name="AI Mastering"><AiMasteringTab /></MPSafe>}
+          {activeTab === "mp-feature-verses" && <MPSafe name="Feature Verses"><FeatureVerseTab /></MPSafe>}
+          {activeTab === "mp-vocal-sessions" && <MPSafe name="Vocal Sessions"><VocalSessionTab /></MPSafe>}
+          {activeTab === "mp-setlists" && <MPSafe name="Setlist Builder"><SetlistBuilderTab /></MPSafe>}
+          {activeTab === "mp-tour-shows" && <MPSafe name="Tour & Shows"><TourShowTab /></MPSafe>}
+          {activeTab === "mp-music-rights" && <MPSafe name="Rights & Publishing"><MusicRightsTab /></MPSafe>}
+          {activeTab === "mp-mood-boards" && <MPSafe name="Mood Boards"><MoodBoardTab /></MPSafe>}
+          {activeTab === "mp-vocal-health" && <MPSafe name="Vocal Health"><VocalHealthTab /></MPSafe>}
+          {activeTab === "mp-sound-kits" && <MPSafe name="Sound Kits"><SoundKitTab /></MPSafe>}
+          {activeTab === "mp-beat-leases" && <MPSafe name="Beat Leases"><BeatLeaseTab /></MPSafe>}
+          {activeTab === "mp-gear-inventory" && <MPSafe name="Gear Inventory"><GearInventoryTab /></MPSafe>}
+          {activeTab === "mp-prod-templates" && <MPSafe name="Prod Templates"><ProductionTemplateTab /></MPSafe>}
+          {activeTab === "mp-sound-design" && <MPSafe name="Sound Design Lab"><SoundDesignTab /></MPSafe>}
+          {activeTab === "mp-producer-analytics" && <MPSafe name="Producer Analytics"><ProducerAnalyticsTab /></MPSafe>}
+          {activeTab === "mp-feedback" && <MPSafe name="Feedback Hub"><FeedbackReviewTab /></MPSafe>}
+          {activeTab === "mp-contracts" && <MPSafe name="Contracts & Deals"><ContractMemoTab /></MPSafe>}
+          {activeTab === "mp-ref-tracks" && <MPSafe name="Reference Tracks"><ReferenceTrackTab /></MPSafe>}
+          {activeTab === "mp-chord-progressions" && <MPSafe name="Chord & Scale"><ChordProgressionTab /></MPSafe>}
+          {activeTab === "mp-daw-projects" && <MPSafe name="DAW Archive"><DawProjectTab /></MPSafe>}
+          {activeTab === "mp-revenue-goals" && <MPSafe name="Revenue Goals"><RevenueGoalTab /></MPSafe>}
+          {activeTab === "mp-collab-calendar" && <MPSafe name="Collab Calendar"><CollabCalendarTab /></MPSafe>}
         </div>
       </div>
     </div>

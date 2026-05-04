@@ -1705,6 +1705,365 @@ const schema = defineSchema({
     createdAt: v.string(),
   })
     .index("by_status", ["status"]),
+
+  // ═══════════════════════════════════════════════════════════
+  // MUSIC PRODUCTION – PHASE 3 (20 additional features)
+  // ═══════════════════════════════════════════════════════════
+
+  // 1. Feature Verse Manager
+  featureVerses: defineTable({
+    trackTitle: v.string(),
+    artist: v.string(),
+    featureArtist: v.string(),
+    direction: v.string(), // "sent" | "received"
+    status: v.string(), // "requested" | "accepted" | "recording" | "delivered" | "declined"
+    fee: v.optional(v.number()),
+    deadline: v.optional(v.string()),
+    contractUrl: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_artist", ["artist"]),
+
+  // 2. Vocal Session Tracker
+  vocalSessions: defineTable({
+    trackTitle: v.string(),
+    artist: v.string(),
+    sessionDate: v.string(),
+    engineer: v.optional(v.string()),
+    studio: v.optional(v.string()),
+    takesRecorded: v.optional(v.number()),
+    bestTake: v.optional(v.string()),
+    vocalChain: v.optional(v.string()),
+    micUsed: v.optional(v.string()),
+    preamp: v.optional(v.string()),
+    compressor: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    status: v.string(), // "scheduled" | "in-progress" | "completed" | "comped"
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artist"])
+    .index("by_status", ["status"]),
+
+  // 3. Setlist Builder
+  setlists: defineTable({
+    showName: v.string(),
+    artist: v.string(),
+    venue: v.optional(v.string()),
+    showDate: v.optional(v.string()),
+    songs: v.string(), // JSON array of { title, bpm, key, duration, transitionNote }
+    totalDuration: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    isTemplate: v.optional(v.boolean()),
+    status: v.string(), // "draft" | "rehearsed" | "performed"
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artist"]),
+
+  // 4. Tour & Show Manager
+  tourShows: defineTable({
+    showName: v.string(),
+    artist: v.string(),
+    venue: v.string(),
+    city: v.string(),
+    showDate: v.string(),
+    showTime: v.optional(v.string()),
+    status: v.string(), // "confirmed" | "pending" | "cancelled" | "completed"
+    guarantee: v.optional(v.number()),
+    merch_revenue: v.optional(v.number()),
+    expenses: v.optional(v.number()),
+    ticketsSold: v.optional(v.number()),
+    capacity: v.optional(v.number()),
+    promoter: v.optional(v.string()),
+    promoterEmail: v.optional(v.string()),
+    riderNotes: v.optional(v.string()),
+    travelNotes: v.optional(v.string()),
+    settlementStatus: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artist"])
+    .index("by_status", ["status"]),
+
+  // 5. Music Rights & Publishing Hub
+  musicRights: defineTable({
+    title: v.string(),
+    artist: v.string(),
+    rightType: v.string(), // "publishing" | "mechanical" | "performance" | "copyright" | "master"
+    pro: v.optional(v.string()), // ASCAP, BMI, SESAC
+    ipiNumber: v.optional(v.string()),
+    publisherName: v.optional(v.string()),
+    splitPercent: v.optional(v.number()),
+    registrationDate: v.optional(v.string()),
+    registrationId: v.optional(v.string()),
+    status: v.string(), // "registered" | "pending" | "unregistered" | "disputed"
+    territory: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artist"])
+    .index("by_type", ["rightType"]),
+
+  // 6. Mood Board / Creative Direction
+  moodBoards: defineTable({
+    title: v.string(),
+    project: v.optional(v.string()),
+    artist: v.optional(v.string()),
+    boardType: v.string(), // "album" | "single" | "video" | "merch" | "brand"
+    description: v.optional(v.string()),
+    colorPalette: v.optional(v.string()), // JSON array of hex colors
+    fonts: v.optional(v.string()),
+    referenceUrls: v.optional(v.string()), // JSON array of URLs
+    referenceNotes: v.optional(v.string()),
+    tags: v.optional(v.string()),
+    status: v.string(), // "brainstorming" | "in-progress" | "approved" | "archived"
+    createdAt: v.string(),
+  })
+    .index("by_project", ["project"]),
+
+  // 7. Vocal Health & Wellness Tracker
+  vocalHealth: defineTable({
+    artist: v.string(),
+    date: v.string(),
+    entryType: v.string(), // "rest-day" | "warm-up" | "session" | "note"
+    sessionDuration: v.optional(v.number()), // minutes
+    vocalCondition: v.optional(v.string()), // "excellent" | "good" | "strained" | "fatigued" | "rest-needed"
+    hydrationLevel: v.optional(v.string()), // "good" | "moderate" | "low"
+    warmUpDone: v.optional(v.boolean()),
+    warmUpRoutine: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artist"]),
+
+  // 8. Sound Kit / Sample Pack Builder
+  soundKits: defineTable({
+    title: v.string(),
+    producer: v.string(),
+    kitType: v.string(), // "drum-kit" | "loop-pack" | "one-shots" | "midi-pack" | "preset-pack"
+    genre: v.optional(v.string()),
+    soundCount: v.optional(v.number()),
+    price: v.optional(v.number()),
+    downloads: v.optional(v.number()),
+    revenue: v.optional(v.number()),
+    description: v.optional(v.string()),
+    tags: v.optional(v.string()),
+    status: v.string(), // "draft" | "published" | "archived"
+    createdAt: v.string(),
+  })
+    .index("by_producer", ["producer"])
+    .index("by_status", ["status"]),
+
+  // 9. Beat Lease Manager
+  beatLeases: defineTable({
+    beatTitle: v.string(),
+    producer: v.string(),
+    buyer: v.optional(v.string()),
+    buyerEmail: v.optional(v.string()),
+    leaseType: v.string(), // "mp3" | "wav" | "trackout" | "unlimited" | "exclusive"
+    price: v.number(),
+    status: v.string(), // "available" | "sold" | "negotiating" | "expired"
+    licensePeriod: v.optional(v.string()),
+    streamLimit: v.optional(v.number()),
+    purchaseDate: v.optional(v.string()),
+    contractUrl: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_producer", ["producer"])
+    .index("by_status", ["status"]),
+
+  // 10. Plugin & Gear Inventory
+  gearInventory: defineTable({
+    name: v.string(),
+    category: v.string(), // "plugin" | "daw" | "synth" | "mic" | "preamp" | "interface" | "monitors" | "headphones" | "cables" | "other"
+    manufacturer: v.optional(v.string()),
+    serialNumber: v.optional(v.string()),
+    licenseKey: v.optional(v.string()),
+    purchaseDate: v.optional(v.string()),
+    purchasePrice: v.optional(v.number()),
+    warrantyExpiry: v.optional(v.string()),
+    condition: v.optional(v.string()), // "new" | "excellent" | "good" | "fair" | "needs-repair"
+    location: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_category", ["category"]),
+
+  // 11. Production Templates Library
+  productionTemplates: defineTable({
+    title: v.string(),
+    producer: v.string(),
+    daw: v.string(), // "FL Studio" | "Ableton" | "Logic Pro" | "Pro Tools" | "Other"
+    templateType: v.string(), // "session" | "mixing-chain" | "routing" | "mastering" | "vocal-chain"
+    genre: v.optional(v.string()),
+    bpmRange: v.optional(v.string()),
+    description: v.optional(v.string()),
+    plugins: v.optional(v.string()), // JSON array
+    trackCount: v.optional(v.number()),
+    isShared: v.optional(v.boolean()),
+    tags: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_producer", ["producer"])
+    .index("by_type", ["templateType"]),
+
+  // 12. Sound Design Lab
+  soundDesigns: defineTable({
+    title: v.string(),
+    producer: v.string(),
+    category: v.string(), // "bass" | "lead" | "pad" | "fx" | "drum" | "vocal-fx" | "texture"
+    synth: v.optional(v.string()),
+    processingChain: v.optional(v.string()),
+    layering: v.optional(v.string()),
+    description: v.optional(v.string()),
+    genre: v.optional(v.string()),
+    tags: v.optional(v.string()),
+    isFavorite: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_category", ["category"])
+    .index("by_producer", ["producer"]),
+
+  // 13. Producer Analytics Dashboard (stored snapshots)
+  producerAnalytics: defineTable({
+    producer: v.string(),
+    period: v.string(), // "2026-Q1", "2026-04", etc.
+    totalBeats: v.optional(v.number()),
+    beatsSold: v.optional(v.number()),
+    totalRevenue: v.optional(v.number()),
+    leaseRevenue: v.optional(v.number()),
+    exclusiveRevenue: v.optional(v.number()),
+    topGenre: v.optional(v.string()),
+    topBeat: v.optional(v.string()),
+    conversionRate: v.optional(v.number()), // lease-to-exclusive %
+    avgBeatPrice: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_producer", ["producer"]),
+
+  // 14. Feedback & Review Hub
+  feedbackReviews: defineTable({
+    trackTitle: v.string(),
+    artist: v.optional(v.string()),
+    project: v.optional(v.string()),
+    submittedBy: v.string(),
+    reviewers: v.optional(v.string()), // JSON array of reviewer names
+    feedbackType: v.string(), // "mix-review" | "arrangement" | "vocal-comp" | "master" | "general"
+    comments: v.optional(v.string()), // JSON array of { timestamp, author, text }
+    status: v.string(), // "awaiting-review" | "in-review" | "changes-requested" | "approved"
+    priority: v.optional(v.string()),
+    dueDate: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // 15. Contract & Deal Memo Generator
+  contractMemos: defineTable({
+    title: v.string(),
+    contractType: v.string(), // "beat-lease" | "feature" | "split-sheet" | "sync" | "management" | "distribution" | "custom"
+    parties: v.string(), // JSON array of party names
+    terms: v.optional(v.string()),
+    fee: v.optional(v.number()),
+    startDate: v.optional(v.string()),
+    endDate: v.optional(v.string()),
+    status: v.string(), // "draft" | "sent" | "signed" | "expired" | "terminated"
+    signedByAll: v.optional(v.boolean()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_type", ["contractType"]),
+
+  // 16. Reference Track Library
+  referenceTracks: defineTable({
+    title: v.string(),
+    originalArtist: v.string(),
+    forProject: v.optional(v.string()),
+    forArtist: v.optional(v.string()),
+    referenceAspect: v.string(), // "mix" | "vocal-tone" | "drums" | "arrangement" | "energy" | "overall"
+    bpm: v.optional(v.number()),
+    key: v.optional(v.string()),
+    genre: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    spotifyUrl: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_project", ["forProject"]),
+
+  // 17. Chord Progression & Scale Finder
+  chordProgressions: defineTable({
+    title: v.string(),
+    key: v.string(),
+    scale: v.string(), // "major" | "minor" | "dorian" | "mixolydian" | "pentatonic" | etc.
+    chords: v.string(), // e.g. "Am - F - C - G"
+    genre: v.optional(v.string()),
+    bpm: v.optional(v.number()),
+    mood: v.optional(v.string()),
+    usedIn: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    isFavorite: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_key", ["key"]),
+
+  // 18. DAW Project Archive
+  dawProjects: defineTable({
+    title: v.string(),
+    artist: v.optional(v.string()),
+    producer: v.optional(v.string()),
+    daw: v.string(),
+    version: v.optional(v.string()),
+    bpm: v.optional(v.number()),
+    key: v.optional(v.string()),
+    trackCount: v.optional(v.number()),
+    fileSize: v.optional(v.string()),
+    backupStatus: v.optional(v.string()), // "backed-up" | "local-only" | "needs-backup"
+    collaborators: v.optional(v.string()),
+    plugins: v.optional(v.string()), // JSON array
+    notes: v.optional(v.string()),
+    lastModified: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_daw", ["daw"]),
+
+  // 19. Revenue Goal Tracker
+  revenueGoals: defineTable({
+    name: v.string(),
+    artist: v.optional(v.string()),
+    producer: v.optional(v.string()),
+    period: v.string(), // "2026-Q2", "2026-05", etc.
+    targetAmount: v.number(),
+    currentAmount: v.optional(v.number()),
+    category: v.string(), // "streaming" | "sync" | "merch" | "shows" | "beats" | "overall"
+    milestones: v.optional(v.string()), // JSON array
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_period", ["period"]),
+
+  // 20. Collab Calendar
+  collabCalendar: defineTable({
+    title: v.string(),
+    sessionDate: v.string(),
+    startTime: v.optional(v.string()),
+    endTime: v.optional(v.string()),
+    studio: v.optional(v.string()),
+    participants: v.string(), // JSON array of names
+    project: v.optional(v.string()),
+    sessionType: v.string(), // "recording" | "mixing" | "writing" | "production" | "rehearsal"
+    status: v.string(), // "scheduled" | "confirmed" | "completed" | "cancelled"
+    timezone: v.optional(v.string()),
+    reminderSent: v.optional(v.boolean()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_date", ["sessionDate"])
+    .index("by_status", ["status"]),
 });
 
 export default schema;
