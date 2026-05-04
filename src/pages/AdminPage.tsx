@@ -13,6 +13,7 @@ import {
   Megaphone, Briefcase, Settings, PanelLeftClose, PanelLeft,
   Sparkles, Target, Shield, Award, LogOut, Youtube,
   Headphones, Disc3, Music,
+  Film, Layers, PenTool, Sliders, GitBranch,
 } from "lucide-react";
 import {
   OpsOverviewTab, CalendarTab, GuestCRMTab, BookingsTab,
@@ -49,6 +50,12 @@ import {
   StudioSessionsTab, BeatLibraryTab, ReleaseManagerTab, SplitsCreditsTab,
 } from "./MusicProductionTabs";
 import { MusicStoreAdminTab } from "./MusicStoreAdminTab";
+import {
+  AudioFileManagerTab, AiArtworkTab, LyricsPadTab, SampleClearanceTab,
+  StemsVaultTab, MasteringQCTab, DistributionHubTab, RoyaltyCalculatorTab,
+  SyncLicensingTab, PlaylistPitchTab, MusicVideoPlannerTab, RolloutPlannerTab,
+  PressKitTab, ProducerCollabTab, ARPipelineTab, AiLyricsAssistantTab, AiMasteringTab,
+} from "./MusicAdvancedTabs";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAVIGATION CONFIG — organized by workflow
@@ -70,7 +77,11 @@ type TabId =
   | "crm-intelligence" | "competitor-tracker" | "brand-deal-calc" | "weekly-reports" | "team-roles"
   | "live-polls" | "fan-art" | "achievements" | "content-requests" | "exclusive-drops"
   | "mp-overview" | "mp-roster" | "mp-projects" | "mp-sessions" | "mp-beats" | "mp-releases" | "mp-splits"
-  | "mp-store";
+  | "mp-store"
+  | "mp-audio-files" | "mp-ai-artwork" | "mp-lyrics" | "mp-sample-clearance"
+  | "mp-stems-vault" | "mp-mastering-qc" | "mp-distribution" | "mp-royalties"
+  | "mp-sync-licensing" | "mp-playlist-pitch" | "mp-music-videos" | "mp-rollout"
+  | "mp-press-kit" | "mp-producer-collab" | "mp-ar-pipeline" | "mp-ai-lyrics" | "mp-ai-mastering";
 
 interface NavItem {
   id: TabId;
@@ -108,6 +119,23 @@ const sidebarGroups: NavGroup[] = [
       { id: "mp-releases", label: "Release Manager", icon: Radio },
       { id: "mp-splits", label: "Splits & Credits", icon: FileText },
       { id: "mp-store", label: "Music Store", icon: ShoppingBag },
+      { id: "mp-audio-files", label: "Audio Files", icon: Music },
+      { id: "mp-ai-artwork", label: "AI Artwork", icon: Palette },
+      { id: "mp-lyrics", label: "Lyrics Pad", icon: PenTool },
+      { id: "mp-sample-clearance", label: "Sample Clearance", icon: Shield },
+      { id: "mp-stems-vault", label: "Stems Vault", icon: Layers },
+      { id: "mp-mastering-qc", label: "Mastering QC", icon: Sliders },
+      { id: "mp-distribution", label: "Distribution Hub", icon: Globe },
+      { id: "mp-royalties", label: "Royalty Calculator", icon: DollarSign },
+      { id: "mp-sync-licensing", label: "Sync Licensing", icon: Film },
+      { id: "mp-playlist-pitch", label: "Playlist Pitches", icon: Radio },
+      { id: "mp-music-videos", label: "Music Videos", icon: Video },
+      { id: "mp-rollout", label: "Rollout Planner", icon: Calendar },
+      { id: "mp-press-kit", label: "Press Kit / EPK", icon: BookOpen },
+      { id: "mp-producer-collab", label: "Producer Board", icon: Users },
+      { id: "mp-ar-pipeline", label: "A&R Pipeline", icon: Target },
+      { id: "mp-ai-lyrics", label: "AI Lyrics", icon: Sparkles },
+      { id: "mp-ai-mastering", label: "AI Mastering", icon: Activity },
     ],
   },
   {
@@ -998,6 +1026,23 @@ export function AdminPage() {
           {activeTab === "mp-releases" && <MPSafe name="Release Manager"><ReleaseManagerTab /></MPSafe>}
           {activeTab === "mp-splits" && <MPSafe name="Splits & Credits"><SplitsCreditsTab /></MPSafe>}
           {activeTab === "mp-store" && <MPSafe name="Music Store"><MusicStoreAdminTab /></MPSafe>}
+          {activeTab === "mp-audio-files" && <MPSafe name="Audio Files"><AudioFileManagerTab /></MPSafe>}
+          {activeTab === "mp-ai-artwork" && <MPSafe name="AI Artwork"><AiArtworkTab /></MPSafe>}
+          {activeTab === "mp-lyrics" && <MPSafe name="Lyrics Pad"><LyricsPadTab /></MPSafe>}
+          {activeTab === "mp-sample-clearance" && <MPSafe name="Sample Clearance"><SampleClearanceTab /></MPSafe>}
+          {activeTab === "mp-stems-vault" && <MPSafe name="Stems Vault"><StemsVaultTab /></MPSafe>}
+          {activeTab === "mp-mastering-qc" && <MPSafe name="Mastering QC"><MasteringQCTab /></MPSafe>}
+          {activeTab === "mp-distribution" && <MPSafe name="Distribution Hub"><DistributionHubTab /></MPSafe>}
+          {activeTab === "mp-royalties" && <MPSafe name="Royalty Calculator"><RoyaltyCalculatorTab /></MPSafe>}
+          {activeTab === "mp-sync-licensing" && <MPSafe name="Sync Licensing"><SyncLicensingTab /></MPSafe>}
+          {activeTab === "mp-playlist-pitch" && <MPSafe name="Playlist Pitches"><PlaylistPitchTab /></MPSafe>}
+          {activeTab === "mp-music-videos" && <MPSafe name="Music Videos"><MusicVideoPlannerTab /></MPSafe>}
+          {activeTab === "mp-rollout" && <MPSafe name="Rollout Planner"><RolloutPlannerTab /></MPSafe>}
+          {activeTab === "mp-press-kit" && <MPSafe name="Press Kit"><PressKitTab /></MPSafe>}
+          {activeTab === "mp-producer-collab" && <MPSafe name="Producer Board"><ProducerCollabTab /></MPSafe>}
+          {activeTab === "mp-ar-pipeline" && <MPSafe name="A&R Pipeline"><ARPipelineTab /></MPSafe>}
+          {activeTab === "mp-ai-lyrics" && <MPSafe name="AI Lyrics"><AiLyricsAssistantTab /></MPSafe>}
+          {activeTab === "mp-ai-mastering" && <MPSafe name="AI Mastering"><AiMasteringTab /></MPSafe>}
         </div>
       </div>
     </div>

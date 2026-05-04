@@ -19,6 +19,7 @@ import type * as contentLib from "../contentLib.js";
 import type * as emailService from "../emailService.js";
 import type * as features2 from "../features2.js";
 import type * as http from "../http.js";
+import type * as musicAdvanced from "../musicAdvanced.js";
 import type * as musicProduction from "../musicProduction.js";
 import type * as musicStore from "../musicStore.js";
 import type * as operations from "../operations.js";
@@ -48,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   emailService: typeof emailService;
   features2: typeof features2;
   http: typeof http;
+  musicAdvanced: typeof musicAdvanced;
   musicProduction: typeof musicProduction;
   musicStore: typeof musicStore;
   operations: typeof operations;

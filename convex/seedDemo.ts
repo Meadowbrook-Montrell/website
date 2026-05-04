@@ -18,7 +18,10 @@ export const clearAll = mutation({
       "contracts","followUps","pipeline","fanQA","fanPoints","breakingAlerts","exclusiveContent",
       "mediaAssets","donations","liveStreams","clipQueue","audienceSnapshots","workflows",
       "contacts","stories","promoCodes","competitors","contactScores","liveSessions",
-      "fanSubmissions","notifications"
+      "fanSubmissions","notifications",
+      "audioFiles","aiArtwork","lyrics","sampleClearances","stemsVault","masteringQC",
+      "distributions","royaltyEntries","syncLicenses","playlistPitches","musicVideos",
+      "rolloutSteps","pressKits","producerCollabs","arPipeline","aiLyricsLogs","aiMasteringLogs"
     ] as const;
     const counts: Record<string, number> = {};
     for (const table of tables) {
@@ -621,6 +624,104 @@ export const seedAll = mutation({
     await ins("notifications", { type: "content", title: "Podcast episode ready for review", message: "Episode 'The Block Report' has been uploaded and needs show notes", isRead: false, relatedTab: "podcast-rss", metadata: JSON.stringify({ episode: "The Block Report", duration: "45:22", recordedAt: "2026-05-02", needsShowNotes: true, needsTranscript: true }), createdAt: new Date().toISOString() });
     await ins("notifications", { type: "sponsor", title: "Sponsor payment received: $2,500", message: "BeatStars quarterly sponsorship payment cleared", isRead: true, relatedTab: "sponsors", metadata: JSON.stringify({ sponsor: "BeatStars", amount: "$2,500", period: "Q2 2026", paymentMethod: "Wire Transfer" }), createdAt: new Date().toISOString() });
     await ins("notifications", { type: "system", title: "Weekly analytics report ready", message: "Site traffic up 23% this week. 1,247 unique visitors.", isRead: true, relatedTab: "analytics", metadata: JSON.stringify({ visitors: 1247, pageViews: 3891, topPage: "/music", bounceRate: "32%", avgSession: "4m 12s", growth: "+23%" }), createdAt: new Date().toISOString() });
+
+    // ────────────────────────────────────────────────
+    // 58–74. MUSIC PRODUCTION ADVANCED (17 tables)
+    // ────────────────────────────────────────────────
+
+    // 58. Audio Files
+    await ins("audioFiles", { title: "Block Report - Final Master", fileName: "block-report-master-v3.wav", format: "wav", category: "master", artist: "Montrell", project: "Block Report", duration: "3:42", bpm: 140, key: "Gm", tags: "drill,dark,bass-heavy", fileSize: "42.3 MB" });
+    await ins("audioFiles", { title: "Golden Hour - Vocal Stem", fileName: "golden-hour-vox.wav", format: "wav", category: "vocal", artist: "Montrell", project: "Golden Hour", duration: "4:05", bpm: 95, key: "Dm", tags: "melodic,r&b,vocal" });
+    await ins("audioFiles", { title: "Street Prophets - Beat", fileName: "street-prophets-beat.mp3", format: "mp3", category: "beat", artist: "Rico Blaze", project: "Street Prophets EP", duration: "3:18", bpm: 130, key: "Am", tags: "trap,808,hard" });
+    await ins("audioFiles", { title: "Summer Vibes Instrumental", fileName: "summer-vibes-inst.flac", format: "flac", category: "instrumental", duration: "3:55", bpm: 110, key: "C", tags: "chill,summer,guitar" });
+    await ins("audioFiles", { title: "808 Bass Pack - Custom", fileName: "808-bass-pack.wav", format: "wav", category: "sample", tags: "808,bass,drums,custom" });
+
+    // 59. AI Artwork
+    await ins("aiArtwork", { title: "Block Report Cover", prompt: "Dark Fort Worth alley with neon graffiti walls, hooded figure walking under streetlight, cinematic fog, red and gold color scheme", style: "cinematic", artworkType: "album-cover", status: "completed", artist: "Montrell", project: "Block Report" });
+    await ins("aiArtwork", { title: "Golden Hour Single Art", prompt: "Golden sunset over Texas skyline, silhouette of artist with mic, lens flare, warm tones", style: "photorealistic", artworkType: "single-cover", status: "completed", artist: "Montrell", project: "Golden Hour" });
+    await ins("aiArtwork", { title: "3GMG Social Banner", prompt: "3rd Gate Music Group graffiti logo on brick wall, urban setting, spotlight, gold paint drips", style: "graffiti", artworkType: "banner", status: "saved", isFavorite: true });
+    await ins("aiArtwork", { title: "Street Prophets Poster", prompt: "City corner at midnight, smoke, boombox, retro VHS aesthetic, purple and orange", style: "retro", artworkType: "poster", status: "generating", artist: "Rico Blaze" });
+
+    // 60. Lyrics
+    await ins("lyrics", { title: "Block Report - Verse 1", content: "[Verse 1]\nFrom the block where the sirens sing\nEvery corner got a story, every chain got a ring\nMama prayed for me, said boy you gon' be king\nNow I'm writing history with every bar I bring\n\nPulled up from the bottom, no silver spoon\nJust a pen and a dream under a Texas moon\nThey said I'd never make it, look at me now\nFrom the mud to the stage, take a bow", status: "final", artist: "Montrell", project: "Block Report", mood: "dark", wordCount: 73, collaborators: "Montrell, Jay Script" });
+    await ins("lyrics", { title: "Golden Hour Hook", content: "[Hook]\nIn the golden hour, everything shines\nEvery word I speak is by design\nRise up from the shadows, now it's my time\nGolden hour, golden hour, the world is mine\n\n[Post-Hook]\nGold on my neck, gold in my veins\nTurned all my losses into gains", status: "recorded", artist: "Montrell", project: "Golden Hour", mood: "uplifting", wordCount: 49 });
+    await ins("lyrics", { title: "New Track - Working Draft", content: "[Verse 1]\nLate nights in the studio, building something real\nEvery beat I touch, they know the deal\n\n[Ideas]\n- Reference Fort Worth roots\n- Talk about the grind from 2019-2024\n- Shoutout the team", status: "draft", artist: "Montrell", mood: "hype", wordCount: 32, notes: "Need to finish verse 2 and bridge" });
+
+    // 61. Sample Clearances
+    await ins("sampleClearances", { sampleTitle: "Kanye Vocal Chop", originalArtist: "Kanye West", originalSong: "Runaway", usedIn: "Block Report", sampleType: "direct-sample", status: "approved", publisherLabel: "Def Jam / GOOD Music", licenseFee: 5000, royaltyPercent: 15, usedByArtist: "Montrell" });
+    await ins("sampleClearances", { sampleTitle: "Memphis Bass Pattern", originalArtist: "Three 6 Mafia", originalSong: "Stay Fly", usedIn: "Street Prophets", sampleType: "interpolation", status: "pending", publisherLabel: "Sony Music", contactName: "Legal Dept", usedByArtist: "Rico Blaze" });
+    await ins("sampleClearances", { sampleTitle: "Jazz Piano Loop", originalArtist: "Herbie Hancock", originalSong: "Cantaloupe Island", usedIn: "Golden Hour", sampleType: "replay", status: "negotiating", publisherLabel: "Blue Note Records", licenseFee: 3000, usedByArtist: "Montrell" });
+
+    // 62. Stems Vault
+    await ins("stemsVault", { projectName: "Block Report", trackTitle: "Block Report", artist: "Montrell", versionLabel: "v3-master", versionNumber: 3, stemType: "master", format: "wav", bitDepth: "24", sampleRate: "48000", isLatest: true });
+    await ins("stemsVault", { projectName: "Block Report", trackTitle: "Block Report", artist: "Montrell", versionLabel: "v2-mix", versionNumber: 2, stemType: "full-mix", format: "wav", bitDepth: "24", sampleRate: "48000", isLatest: false });
+    await ins("stemsVault", { projectName: "Block Report", trackTitle: "Block Report - Vocals", artist: "Montrell", versionLabel: "v1-raw", versionNumber: 1, stemType: "vocals", format: "wav", bitDepth: "24", sampleRate: "48000", isLatest: true });
+    await ins("stemsVault", { projectName: "Golden Hour", trackTitle: "Golden Hour", artist: "Montrell", versionLabel: "v2-master", versionNumber: 2, stemType: "master", format: "flac", bitDepth: "24", sampleRate: "96000", isLatest: true });
+    await ins("stemsVault", { projectName: "Golden Hour", trackTitle: "Golden Hour - Drums", artist: "Montrell", versionLabel: "v1", versionNumber: 1, stemType: "drums", format: "wav", bitDepth: "24", sampleRate: "48000", isLatest: true });
+
+    // 63. Mastering QC
+    await ins("masteringQC", { trackTitle: "Block Report", project: "Block Report", artist: "Montrell", engineer: "Mike Dean", lufsIntegrated: -14, truePeak: -1, dynamicRange: 8, formatCheck: true, metadataCheck: true, clippingCheck: true, phaseCheck: true, status: "passed", referenceTrack: "Metro Boomin - Creepin'" });
+    await ins("masteringQC", { trackTitle: "Golden Hour", project: "Golden Hour", artist: "Montrell", engineer: "Alex Tumay", lufsIntegrated: -12, truePeak: -0.5, status: "in-review", formatCheck: true, metadataCheck: false, clippingCheck: true, phaseCheck: false, notes: "Needs metadata cleanup before distribution" });
+    await ins("masteringQC", { trackTitle: "Street Prophets Intro", project: "Street Prophets EP", artist: "Rico Blaze", status: "pending", formatCheck: false, metadataCheck: false, clippingCheck: false, phaseCheck: false });
+
+    // 64. Distributions
+    await ins("distributions", { releaseTitle: "Block Report", artist: "Montrell", distributor: "DistroKid", platforms: "Spotify,Apple Music,Tidal,Amazon,YouTube Music", status: "live", upc: "198765432109", isrc: "USRC12345678", releaseDate: "2026-05-10", submittedDate: "2026-04-25", spotifyUrl: "https://open.spotify.com/track/example" });
+    await ins("distributions", { releaseTitle: "Golden Hour", artist: "Montrell", distributor: "DistroKid", platforms: "Spotify,Apple Music,Tidal", status: "processing", isrc: "USRC12345679", releaseDate: "2026-06-15", submittedDate: "2026-05-01" });
+    await ins("distributions", { releaseTitle: "Street Prophets EP", artist: "Rico Blaze", distributor: "TuneCore", platforms: "Spotify,Apple Music,Amazon", status: "draft", releaseDate: "2026-07-01" });
+
+    // 65. Royalty Entries
+    await ins("royaltyEntries", { trackTitle: "Block Report", artist: "Montrell", platform: "Spotify", streams: 2450000, ratePerStream: 0.004, grossRevenue: 9800, splitPercent: 80, netRevenue: 7840, period: "2026-Q1", advanceBalance: 10000, recouped: false });
+    await ins("royaltyEntries", { trackTitle: "Block Report", artist: "Montrell", platform: "Apple Music", streams: 890000, ratePerStream: 0.008, grossRevenue: 7120, splitPercent: 80, netRevenue: 5696, period: "2026-Q1" });
+    await ins("royaltyEntries", { trackTitle: "Golden Hour", artist: "Montrell", platform: "Spotify", streams: 1200000, ratePerStream: 0.004, grossRevenue: 4800, splitPercent: 85, netRevenue: 4080, period: "2026-Q1" });
+    await ins("royaltyEntries", { trackTitle: "Street Prophets", artist: "Rico Blaze", platform: "Spotify", streams: 340000, ratePerStream: 0.004, grossRevenue: 1360, splitPercent: 70, netRevenue: 952, period: "2026-Q1" });
+
+    // 66. Sync Licenses
+    await ins("syncLicenses", { trackTitle: "Block Report", artist: "Montrell", licensee: "HBO", mediaType: "tv", showTitle: "Euphoria", usageType: "background", status: "active", fee: 15000, territory: "Worldwide", term: "2 years", contactName: "Sarah Chen", contactEmail: "sarah@hbomusic.com" });
+    await ins("syncLicenses", { trackTitle: "Golden Hour", artist: "Montrell", licensee: "Nike", mediaType: "commercial", usageType: "featured", status: "negotiating", fee: 25000, territory: "North America", contactName: "Marcus T", contactEmail: "marcus@nikeagency.com" });
+    await ins("syncLicenses", { trackTitle: "Night Shift", artist: "Montrell", licensee: "2K Games", mediaType: "video-game", showTitle: "NBA 2K27", usageType: "background", status: "inquiry", notes: "Initial outreach from 2K music supervisor" });
+
+    // 67. Playlist Pitches
+    await ins("playlistPitches", { trackTitle: "Block Report", artist: "Montrell", playlistName: "RapCaviar", platform: "Spotify", curatorName: "Spotify Editorial", playlistFollowers: 14800000, pitchDate: "2026-04-20", status: "under-review" });
+    await ins("playlistPitches", { trackTitle: "Block Report", artist: "Montrell", playlistName: "New Music Friday", platform: "Apple Music", pitchDate: "2026-04-22", status: "accepted", addedDate: "2026-05-02" });
+    await ins("playlistPitches", { trackTitle: "Golden Hour", artist: "Montrell", playlistName: "Chill Vibes", platform: "Spotify", curatorName: "DJ Smooth", curatorEmail: "djsmooth@playlists.com", playlistFollowers: 450000, pitchDate: "2026-04-28", status: "pitched" });
+    await ins("playlistPitches", { trackTitle: "Street Prophets", artist: "Rico Blaze", playlistName: "Underground Heat", platform: "Spotify", playlistFollowers: 89000, pitchDate: "2026-05-01", status: "drafted" });
+
+    // 68. Music Videos
+    await ins("musicVideos", { trackTitle: "Block Report", artist: "Montrell", director: "Cole Bennett", concept: "Nighttime performance in abandoned warehouse. Graffiti walls, neon lights, smoke. Intercut with rooftop shots overlooking Fort Worth skyline.", location: "Fort Worth, TX - Deep Ellum warehouse", shootDate: "2026-05-15", budget: 15000, spent: 5000, status: "pre-production" });
+    await ins("musicVideos", { trackTitle: "Golden Hour", artist: "Montrell", director: "Lyrical Lemonade", concept: "Golden hour shots across Texas landscapes. Artist performing in wheat field, then transitioning to studio performance.", location: "Austin, TX", budget: 25000, status: "concept" });
+    await ins("musicVideos", { trackTitle: "Street Prophets Intro", artist: "Rico Blaze", status: "published", videoUrl: "https://youtube.com/watch?v=example", budget: 5000, spent: 4800, director: "In-House" });
+
+    // 69. Rollout Steps
+    await ins("rolloutSteps", { releaseTitle: "Block Report", artist: "Montrell", stepName: "Pre-save link goes live", stepType: "pre-save", startDate: "2026-04-28", status: "completed", sortOrder: 1 });
+    await ins("rolloutSteps", { releaseTitle: "Block Report", artist: "Montrell", stepName: "Snippet on Instagram Reels", stepType: "social-push", startDate: "2026-05-01", status: "completed", sortOrder: 2 });
+    await ins("rolloutSteps", { releaseTitle: "Block Report", artist: "Montrell", stepName: "Pitch to RapCaviar + NMF", stepType: "playlist-pitch", startDate: "2026-05-03", status: "in-progress", sortOrder: 3, assignee: "Management" });
+    await ins("rolloutSteps", { releaseTitle: "Block Report", artist: "Montrell", stepName: "Official music video premiere", stepType: "video", startDate: "2026-05-15", status: "upcoming", sortOrder: 4 });
+    await ins("rolloutSteps", { releaseTitle: "Block Report", artist: "Montrell", stepName: "Radio promo push", stepType: "radio", startDate: "2026-05-17", status: "upcoming", sortOrder: 5 });
+    await ins("rolloutSteps", { releaseTitle: "Block Report", artist: "Montrell", stepName: "Press interviews + features", stepType: "press", startDate: "2026-05-10", status: "upcoming", sortOrder: 6, assignee: "PR Team" });
+
+    // 70. Press Kits
+    await ins("pressKits", { artistName: "Montrell", bio: "Montrell is a Fort Worth, Texas-born artist blending drill, melodic rap, and street storytelling. Rising from the underground scene, his music captures the raw energy of life in the city while pushing creative boundaries. With over 5M streams across platforms and features on HBO and Nike campaigns, Montrell is one of the most exciting voices in Southern hip-hop.", genre: "Hip-Hop / Drill / Melodic Rap", hometown: "Fort Worth, TX", achievements: "5M+ total streams across platforms\nHBO Euphoria sync placement\nHeadlined Deep Ellum Music Festival 2025\nFeatured on Apple Music's New Music Friday", contactEmail: "press@3rdgatemusicgroup.com", managerName: "3rd Gate Music Group", status: "published", pressQuotes: "\"One of the most authentic voices coming out of Texas right now.\" — Complex\n\"Block Report is a masterclass in modern drill.\" — Pitchfork" });
+    await ins("pressKits", { artistName: "Rico Blaze", bio: "Rico Blaze is a 3rd Gate Music Group artist known for hard-hitting trap production and electrifying live performances. Based in Dallas, his Street Prophets EP has quickly become an underground favorite.", genre: "Trap / Hip-Hop", hometown: "Dallas, TX", status: "draft", contactEmail: "rico@3rdgatemusicgroup.com" });
+
+    // 71. Producer Collabs
+    await ins("producerCollabs", { producerName: "Jay Script", specialty: "beats", genre: "Drill / Trap", rate: "$500/beat", status: "booked", project: "Block Report", rating: 5, producerEmail: "jayscript@beats.com", notes: "Go-to producer for dark drill beats. Has done 4 tracks for Montrell." });
+    await ins("producerCollabs", { producerName: "Silk The Plug", specialty: "mixing", genre: "R&B / Melodic", rate: "$300/mix", status: "available", rating: 4, producerEmail: "silktheplug@email.com", portfolio: "https://silktheplug.com" });
+    await ins("producerCollabs", { producerName: "Thunder Tracks", specialty: "beats", genre: "Trap / Drill", rate: "$800/beat", status: "contacted", notes: "High-profile producer, worked with Lil Baby. Reaching out for Q3 project." });
+    await ins("producerCollabs", { producerName: "Melody Queen", specialty: "vocals", genre: "R&B / Pop", rate: "$200/session", status: "in-session", project: "Golden Hour", rating: 5, producerEmail: "melodyqueen@studio.com" });
+
+    // 72. A&R Pipeline
+    await ins("arPipeline", { artistName: "Kiera Lane", submissionType: "demo", genre: "R&B / Neo-Soul", city: "Houston, TX", contactEmail: "kiera@email.com", demoUrl: "https://soundcloud.com/kieralane/demo", monthlyListeners: 8500, stage: "reviewing", scoutNotes: "Incredible vocal range. Needs production polish but raw talent is there.", priority: "high" });
+    await ins("arPipeline", { artistName: "Yung Prophet", submissionType: "referral", genre: "Drill / Trap", city: "Fort Worth, TX", contactEmail: "yungprophet@email.com", monthlyListeners: 15000, stage: "meeting", scoutNotes: "Referred by Jay Script. Local buzz is real. Meeting scheduled for next week.", assignedTo: "Montrell", priority: "high" });
+    await ins("arPipeline", { artistName: "Luna Nova", submissionType: "scouted", genre: "Alternative Hip-Hop", city: "Austin, TX", contactEmail: "lunanova@email.com", monthlyListeners: 45000, stage: "negotiating", scoutNotes: "Found on TikTok. 2.3M views on viral freestyle. Unique sound — could fill a gap in roster.", priority: "urgent" });
+    await ins("arPipeline", { artistName: "DJ Kold", submissionType: "self-submit", genre: "DJ / Producer", city: "Arlington, TX", demoUrl: "https://soundcloud.com/djkold/mix", stage: "new", priority: "low" });
+
+    // 73. AI Lyrics Logs
+    await ins("aiLyricsLogs", { prompt: "Write about rising from Fort Worth streets to the top of the game", mood: "hype", style: "hip-hop", generatedText: "[Verse 1]\nFrom the Fort where the streets don't sleep\nEvery corner tells a story, every scar runs deep\nMama working doubles just to keep the lights on\nNow I'm writing verses that'll live when I'm gone\n\n[Hook]\nRise up, rise up, from the bottom to the peak\nEvery word I spit is gold, every flow unique\nFort Worth made me, but the world gon' know\nFrom the block to the stage, watch me steal the show", isSaved: true, artist: "Montrell" });
+    await ins("aiLyricsLogs", { prompt: "A chill R&B vibe about late nights in the studio", mood: "chill", style: "r&b", generatedText: "[Verse]\nMidnight sessions, candles low\nBeat drops soft, let the melody flow\nInk on paper, thoughts unwind\nEvery note leaving the world behind\n\n[Hook]\nLate night magic in the booth\nPouring out my soul, speaking truth\nJust me and the mic, no disguise\nMaking music under city lights", isSaved: false });
+
+    // 74. AI Mastering Logs
+    await ins("aiMasteringLogs", { trackTitle: "Block Report", artist: "Montrell", inputFormat: "wav", lufsTarget: -14, status: "complete", suggestedEQ: "Low shelf +2dB @ 60Hz for sub presence, Dip -1.5dB @ 350Hz to reduce mud, High shelf +1dB @ 10kHz for air", suggestedCompression: "Ratio 4:1, Attack 5ms, Release 80ms, Threshold -16dB, Soft knee", suggestedLimiter: "Ceiling -1.0dB True Peak, Release 40ms, Lookahead 5ms", loudnessAnalysis: "Integrated: -14.2 LUFS, Short-term peak: -10.8 LUFS, LRA: 7.2 LU, True Peak: -0.9 dBTP", referenceTrack: "Metro Boomin - Creepin'" });
+    await ins("aiMasteringLogs", { trackTitle: "Golden Hour", artist: "Montrell", inputFormat: "flac", lufsTarget: -13, status: "complete", suggestedEQ: "Boost +1dB @ 3kHz for vocal presence, Cut -2dB @ 200Hz, Shelf +0.5dB @ 12kHz", suggestedCompression: "Ratio 2.5:1, Attack 15ms, Release 120ms, Threshold -20dB", suggestedLimiter: "Ceiling -0.5dB True Peak, Release 60ms", loudnessAnalysis: "Integrated: -13.1 LUFS, Short-term peak: -9.5 LUFS, LRA: 9.1 LU, True Peak: -0.4 dBTP" });
 
     return { success: errors.length === 0, counts, errors: errors.slice(0, 20) };
   },

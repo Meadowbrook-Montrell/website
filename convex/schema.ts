@@ -1385,6 +1385,326 @@ const schema = defineSchema({
     .index("by_status", ["status"])
     .index("by_customerEmail", ["customerEmail"])
     .index("by_itemId", ["itemId"]),
+
+  // ═══════════════════════════════════════════════════════════
+  //   MUSIC PRODUCTION ADVANCED — 17 New Feature Tables
+  // ═══════════════════════════════════════════════════════════
+
+  // ─── 1. Audio File Manager ────────────────────────────────
+  audioFiles: defineTable({
+    title: v.string(),
+    fileName: v.string(),
+    format: v.string(),
+    fileSize: v.optional(v.string()),
+    duration: v.optional(v.string()),
+    bpm: v.optional(v.number()),
+    key: v.optional(v.string()),
+    artist: v.optional(v.string()),
+    project: v.optional(v.string()),
+    tags: v.optional(v.string()),
+    category: v.string(),
+    version: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    fileUrl: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_category", ["category"])
+    .index("by_artist", ["artist"]),
+
+  // ─── 2. AI Artwork Generator ──────────────────────────────
+  aiArtwork: defineTable({
+    title: v.string(),
+    prompt: v.string(),
+    style: v.string(),
+    artworkType: v.string(),
+    dimensions: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    status: v.string(),
+    artist: v.optional(v.string()),
+    project: v.optional(v.string()),
+    isFavorite: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_artist", ["artist"]),
+
+  // ─── 3. Lyrics & Songwriting Pad ─────────────────────────
+  lyrics: defineTable({
+    title: v.string(),
+    content: v.string(),
+    artist: v.optional(v.string()),
+    project: v.optional(v.string()),
+    beat: v.optional(v.string()),
+    mood: v.optional(v.string()),
+    status: v.string(),
+    wordCount: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    collaborators: v.optional(v.string()),
+    createdAt: v.string(),
+    updatedAt: v.optional(v.string()),
+  })
+    .index("by_status", ["status"])
+    .index("by_artist", ["artist"]),
+
+  // ─── 4. Sample Clearance Tracker ──────────────────────────
+  sampleClearances: defineTable({
+    sampleTitle: v.string(),
+    originalArtist: v.string(),
+    originalSong: v.string(),
+    usedIn: v.string(),
+    usedByArtist: v.optional(v.string()),
+    sampleType: v.string(),
+    status: v.string(),
+    contactName: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    publisherLabel: v.optional(v.string()),
+    licenseFee: v.optional(v.number()),
+    royaltyPercent: v.optional(v.number()),
+    deadline: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 5. Stems & Masters Vault ─────────────────────────────
+  stemsVault: defineTable({
+    projectName: v.string(),
+    trackTitle: v.string(),
+    artist: v.optional(v.string()),
+    versionLabel: v.string(),
+    versionNumber: v.number(),
+    stemType: v.string(),
+    format: v.string(),
+    bitDepth: v.optional(v.string()),
+    sampleRate: v.optional(v.string()),
+    fileUrl: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    isLatest: v.boolean(),
+    createdAt: v.string(),
+  })
+    .index("by_project", ["projectName"])
+    .index("by_latest", ["isLatest"]),
+
+  // ─── 6. Mastering & QC Checklist ──────────────────────────
+  masteringQC: defineTable({
+    trackTitle: v.string(),
+    project: v.optional(v.string()),
+    artist: v.optional(v.string()),
+    engineer: v.optional(v.string()),
+    lufsIntegrated: v.optional(v.number()),
+    lufsShortTerm: v.optional(v.number()),
+    truePeak: v.optional(v.number()),
+    dynamicRange: v.optional(v.number()),
+    formatCheck: v.optional(v.boolean()),
+    metadataCheck: v.optional(v.boolean()),
+    clippingCheck: v.optional(v.boolean()),
+    phaseCheck: v.optional(v.boolean()),
+    referenceTrack: v.optional(v.string()),
+    status: v.string(),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 7. Distribution Hub ──────────────────────────────────
+  distributions: defineTable({
+    releaseTitle: v.string(),
+    artist: v.string(),
+    distributor: v.string(),
+    platforms: v.string(),
+    upc: v.optional(v.string()),
+    isrc: v.optional(v.string()),
+    releaseDate: v.optional(v.string()),
+    submittedDate: v.optional(v.string()),
+    status: v.string(),
+    spotifyUrl: v.optional(v.string()),
+    appleMusicUrl: v.optional(v.string()),
+    tidalUrl: v.optional(v.string()),
+    amazonUrl: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_artist", ["artist"]),
+
+  // ─── 8. Royalty Calculator ────────────────────────────────
+  royaltyEntries: defineTable({
+    trackTitle: v.string(),
+    artist: v.string(),
+    platform: v.string(),
+    streams: v.number(),
+    ratePerStream: v.number(),
+    grossRevenue: v.number(),
+    splitPercent: v.number(),
+    netRevenue: v.number(),
+    advanceBalance: v.optional(v.number()),
+    recouped: v.optional(v.boolean()),
+    period: v.string(),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artist"])
+    .index("by_platform", ["platform"]),
+
+  // ─── 9. Sync Licensing Manager ────────────────────────────
+  syncLicenses: defineTable({
+    trackTitle: v.string(),
+    artist: v.string(),
+    licensee: v.string(),
+    mediaType: v.string(),
+    showTitle: v.optional(v.string()),
+    episode: v.optional(v.string()),
+    usageType: v.string(),
+    territory: v.optional(v.string()),
+    term: v.optional(v.string()),
+    fee: v.optional(v.number()),
+    status: v.string(),
+    contactName: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 10. Playlist Pitch Tracker ───────────────────────────
+  playlistPitches: defineTable({
+    trackTitle: v.string(),
+    artist: v.string(),
+    playlistName: v.string(),
+    platform: v.string(),
+    curatorName: v.optional(v.string()),
+    curatorEmail: v.optional(v.string()),
+    playlistFollowers: v.optional(v.number()),
+    pitchDate: v.string(),
+    status: v.string(),
+    addedDate: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 11. Music Video Planner ──────────────────────────────
+  musicVideos: defineTable({
+    trackTitle: v.string(),
+    artist: v.string(),
+    director: v.optional(v.string()),
+    concept: v.optional(v.string()),
+    location: v.optional(v.string()),
+    shootDate: v.optional(v.string()),
+    budget: v.optional(v.number()),
+    spent: v.optional(v.number()),
+    status: v.string(),
+    videoUrl: v.optional(v.string()),
+    crew: v.optional(v.string()),
+    shotList: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 12. Release Rollout Planner ──────────────────────────
+  rolloutSteps: defineTable({
+    releaseTitle: v.string(),
+    artist: v.string(),
+    stepName: v.string(),
+    stepType: v.string(),
+    startDate: v.string(),
+    endDate: v.optional(v.string()),
+    status: v.string(),
+    assignee: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    sortOrder: v.number(),
+    createdAt: v.string(),
+  })
+    .index("by_release", ["releaseTitle"])
+    .index("by_status", ["status"]),
+
+  // ─── 13. Press Kit / EPK Generator ────────────────────────
+  pressKits: defineTable({
+    artistName: v.string(),
+    bio: v.string(),
+    genre: v.optional(v.string()),
+    hometown: v.optional(v.string()),
+    photoUrls: v.optional(v.string()),
+    streamingLinks: v.optional(v.string()),
+    socialLinks: v.optional(v.string()),
+    achievements: v.optional(v.string()),
+    pressQuotes: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+    managerName: v.optional(v.string()),
+    status: v.string(),
+    lastUpdated: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_artist", ["artistName"]),
+
+  // ─── 14. Producer Marketplace / Collab Board ──────────────
+  producerCollabs: defineTable({
+    producerName: v.string(),
+    producerEmail: v.optional(v.string()),
+    specialty: v.optional(v.string()),
+    genre: v.optional(v.string()),
+    rate: v.optional(v.string()),
+    portfolio: v.optional(v.string()),
+    status: v.string(),
+    project: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
+
+  // ─── 15. A&R Pipeline ─────────────────────────────────────
+  arPipeline: defineTable({
+    artistName: v.string(),
+    submissionType: v.string(),
+    genre: v.optional(v.string()),
+    city: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+    socialLinks: v.optional(v.string()),
+    streamingLinks: v.optional(v.string()),
+    demoUrl: v.optional(v.string()),
+    monthlyListeners: v.optional(v.number()),
+    stage: v.string(),
+    scoutNotes: v.optional(v.string()),
+    assignedTo: v.optional(v.string()),
+    priority: v.optional(v.string()),
+    developmentPlan: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_stage", ["stage"])
+    .index("by_priority", ["priority"]),
+
+  // ─── 16. AI Lyrics Assistant (logs) ───────────────────────
+  aiLyricsLogs: defineTable({
+    prompt: v.string(),
+    mood: v.optional(v.string()),
+    style: v.optional(v.string()),
+    generatedText: v.string(),
+    project: v.optional(v.string()),
+    artist: v.optional(v.string()),
+    isSaved: v.boolean(),
+    createdAt: v.string(),
+  }),
+
+  // ─── 17. AI Mastering Preview (logs) ──────────────────────
+  aiMasteringLogs: defineTable({
+    trackTitle: v.string(),
+    artist: v.optional(v.string()),
+    inputFormat: v.optional(v.string()),
+    lufsTarget: v.optional(v.number()),
+    suggestedEQ: v.optional(v.string()),
+    suggestedCompression: v.optional(v.string()),
+    suggestedLimiter: v.optional(v.string()),
+    loudnessAnalysis: v.optional(v.string()),
+    referenceTrack: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    status: v.string(),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
 });
 
 export default schema;
