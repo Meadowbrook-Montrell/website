@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
@@ -200,12 +200,23 @@ function LiveCountdown() {
   }, []);
 
   const nextSession = upcomingSessions?.[0];
-  const target = nextSession ? new Date(nextSession.scheduledAt) : getNextFriday();
+  // Memoize target so a new Date object isn't created every render
+  // (which would retrigger the useEffect infinitely → React error #185)
+  const scheduledAt = nextSession?.scheduledAt;
+  const targetMs = useMemo(() => {
+    if (scheduledAt) return new Date(scheduledAt).getTime();
+    const now = new Date();
+    const nextFriday = new Date(now);
+    nextFriday.setDate(now.getDate() + ((5 - now.getDay() + 7) % 7 || 7));
+    nextFriday.setHours(20, 0, 0, 0);
+    if (nextFriday <= now) nextFriday.setDate(nextFriday.getDate() + 7);
+    return nextFriday.getTime();
+  }, [scheduledAt]);
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
     const tick = () => {
-      const diff = Math.max(0, target.getTime() - Date.now());
+      const diff = Math.max(0, targetMs - Date.now());
       setTimeLeft({
         d: Math.floor(diff / 86400000),
         h: Math.floor((diff % 86400000) / 3600000),
@@ -216,7 +227,7 @@ function LiveCountdown() {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [target]);
+  }, [targetMs]);
 
   // If currently live, show a GO LIVE button instead of countdown
   if (currentLive) {
