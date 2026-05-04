@@ -17,7 +17,7 @@ http.route({
     );
 
     const siteUrl = "https://inquisitive-mandazi-d6afda.netlify.app";
-    const feedUrl = "https://effervescent-parrot-556.convex.site/api/podcast-rss";
+    const feedUrl = "https://nautical-toucan-266.convex.site/api/podcast-rss";
 
     const escXml = (s: string) =>
       s

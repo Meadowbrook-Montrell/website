@@ -2,7 +2,9 @@
  * Service Worker — 3GMG Meadowbrook Montrell
  * Lightweight caching for offline-capable PWA experience.
  */
-const CACHE_NAME = "3gmg-v2";
+// Cache version — auto-bust: change this string on each deploy, or
+// inject a build timestamp via VITE_BUILD_TIME in vite.config.ts.
+const CACHE_NAME = "3gmg-v3";
 const STATIC_ASSETS = ["/", "/manifest.json"];
 
 // Install — pre-cache shell
