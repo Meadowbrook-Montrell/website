@@ -588,12 +588,8 @@ export function GraffitiLandingPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
-            <a href="#" className="flex items-center gap-3 group">
-              <img
-                src="/images/logo-3gmg-graffiti.png"
-                alt="3GMG"
-                className="h-12 md:h-14 w-auto drop-shadow-[0_0_8px_rgba(212,168,67,0.4)]"
-              />
+            <a href="#" className="flex items-center gap-2 group">
+              <span className="font-display text-lg md:text-xl tracking-[0.2em] text-[#D4A843] group-hover:text-[#E8C767] transition-colors">3RD GATE</span>
             </a>
             <div className="hidden md:flex items-center gap-8">
               {NAV_LINKS.map((link) => (

@@ -24,6 +24,7 @@ import type * as musicStore from "../musicStore.js";
 import type * as operations from "../operations.js";
 import type * as phase4 from "../phase4.js";
 import type * as powerups from "../powerups.js";
+import type * as seedDemo from "../seedDemo.js";
 import type * as seedTestUser from "../seedTestUser.js";
 import type * as testAuth from "../testAuth.js";
 import type * as users from "../users.js";
@@ -52,6 +53,7 @@ declare const fullApi: ApiFromModules<{
   operations: typeof operations;
   phase4: typeof phase4;
   powerups: typeof powerups;
+  seedDemo: typeof seedDemo;
   seedTestUser: typeof seedTestUser;
   testAuth: typeof testAuth;
   users: typeof users;
