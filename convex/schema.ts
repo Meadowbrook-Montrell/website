@@ -1327,6 +1327,63 @@ const schema = defineSchema({
     createdAt: v.string(),
   })
     .index("by_status", ["status"]),
+
+  // ─── Music Store — Digital Downloads & Previews ───────────
+  musicStoreItems: defineTable({
+    title: v.string(),
+    artistName: v.string(),
+    itemType: v.string(), // "single" | "album" | "ep" | "beat"
+    price: v.number(),
+    description: v.optional(v.string()),
+    genre: v.optional(v.string()),
+    coverArtUrl: v.optional(v.string()),
+    previewAudioUrl: v.optional(v.string()), // 30-second preview clip
+    fullAudioUrl: v.optional(v.string()), // full track (post-purchase)
+    downloadUrl: v.optional(v.string()), // direct download link
+    duration: v.optional(v.string()), // "3:42" display format
+    bpm: v.optional(v.number()),
+    key: v.optional(v.string()),
+    releaseDate: v.optional(v.string()),
+    albumId: v.optional(v.id("musicStoreItems")), // parent album for tracks
+    trackNumber: v.optional(v.number()),
+    isActive: v.boolean(),
+    isFeatured: v.optional(v.boolean()),
+    tags: v.optional(v.array(v.string())),
+    streamingLinks: v.optional(v.object({
+      spotify: v.optional(v.string()),
+      appleMusic: v.optional(v.string()),
+      youtube: v.optional(v.string()),
+      soundcloud: v.optional(v.string()),
+      tidal: v.optional(v.string()),
+    })),
+    notes: v.optional(v.string()),
+    playCount: v.optional(v.number()),
+    purchaseCount: v.optional(v.number()),
+    createdAt: v.string(),
+  })
+    .index("by_isActive", ["isActive"])
+    .index("by_isFeatured", ["isFeatured"])
+    .index("by_itemType", ["itemType"])
+    .index("by_artistName", ["artistName"])
+    .index("by_albumId", ["albumId"]),
+
+  // ─── Music Purchases / Orders ─────────────────────────────
+  musicPurchases: defineTable({
+    itemId: v.id("musicStoreItems"),
+    itemTitle: v.string(),
+    artistName: v.string(),
+    itemType: v.string(),
+    customerEmail: v.string(),
+    customerName: v.optional(v.string()),
+    amount: v.number(),
+    paymentMethod: v.optional(v.string()),
+    status: v.string(), // "pending" | "completed" | "refunded"
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_customerEmail", ["customerEmail"])
+    .index("by_itemId", ["itemId"]),
 });
 
 export default schema;

@@ -48,6 +48,7 @@ import {
   MPSafe, MusicProductionOverviewTab, ArtistRosterTab, ProjectTrackerTab,
   StudioSessionsTab, BeatLibraryTab, ReleaseManagerTab, SplitsCreditsTab,
 } from "./MusicProductionTabs";
+import { MusicStoreAdminTab } from "./MusicStoreAdminTab";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAVIGATION CONFIG — organized by workflow
@@ -68,7 +69,8 @@ type TabId =
   | "ai-contracts" | "ai-captions" | "ai-episode-prep" | "ai-invoices" | "ai-repurpose"
   | "crm-intelligence" | "competitor-tracker" | "brand-deal-calc" | "weekly-reports" | "team-roles"
   | "live-polls" | "fan-art" | "achievements" | "content-requests" | "exclusive-drops"
-  | "mp-overview" | "mp-roster" | "mp-projects" | "mp-sessions" | "mp-beats" | "mp-releases" | "mp-splits";
+  | "mp-overview" | "mp-roster" | "mp-projects" | "mp-sessions" | "mp-beats" | "mp-releases" | "mp-splits"
+  | "mp-store";
 
 interface NavItem {
   id: TabId;
@@ -105,6 +107,7 @@ const sidebarGroups: NavGroup[] = [
       { id: "mp-beats", label: "Beat Library", icon: Disc3 },
       { id: "mp-releases", label: "Release Manager", icon: Radio },
       { id: "mp-splits", label: "Splits & Credits", icon: FileText },
+      { id: "mp-store", label: "Music Store", icon: ShoppingBag },
     ],
   },
   {
@@ -984,6 +987,7 @@ export function AdminPage() {
           {activeTab === "mp-beats" && <MPSafe name="Beat Library"><BeatLibraryTab /></MPSafe>}
           {activeTab === "mp-releases" && <MPSafe name="Release Manager"><ReleaseManagerTab /></MPSafe>}
           {activeTab === "mp-splits" && <MPSafe name="Splits & Credits"><SplitsCreditsTab /></MPSafe>}
+          {activeTab === "mp-store" && <MPSafe name="Music Store"><MusicStoreAdminTab /></MPSafe>}
         </div>
       </div>
     </div>

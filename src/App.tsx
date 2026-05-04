@@ -20,6 +20,7 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import PodcastPage from "./pages/PodcastPage";
 import FanQAPage from "./pages/FanQAPage";
 import ShopPage from "./pages/ShopPage";
+import MusicStorePage from "./pages/MusicStorePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
           <Route path="/podcast" element={<PodcastPage />} />
           <Route path="/qa" element={<FanQAPage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/music" element={<MusicStorePage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
