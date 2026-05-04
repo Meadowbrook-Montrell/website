@@ -20,7 +20,8 @@
     "test:demo": "bun run --bun scripts/demo-test.ts",
     "screenshot": "bun run --bun scripts/screenshot.ts",
     "env:get": "bunx convex env get",
-    "env:list": "bunx convex env list"
+    "env:list": "bunx convex env list",
+    "build:netlify": "npm rebuild && npx vite build"
   },
   "dependencies": {
     "@auth/core": "^0.37.4",
@@ -94,6 +95,7 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.43.0"
+    "@rollup/rollup-linux-x64-gnu": "^4.43.0",
+    "lightningcss-linux-x64-gnu": "^1.30.2"
   }
 }
