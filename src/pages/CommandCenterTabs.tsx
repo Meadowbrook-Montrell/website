@@ -828,50 +828,197 @@ export function BrandKitTab() {
 //  19. NOTIFICATION CENTER
 // ═══════════════════════════════════════════════════════════
 
-export function NotificationsTab() {
+export function NotificationsTab({ onNavigate }: { onNavigate?: (tab: string) => void }) {
   const notifications = useQuery(api.commandCenter.getNotifications, {});
   const unreadCount = useQuery(api.commandCenter.getUnreadCount);
   const markRead = useMutation(api.commandCenter.markNotificationRead);
   const markAllRead = useMutation(api.commandCenter.markAllNotificationsRead);
   const deleteNotification = useMutation(api.commandCenter.deleteNotification);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | "unread">("all");
 
-  const typeIcons: Record<string, any> = { booking: Package, subscriber: Bell, community: MessageSquare, sponsor: DollarSign, order: ShoppingBag, system: BarChart3 };
-  const typeColors: Record<string, string> = { booking: "blue", subscriber: "green", community: "purple", sponsor: "gold", order: "orange", system: "gray" };
+  const typeIcons: Record<string, any> = {
+    booking: Package, subscriber: Bell, community: MessageSquare,
+    sponsor: DollarSign, order: ShoppingBag, system: BarChart3,
+    "fan-submission": MessageSquare, merch: ShoppingBag, music: Eye,
+    content: Podcast, release: Eye,
+  };
+  const typeColors: Record<string, string> = {
+    booking: "#3b82f6", subscriber: "#22c55e", community: "#a855f7",
+    sponsor: "#D4A843", order: "#f97316", system: "#6b7280",
+    "fan-submission": "#ec4899", merch: "#f97316", music: "#a855f7",
+    content: "#ef4444", release: "#06b6d4",
+  };
+  const typeLabels: Record<string, string> = {
+    booking: "Booking", subscriber: "Subscriber", community: "Community",
+    sponsor: "Sponsor", order: "Order", system: "System",
+    "fan-submission": "Fan Submission", merch: "Merch", music: "Music",
+    content: "Content", release: "Release",
+  };
+
+  const filtered = notifications?.filter((n: any) => filter === "all" || !n.isRead) ?? [];
+
+  const handleClick = (n: any) => {
+    if (!n.isRead) markRead({ id: n._id });
+    setExpandedId(expandedId === n._id ? null : n._id);
+  };
+
+  const handleGoTo = (n: any) => {
+    if (!n.isRead) markRead({ id: n._id });
+    if (n.relatedTab && onNavigate) onNavigate(n.relatedTab);
+  };
+
+  const parseMetadata = (meta: string | undefined): Record<string, any> | null => {
+    if (!meta) return null;
+    try { return JSON.parse(meta); } catch { return null; }
+  };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h3 className="font-display text-lg text-[#f0ece4] tracking-wider">Notifications</h3>
           {(unreadCount ?? 0) > 0 && (
-            <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">{unreadCount}</span>
+            <span className="px-2.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full animate-pulse">{unreadCount} new</span>
           )}
         </div>
-        {(unreadCount ?? 0) > 0 && (
-          <button onClick={() => markAllRead()} className="text-xs text-[#D4A843] hover:text-[#E8C767] transition-colors">Mark all read</button>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Filter toggle */}
+          <div className="flex bg-[#1a1a1a] rounded-lg p-0.5 border border-[#333]">
+            <button onClick={() => setFilter("all")} className={`px-3 py-1 text-[10px] font-medium rounded-md transition-all ${filter === "all" ? "bg-[#D4A843]/20 text-[#D4A843]" : "text-[#888078] hover:text-[#ccc]"}`}>All</button>
+            <button onClick={() => setFilter("unread")} className={`px-3 py-1 text-[10px] font-medium rounded-md transition-all ${filter === "unread" ? "bg-[#D4A843]/20 text-[#D4A843]" : "text-[#888078] hover:text-[#ccc]"}`}>
+              Unread{(unreadCount ?? 0) > 0 && ` (${unreadCount})`}
+            </button>
+          </div>
+          {(unreadCount ?? 0) > 0 && (
+            <button onClick={() => markAllRead()} className="text-xs text-[#D4A843] hover:text-[#E8C767] transition-colors border border-[#D4A843]/20 px-3 py-1 rounded-lg hover:bg-[#D4A843]/10">Mark all read</button>
+          )}
+        </div>
       </div>
 
-      <TableWrapper>
-        {notifications && notifications.length > 0 ? notifications.map((n: any) => {
+      {/* Notification list */}
+      <div className="space-y-2">
+        {filtered.length > 0 ? filtered.map((n: any) => {
           const Icon = typeIcons[n.type] || Bell;
+          const color = typeColors[n.type] || "#6b7280";
+          const isExpanded = expandedId === n._id;
+          const meta = parseMetadata(n.metadata);
+
           return (
-            <div key={n._id} className={`flex items-center justify-between px-4 py-3 hover:bg-[#1a1a1a] transition-colors ${!n.isRead ? "bg-[#D4A843]/5 border-l-2 border-l-[#D4A843]" : ""}`}>
-              <div className="flex items-center gap-3" onClick={() => !n.isRead && markRead({ id: n._id })} style={{ cursor: !n.isRead ? "pointer" : "default" }}>
-                <div className={`p-1.5 rounded bg-${typeColors[n.type] || "gray"}-500/10`}>
-                  <Icon className="size-4 text-[#D4A843]" />
+            <div key={n._id} className={`rounded-xl border transition-all duration-300 overflow-hidden ${
+              !n.isRead
+                ? "bg-gradient-to-r from-[#D4A843]/5 to-transparent border-[#D4A843]/20 shadow-[0_0_15px_rgba(212,168,67,0.05)]"
+                : "bg-[#111]/50 border-[#222] hover:border-[#333]"
+            }`}>
+              {/* Main notification row */}
+              <div className="flex items-center gap-3 px-4 py-3 cursor-pointer group" onClick={() => handleClick(n)}>
+                {/* Type icon */}
+                <div className="relative shrink-0">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${color}15` }}>
+                    <Icon className="size-4" style={{ color }} />
+                  </div>
+                  {!n.isRead && (
+                    <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#0a0a0a] animate-pulse" />
+                  )}
                 </div>
-                <div>
-                  <p className={`text-sm ${!n.isRead ? "text-[#f0ece4] font-medium" : "text-[#888078]"}`}>{n.title}</p>
-                  <p className="text-[10px] text-[#888078]">{n.message}</p>
-                  <p className="text-[9px] text-[#555]">{new Date(n.createdAt).toLocaleString()}</p>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className={`text-sm truncate ${!n.isRead ? "text-[#f0ece4] font-semibold" : "text-[#999]"}`}>{n.title}</p>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-medium shrink-0" style={{ backgroundColor: `${color}15`, color }}>{typeLabels[n.type] || n.type}</span>
+                  </div>
+                  <p className="text-xs text-[#777] mt-0.5 truncate">{n.message}</p>
+                  <p className="text-[10px] text-[#555] mt-0.5">{new Date(n.createdAt).toLocaleString()}</p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {n.relatedTab && onNavigate && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleGoTo(n); }}
+                      className="flex items-center gap-1 text-[10px] font-medium text-[#D4A843] hover:text-[#E8C767] bg-[#D4A843]/10 hover:bg-[#D4A843]/20 px-2.5 py-1.5 rounded-lg transition-all"
+                    >
+                      Go to <ArrowUp className="size-3 rotate-90" />
+                    </button>
+                  )}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteNotification({ id: n._id }); }}
+                    className="text-[#444] hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                  >
+                    <XCircle className="size-4" />
+                  </button>
+                  <div className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}>
+                    <ArrowDown className="size-3.5 text-[#555]" />
+                  </div>
                 </div>
               </div>
-              <button onClick={() => deleteNotification({ id: n._id })} className="text-[#555] hover:text-red-400"><XCircle className="size-3.5" /></button>
+
+              {/* Expandable details */}
+              {isExpanded && (
+                <div className="px-4 pb-4 pt-1 border-t border-[#222]">
+                  <div className="bg-[#0a0a0a] rounded-lg p-4 space-y-3">
+                    {/* Full message */}
+                    <div>
+                      <p className="text-[10px] text-[#555] uppercase tracking-wider font-medium mb-1">Details</p>
+                      <p className="text-sm text-[#ccc]">{n.message}</p>
+                    </div>
+
+                    {/* Metadata fields */}
+                    {meta && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 pt-2">
+                        {Object.entries(meta).map(([key, val]) => (
+                          <div key={key} className="bg-[#151515] rounded-lg p-2.5 border border-[#222]">
+                            <p className="text-[9px] text-[#555] uppercase tracking-wider font-medium">{key.replace(/([A-Z])/g, " $1").replace(/^./, (s: string) => s.toUpperCase())}</p>
+                            <p className="text-xs text-[#ccc] mt-0.5 font-medium">{typeof val === "boolean" ? (val ? "Yes" : "No") : String(val)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2 pt-2">
+                      {n.relatedTab && onNavigate && (
+                        <button
+                          onClick={() => handleGoTo(n)}
+                          className="flex items-center gap-1.5 text-xs font-medium text-[#0a0a0a] bg-[#D4A843] hover:bg-[#E8C767] px-4 py-2 rounded-lg transition-all"
+                        >
+                          View & Respond <ArrowUp className="size-3.5 rotate-90" />
+                        </button>
+                      )}
+                      {!n.isRead && (
+                        <button
+                          onClick={() => markRead({ id: n._id })}
+                          className="flex items-center gap-1.5 text-xs text-[#888] hover:text-[#ccc] border border-[#333] px-3 py-2 rounded-lg transition-all hover:bg-[#1a1a1a]"
+                        >
+                          <CheckCircle className="size-3.5" /> Mark as read
+                        </button>
+                      )}
+                      <button
+                        onClick={() => deleteNotification({ id: n._id })}
+                        className="flex items-center gap-1.5 text-xs text-[#555] hover:text-red-400 border border-[#333] px-3 py-2 rounded-lg transition-all hover:bg-red-500/5 hover:border-red-500/20"
+                      >
+                        <Trash2 className="size-3.5" /> Dismiss
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           );
-        }) : <EmptyState message="No notifications yet. They'll appear here as activity happens." />}
-      </TableWrapper>
+        }) : (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-2xl bg-[#1a1a1a] flex items-center justify-center mx-auto mb-4 border border-[#222]">
+              <Bell className="size-7 text-[#333]" />
+            </div>
+            <p className="text-[#555] text-sm">
+              {filter === "unread" ? "No unread notifications" : "No notifications yet"}
+            </p>
+            <p className="text-[#444] text-xs mt-1">They'll appear here as activity happens</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

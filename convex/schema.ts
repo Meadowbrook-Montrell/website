@@ -611,12 +611,13 @@ const schema = defineSchema({
 
   // ─── 20. Notifications ────────────────────────────────────
   notifications: defineTable({
-    type: v.string(), // "booking" | "subscriber" | "community" | "sponsor" | "order" | "system"
+    type: v.string(), // "booking" | "subscriber" | "community" | "sponsor" | "order" | "system" | "fan-submission" | "merch" | "music" | "content"
     title: v.string(),
     message: v.string(),
     isRead: v.boolean(),
     actionUrl: v.optional(v.string()),
-    metadata: v.optional(v.string()),
+    relatedTab: v.optional(v.string()), // admin tab id to navigate to, e.g. "bookings", "merch-fulfillment", "fan-qa"
+    metadata: v.optional(v.string()), // JSON string with extra details for the expandable dropdown
     createdAt: v.string(),
   })
     .index("by_read", ["isRead"])

@@ -272,7 +272,7 @@ function StatCard({ icon: Icon, label, value, color = "gold", trend }: {
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR COMPONENT
    ═══════════════════════════════════════════════════════════ */
-function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen, setMobileOpen, unreadCount }: {
+function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen, setMobileOpen, unreadCount, tabBadges }: {
   activeTab: TabId;
   setActiveTab: (tab: TabId) => void;
   collapsed: boolean;
@@ -280,6 +280,7 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
   mobileOpen: boolean;
   setMobileOpen: (v: boolean) => void;
   unreadCount: number;
+  tabBadges: Record<string, number>;
 }) {
   // Which group is the active tab in? Auto-expand it.
   const activeGroup = sidebarGroups.find((g) => g.items.some((i) => i.id === activeTab));
@@ -340,6 +341,8 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
           const isExpanded = expandedGroups.has(group.label);
           const hasActiveChild = group.items.some((i) => i.id === activeTab);
           const GroupIcon = group.icon;
+          // Sum all tab badges for this group
+          const groupBadgeCount = group.items.reduce((sum, item) => sum + (item.id === "notifications" ? 0 : (tabBadges[item.id] || 0)), 0);
 
           return (
             <div key={group.label} className="mb-0.5">
@@ -357,6 +360,9 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
                 {!collapsed && (
                   <>
                     <span className="text-[10px] font-bold tracking-[0.15em] uppercase flex-1">{group.label}</span>
+                    {groupBadgeCount > 0 && !isExpanded && (
+                      <span className="min-w-[16px] h-4 px-1 bg-[#D4A843] text-[#0a0a0a] text-[8px] font-bold rounded-full flex items-center justify-center mr-1">{groupBadgeCount}</span>
+                    )}
                     <ChevronDown className={`size-3 transition-transform ${isExpanded ? "" : "-rotate-90"}`} style={{ opacity: 0.4 }} />
                   </>
                 )}
@@ -368,7 +374,9 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
                   {group.items.map((item) => {
                     const isActive = activeTab === item.id;
                     const ItemIcon = item.icon;
-                    const showBadge = item.id === "notifications" && unreadCount > 0;
+                    // Show badge: notifications tab gets total unread, other tabs get their specific count
+                    const badgeCount = item.id === "notifications" ? unreadCount : (tabBadges[item.id] || 0);
+                    const showBadge = badgeCount > 0;
 
                     return (
                       <button
@@ -391,8 +399,8 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
                         <ItemIcon className="size-3.5 shrink-0" />
                         {!collapsed && <span className="text-xs truncate">{item.label}</span>}
                         {showBadge && (
-                          <span className={`${collapsed ? "absolute -top-0.5 -right-0.5" : "ml-auto"} w-4 h-4 bg-red-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center`}>
-                            {unreadCount}
+                          <span className={`${collapsed ? "absolute -top-0.5 -right-0.5" : "ml-auto"} min-w-[16px] h-4 px-1 ${item.id === "notifications" ? "bg-red-500" : "bg-[#D4A843]"} text-${item.id === "notifications" ? "white" : "[#0a0a0a]"} text-[8px] font-bold rounded-full flex items-center justify-center`}>
+                            {badgeCount}
                           </span>
                         )}
                       </button>
@@ -462,6 +470,7 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
 export function AdminPage() {
   const stats = useQuery(api.admin.getDashboardStats);
   const unreadCount = useQuery(api.commandCenter.getUnreadCount);
+  const tabBadges = useQuery(api.commandCenter.getUnreadCountByTab) ?? {};
   const subscribers = useQuery(api.admin.listSubscribers);
   const tickerItems = useQuery(api.admin.listTickerItems);
   const guests = useQuery(api.admin.listGuests);
@@ -523,6 +532,7 @@ export function AdminPage() {
         mobileOpen={mobileMenuOpen}
         setMobileOpen={setMobileMenuOpen}
         unreadCount={unreadCount ?? 0}
+        tabBadges={tabBadges}
       />
 
       {/* Main content area */}
@@ -932,7 +942,7 @@ export function AdminPage() {
           {activeTab === "podcast-rss" && <PodcastRSSTab />}
           {activeTab === "analytics" && <AnalyticsTab />}
           {activeTab === "brand-kit" && <BrandKitTab />}
-          {activeTab === "notifications" && <NotificationsTab />}
+          {activeTab === "notifications" && <NotificationsTab onNavigate={(tab: string) => setActiveTab(tab as TabId)} />}
 
           {/* ─── Power-Up Tabs ─── */}
           {activeTab === "media-library" && <MediaLibraryTab />}

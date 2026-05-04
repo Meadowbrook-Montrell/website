@@ -495,6 +495,24 @@ export const getUnreadCount = query({
   },
 });
 
+export const getUnreadCountByTab = query({
+  args: {},
+  handler: async (ctx) => {
+    const unread = await ctx.db
+      .query("notifications")
+      .withIndex("by_read", (q) => q.eq("isRead", false))
+      .collect();
+    const counts: Record<string, number> = {};
+    for (const n of unread) {
+      const tab = n.relatedTab;
+      if (tab) {
+        counts[tab] = (counts[tab] || 0) + 1;
+      }
+    }
+    return counts;
+  },
+});
+
 export const markNotificationRead = mutation({
   args: { id: v.id("notifications") },
   handler: async (ctx, args) => { await ctx.db.patch(args.id, { isRead: true }); },
