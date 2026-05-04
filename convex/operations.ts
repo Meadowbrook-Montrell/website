@@ -157,11 +157,20 @@ export const addBooking = mutation({
     message: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("bookings", {
+    const id = await ctx.db.insert("bookings", {
       ...args,
       status: "pending",
       createdAt: new Date().toISOString(),
     });
+    // A2: Auto-trigger admin notification for new booking
+    await ctx.db.insert("notifications", {
+      type: "booking",
+      title: "New Booking Request",
+      message: `${args.guestName} wants to be a guest — Topic: ${args.topic}`,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+    });
+    return id;
   },
 });
 

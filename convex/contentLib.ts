@@ -140,3 +140,41 @@ export const deleteLiveSession = mutation({
     await ctx.db.delete(args.id);
   },
 });
+
+// ─── A3: Bulk YouTube Import ───
+// Imports videos from a YouTube channel using the YouTube Data API v3
+export const bulkYoutubeImport = mutation({
+  args: {
+    videos: v.array(v.object({
+      title: v.string(),
+      description: v.string(),
+      youtubeId: v.string(),
+      thumbnailUrl: v.optional(v.string()),
+      publishedAt: v.optional(v.string()),
+      duration: v.optional(v.string()),
+      category: v.optional(v.string()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    // Check for existing youtubeIds to avoid duplicates
+    const existing = await ctx.db.query("content").collect();
+    const existingIds = new Set(existing.map((c: any) => c.youtubeId).filter(Boolean));
+    
+    let imported = 0;
+    for (const video of args.videos) {
+      if (existingIds.has(video.youtubeId)) continue;
+      await ctx.db.insert("content", {
+        title: video.title,
+        description: video.description,
+        youtubeId: video.youtubeId,
+        thumbnailUrl: video.thumbnailUrl || `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`,
+        publishedAt: video.publishedAt,
+        duration: video.duration,
+        category: video.category || "interview",
+        featured: false,
+      });
+      imported++;
+    }
+    return { imported, skipped: args.videos.length - imported };
+  },
+});

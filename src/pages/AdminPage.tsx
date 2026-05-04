@@ -11,7 +11,7 @@ import {
   Scissors, Zap, BookOpen, Package, Tag, ChevronDown,
   ChevronRight, Menu, X, Home, Video, Newspaper,
   Megaphone, Briefcase, Settings, PanelLeftClose, PanelLeft,
-  Sparkles, Target, Shield, Award, LogOut,
+  Sparkles, Target, Shield, Award, LogOut, Youtube,
 } from "lucide-react";
 import {
   OpsOverviewTab, CalendarTab, GuestCRMTab, BookingsTab,
@@ -454,6 +454,7 @@ export function AdminPage() {
   const deleteSubscriber = useMutation(api.admin.deleteSubscriber);
   const addContent = useMutation(api.contentLib.addContent);
   const deleteContent = useMutation(api.contentLib.deleteContent);
+  const bulkYoutubeImport = useMutation(api.contentLib.bulkYoutubeImport);
   const addLiveSession = useMutation(api.contentLib.addLiveSession);
   const deleteLiveSession = useMutation(api.contentLib.deleteLiveSession);
 
@@ -464,6 +465,10 @@ export function AdminPage() {
   const [newContentTitle, setNewContentTitle] = useState("");
   const [newContentCategory, setNewContentCategory] = useState("interview");
   const [newContentYoutubeId, setNewContentYoutubeId] = useState("");
+  const [ytChannelUrl, setYtChannelUrl] = useState("");
+  const [ytApiKey, setYtApiKey] = useState("");
+  const [ytImportStatus, setYtImportStatus] = useState("");
+  const [ytImporting, setYtImporting] = useState(false);
   const [newSessionTitle, setNewSessionTitle] = useState("");
   const [newSessionDate, setNewSessionDate] = useState("");
   const [newSessionPlatform, setNewSessionPlatform] = useState("youtube");
@@ -649,6 +654,70 @@ export function AdminPage() {
                   }} className="bg-[#D4A843] text-[#0a0a0a] font-bold text-sm rounded px-6 py-2.5 hover:bg-[#E8C767] transition-all">Add Content</button>
                 </div>
               </div>
+              {/* A3: Bulk YouTube Import */}
+              <div className="border border-red-500/15 rounded-lg bg-[#141414]/80 p-6">
+                <h3 className="font-display text-lg text-[#f0ece4] tracking-wider mb-4 flex items-center gap-2">
+                  <Youtube className="size-5 text-red-500" /> Import from YouTube
+                </h3>
+                <p className="text-xs text-[#888] mb-4">Paste a YouTube channel URL and your API key to bulk-import all uploads. Get a free API key at <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-[#D4A843] hover:underline">Google Cloud Console</a>.</p>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <input type="text" placeholder="YouTube Channel URL or ID" value={ytChannelUrl} onChange={e => setYtChannelUrl(e.target.value)}
+                    className="bg-[#1a1a1a] border border-red-500/15 rounded px-4 py-2.5 text-sm text-[#f0ece4] placeholder:text-[#888078]/50 focus:border-red-400/40 focus:outline-none" />
+                  <input type="text" placeholder="YouTube API Key" value={ytApiKey} onChange={e => setYtApiKey(e.target.value)}
+                    className="bg-[#1a1a1a] border border-red-500/15 rounded px-4 py-2.5 text-sm text-[#f0ece4] placeholder:text-[#888078]/50 focus:border-red-400/40 focus:outline-none" />
+                  <button disabled={ytImporting || !ytChannelUrl || !ytApiKey} onClick={async () => {
+                    setYtImporting(true); setYtImportStatus("Fetching channel...");
+                    try {
+                      // Extract channel ID from URL
+                      let channelId = ytChannelUrl.trim();
+                      if (channelId.includes("youtube.com")) {
+                        const match = channelId.match(/channel\/(UC[a-zA-Z0-9_-]+)/);
+                        if (match) channelId = match[1];
+                        else {
+                          // Try handle-based lookup
+                          const handleMatch = channelId.match(/@([a-zA-Z0-9_-]+)/);
+                          if (handleMatch) {
+                            const searchRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${handleMatch[1]}&key=${ytApiKey}`);
+                            const searchData = await searchRes.json();
+                            if (searchData.items?.[0]) channelId = searchData.items[0].snippet.channelId;
+                            else throw new Error("Channel not found");
+                          }
+                        }
+                      }
+                      // Get uploads playlist
+                      const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${ytApiKey}`);
+                      const chData = await chRes.json();
+                      const uploadsId = chData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+                      if (!uploadsId) throw new Error("Could not find uploads playlist");
+                      // Fetch all videos from uploads playlist (paginated, max 150)
+                      const videos: any[] = [];
+                      let nextPage = "";
+                      for (let page = 0; page < 3; page++) {
+                        setYtImportStatus(`Fetching page ${page + 1}...`);
+                        const plRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&key=${ytApiKey}${nextPage ? `&pageToken=${nextPage}` : ""}`);
+                        const plData = await plRes.json();
+                        for (const item of (plData.items || [])) {
+                          const s = item.snippet;
+                          videos.push({ title: s.title, description: (s.description || "").slice(0, 500), youtubeId: s.resourceId?.videoId, thumbnailUrl: s.thumbnails?.high?.url || s.thumbnails?.default?.url, publishedAt: s.publishedAt });
+                        }
+                        nextPage = plData.nextPageToken || "";
+                        if (!nextPage) break;
+                      }
+                      if (videos.length === 0) throw new Error("No videos found");
+                      setYtImportStatus(`Importing ${videos.length} videos...`);
+                      const result = await bulkYoutubeImport({ videos: videos.filter((v: any) => v.youtubeId) });
+                      setYtImportStatus(`Done! Imported ${result.imported} new videos (${result.skipped} already existed)`);
+                    } catch (err: any) {
+                      setYtImportStatus(`Error: ${err.message || "Import failed"}`);
+                    }
+                    setYtImporting(false);
+                  }} className="bg-red-600 text-white font-bold text-sm rounded px-6 py-2.5 hover:bg-red-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    {ytImporting ? "Importing..." : "Import Videos"}
+                  </button>
+                </div>
+                {ytImportStatus && <p className={`text-xs mt-3 ${ytImportStatus.startsWith("Error") ? "text-red-400" : ytImportStatus.startsWith("Done") ? "text-green-400" : "text-[#888]"}`}>{ytImportStatus}</p>}
+              </div>
+
               <div className="border border-[#D4A843]/15 rounded-lg bg-[#141414]/80 overflow-hidden">
                 <div className="px-6 py-4 border-b border-[#D4A843]/10">
                   <h3 className="font-display text-lg text-[#f0ece4] tracking-wider">All Content <span className="text-[#888078] text-sm">({contentItems?.length ?? 0})</span></h3>
