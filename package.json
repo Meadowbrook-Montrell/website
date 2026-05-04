@@ -21,7 +21,7 @@
     "screenshot": "bun run --bun scripts/screenshot.ts",
     "env:get": "bunx convex env get",
     "env:list": "bunx convex env list",
-    "build:netlify": "npm rebuild && npx vite build"
+    "build:netlify": "npm install --include=optional && npx vite build"
   },
   "dependencies": {
     "@auth/core": "^0.37.4",
@@ -96,6 +96,7 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.43.0",
-    "lightningcss-linux-x64-gnu": "^1.30.2"
+    "lightningcss-linux-x64-gnu": "^1.30.2",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.1.18"
   }
 }
