@@ -281,14 +281,14 @@ export function AIEpisodePrepTab() {
                       <pre className="text-xs text-[#aaa] bg-[#0a0a0a] p-3 rounded whitespace-pre-wrap">{p.coldOpen}</pre>
                     </div>
                   )}
-                  <div><h4 className="text-xs text-[#D4A843] uppercase font-bold mb-2">❓ Interview Questions ({p.questions.length})</h4>
-                    <ol className="space-y-1.5">{p.questions.map((q: string, i: number) => <li key={i} className="text-sm text-[#ccc] flex gap-2"><span className="text-[#D4A843] font-bold min-w-[20px]">{i + 1}.</span>{q}</li>)}</ol>
+                  <div><h4 className="text-xs text-[#D4A843] uppercase font-bold mb-2">❓ Interview Questions ({(p.questions || []).length})</h4>
+                    <ol className="space-y-1.5">{(p.questions || []).map((q: string, i: number) => <li key={i} className="text-sm text-[#ccc] flex gap-2"><span className="text-[#D4A843] font-bold min-w-[20px]">{i + 1}.</span>{q}</li>)}</ol>
                   </div>
                   <div><h4 className="text-xs text-[#D4A843] uppercase font-bold mb-2">📋 Outline</h4>
                     <pre className="text-xs text-[#aaa] bg-[#0a0a0a] p-3 rounded whitespace-pre-wrap">{p.outline}</pre>
                   </div>
                   <div><h4 className="text-xs text-[#D4A843] uppercase font-bold mb-2">💡 Talking Points</h4>
-                    <ul className="space-y-1">{p.talkingPoints.map((tp: string, i: number) => <li key={i} className="text-sm text-[#ccc]">• {tp}</li>)}</ul>
+                    <ul className="space-y-1">{(p.talkingPoints || []).map((tp: string, i: number) => <li key={i} className="text-sm text-[#ccc]">• {tp}</li>)}</ul>
                   </div>
                 </div>
               )}
@@ -371,10 +371,10 @@ export function AIInvoiceTab() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-[#f0ece4]">{inv.invoiceNumber} — {inv.clientName}</h3>
-                  <p className="text-xs text-[#888]">{inv.lineItems.length} items · Due {inv.dueDate} · Created {new Date(inv.createdAt).toLocaleDateString()}</p>
+                  <p className="text-xs text-[#888]">{(inv.lineItems || []).length} items · Due {inv.dueDate} · Created {new Date(inv.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold text-[#D4A843]">${inv.total.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-[#D4A843]">${(inv.total || 0).toLocaleString()}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <StatusBadge status={inv.status} />
                     <select value={inv.status} onChange={e => updateStatus({ id: inv._id, status: e.target.value, ...(e.target.value === "paid" ? { paidAt: new Date().toISOString() } : {}) })} className="bg-[#0a0a0a] text-[#888] text-xs border border-[#2a2622] rounded p-1">
@@ -430,12 +430,12 @@ export function AIRepurposeTab() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h3 className="font-bold text-[#f0ece4]">{item.sourceTitle}</h3>
-                  <p className="text-xs text-[#888]">{item.sourceType} · {item.suggestions.length} ideas · {new Date(item.createdAt).toLocaleDateString()}</p>
+                  <p className="text-xs text-[#888]">{item.sourceType} · {(item.suggestions || []).length} ideas · {new Date(item.createdAt).toLocaleDateString()}</p>
                 </div>
                 <Btn variant="danger" onClick={() => del({ id: item._id })}><Trash2 className="size-3" /></Btn>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {item.suggestions.map((s: any, i: number) => (
+                {(item.suggestions || []).map((s: any, i: number) => (
                   <div key={i} className={`flex gap-3 p-3 rounded border ${s.isCompleted ? "border-green-600/20 bg-green-600/5" : "border-[#2a2622] bg-[#0a0a0a]"}`}>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-[#f0ece4]">{s.platform}</p>
@@ -579,9 +579,9 @@ export function CompetitorTrackerTab() {
               </div>
               <p className="text-xs text-[#888] mb-1">📱 {c.platform} {c.subscribers && `· ${c.subscribers.toLocaleString()} subs`} {c.avgViews && `· ${c.avgViews.toLocaleString()} avg views`}</p>
               <a href={c.profileUrl} target="_blank" rel="noreferrer" className="text-xs text-[#D4A843] hover:underline flex items-center gap-1"><ExternalLink className="size-3" />{c.profileUrl}</a>
-              {c.contentThemes.length > 0 && (
+              {((c.contentThemes) || []).length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {c.contentThemes.map((t: string, i: number) => <span key={i} className="text-xs bg-[#2a2622] text-[#888] px-2 py-0.5 rounded">{t}</span>)}
+                  {(c.contentThemes || []).map((t: string, i: number) => <span key={i} className="text-xs bg-[#2a2622] text-[#888] px-2 py-0.5 rounded">{t}</span>)}
                 </div>
               )}
             </Card>
@@ -661,8 +661,8 @@ export function BrandDealCalcTab() {
                   <p className="text-xs text-[#888]">{Number(d.avgViews).toLocaleString()} avg views · {d.engagementRate}% engagement</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-[#D4A843]">${d.calculatedRate.toLocaleString()}</p>
-                  <p className="text-xs text-[#888]">Range: ${d.rateRange.low.toLocaleString()} — ${d.rateRange.high.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-[#D4A843]">${(d.calculatedRate || 0).toLocaleString()}</p>
+                  <p className="text-xs text-[#888]">Range: ${(d.rateRange || {low:0,high:0}).low.toLocaleString()} — ${(d.rateRange || {low:0,high:0}).high.toLocaleString()}</p>
                 </div>
                 <button onClick={() => del({ id: d._id })} className="text-red-400 hover:text-red-300 ml-3"><Trash2 className="size-3" /></button>
               </div>
@@ -699,17 +699,17 @@ export function WeeklyReportTab() {
                 <button onClick={() => del({ id: r._id })} className="text-red-400"><Trash2 className="size-3" /></button>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                <div className="bg-[#0a0a0a] p-3 rounded"><p className="text-xl font-bold text-green-400">${r.revenue.total.toLocaleString()}</p><p className="text-xs text-[#888]">Revenue</p></div>
+                <div className="bg-[#0a0a0a] p-3 rounded"><p className="text-xl font-bold text-green-400">${((r.revenue || {}).total || 0).toLocaleString()}</p><p className="text-xs text-[#888]">Revenue</p></div>
                 <div className="bg-[#0a0a0a] p-3 rounded"><p className="text-xl font-bold text-blue-400">{r.content.published}</p><p className="text-xs text-[#888]">Content Pieces</p></div>
                 <div className="bg-[#0a0a0a] p-3 rounded"><p className="text-xl font-bold text-purple-400">{r.community.qaQuestions}</p><p className="text-xs text-[#888]">Q&A Questions</p></div>
                 <div className="bg-[#0a0a0a] p-3 rounded"><p className="text-xl font-bold text-[#D4A843]">{r.operations.tasksCompleted}</p><p className="text-xs text-[#888]">Tasks Done</p></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div className="text-xs text-[#888]">
-                  <p>💰 Donations: ${r.revenue.donations.toLocaleString()}</p>
-                  <p>🤝 Sponsors: ${r.revenue.sponsors.toLocaleString()}</p>
-                  <p>👕 Merch: ${r.revenue.merch.toLocaleString()}</p>
-                  <p>🎤 Bookings: ${r.revenue.bookings.toLocaleString()}</p>
+                  <p>💰 Donations: ${((r.revenue || {}).donations || 0).toLocaleString()}</p>
+                  <p>🤝 Sponsors: ${((r.revenue || {}).sponsors || 0).toLocaleString()}</p>
+                  <p>👕 Merch: ${((r.revenue || {}).merch || 0).toLocaleString()}</p>
+                  <p>🎤 Bookings: ${((r.revenue || {}).bookings || 0).toLocaleString()}</p>
                 </div>
                 <div className="text-xs text-[#888]">
                   <p>✅ Tasks completed: {r.operations.tasksCompleted}</p>
@@ -717,10 +717,10 @@ export function WeeklyReportTab() {
                   <p>⚠️ Overdue follow-ups: {r.operations.overdueFollowUps}</p>
                 </div>
               </div>
-              {r.highlights.length > 0 && (
+              {(r.highlights || []).length > 0 && (
                 <div className="border-t border-[#2a2622] pt-3 mt-3">
                   <h4 className="text-xs text-[#D4A843] uppercase font-bold mb-2">Highlights</h4>
-                  <ul>{r.highlights.map((h: string, i: number) => <li key={i} className="text-xs text-[#aaa]">• {h}</li>)}</ul>
+                  <ul>{(r.highlights || []).map((h: string, i: number) => <li key={i} className="text-xs text-[#aaa]">• {h}</li>)}</ul>
                 </div>
               )}
             </Card>
@@ -779,7 +779,7 @@ export function TeamRolesTab() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`text-sm font-bold uppercase ${roleColors[r.role] || "text-[#888]"}`}>{r.role}</span>
-                  <div className="flex gap-1">{r.permissions.slice(0, 4).map((p: string, i: number) => <span key={i} className="text-xs bg-[#2a2622] text-[#888] px-1.5 py-0.5 rounded">{p}</span>)}</div>
+                  <div className="flex gap-1">{(r.permissions || []).slice(0, 4).map((p: string, i: number) => <span key={i} className="text-xs bg-[#2a2622] text-[#888] px-1.5 py-0.5 rounded">{p}</span>)}</div>
                   <button onClick={() => del({ id: r._id })} className="text-red-400 hover:text-red-300"><Trash2 className="size-3" /></button>
                 </div>
               </div>
