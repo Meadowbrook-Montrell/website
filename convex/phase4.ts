@@ -228,7 +228,7 @@ function generateCaptions(title: string, topic: string) {
 }
 
 // ─── EPISODE PREP GENERATOR ────────────────────────────────────
-function generateEpisodePrep(guest: string, topic: string, bio?: string) {
+function _buildEpisodePrep(guest: string, topic: string, bio?: string) {
   const questions = [
     `What's your story? Where did you grow up and what shaped you?`,
     `How did you get started in ${topic}?`,
@@ -340,7 +340,7 @@ function calculateBrandRate(followers: number, avgViews: number, engagementRate:
 /* ================================================================
    1. AI CONTRACT GENERATOR
    ================================================================ */
-export const listContracts4 = query({ args: {}, handler: async (ctx) => {
+export const listContracts = query({ args: {}, handler: async (ctx) => {
   return await ctx.db.query("aiContracts").order("desc").collect();
 }});
 
@@ -382,12 +382,12 @@ export const generateContract = mutation({
   },
 });
 
-export const updateContractStatus4 = mutation({
+export const updateContractStatus = mutation({
   args: { id: v.id("aiContracts"), status: v.string() },
   handler: async (ctx, { id, status }) => { await ctx.db.patch(id, { status }); },
 });
 
-export const deleteContract4 = mutation({
+export const deleteContract = mutation({
   args: { id: v.id("aiContracts") },
   handler: async (ctx, { id }) => { await ctx.db.delete(id); },
 });
@@ -400,7 +400,7 @@ export const listCaptions = query({ args: {}, handler: async (ctx) => {
   return await ctx.db.query("aiCaptions").order("desc").collect();
 }});
 
-export const generateCaptionsAction = mutation({
+export const generateAllCaptions = mutation({
   args: {
     sourceTitle: v.string(),
     sourceTopic: v.optional(v.string()),
@@ -433,7 +433,7 @@ export const toggleCaptionSaved = mutation({
   },
 });
 
-export const deleteCaptions = mutation({
+export const deleteCaption = mutation({
   args: { id: v.id("aiCaptions") },
   handler: async (ctx, { id }) => { await ctx.db.delete(id); },
 });
@@ -446,7 +446,7 @@ export const listEpisodePreps = query({ args: {}, handler: async (ctx) => {
   return await ctx.db.query("aiEpisodePrep").order("desc").collect();
 }});
 
-export const generateEpisodePrepAction = mutation({
+export const generateEpisodePrep = mutation({
   args: {
     guestName: v.string(),
     guestBio: v.optional(v.string()),
@@ -454,7 +454,7 @@ export const generateEpisodePrepAction = mutation({
     episodeDate: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const prep = generateEpisodePrep(args.guestName, args.topic, args.guestBio);
+    const prep = _buildEpisodePrep(args.guestName, args.topic, args.guestBio);
     return await ctx.db.insert("aiEpisodePrep", {
       guestName: args.guestName,
       guestBio: args.guestBio,
@@ -479,11 +479,11 @@ export const deleteEpisodePrep = mutation({
 /* ================================================================
    4. AI INVOICE GENERATOR
    ================================================================ */
-export const listInvoices4 = query({ args: {}, handler: async (ctx) => {
+export const listInvoices = query({ args: {}, handler: async (ctx) => {
   return await ctx.db.query("aiInvoices").order("desc").collect();
 }});
 
-export const createInvoice = mutation({
+export const generateInvoice = mutation({
   args: {
     clientName: v.string(),
     clientEmail: v.optional(v.string()),
@@ -591,7 +591,7 @@ export const listContactScores = query({ args: {}, handler: async (ctx) => {
   return await ctx.db.query("contactScores").order("desc").collect();
 }});
 
-export const addContactScore = mutation({
+export const upsertContactScore = mutation({
   args: {
     contactName: v.string(),
     relationshipScore: v.number(),
@@ -1062,7 +1062,7 @@ export const getPublishedDrops = query({ args: {}, handler: async (ctx) => {
   return await ctx.db.query("exclusiveDrops").withIndex("by_published", q => q.eq("isPublished", true)).order("desc").collect();
 }});
 
-export const createDrop = mutation({
+export const addDrop = mutation({
   args: {
     title: v.string(),
     description: v.string(),
@@ -1132,3 +1132,53 @@ export const getNotificationBadges = query({ args: {}, handler: async (ctx) => {
     "polls-active": polls.filter((p: any) => p.isActive).length,
   };
 }});
+
+/* ================================================================
+   MISSING FUNCTIONS — needed by frontend
+   ================================================================ */
+
+// Contract templates (static data)
+export const getContractTemplates = query({ args: {}, handler: async () => {
+  return [
+    { id: "sponsorship", name: "Sponsorship Agreement", description: "Standard brand/sponsor deal" },
+    { id: "guest-release", name: "Guest Release Form", description: "Podcast guest appearance release" },
+    { id: "freelance", name: "Freelance Contract", description: "Freelancer / contractor agreement" },
+    { id: "nda", name: "NDA", description: "Non-disclosure agreement" },
+    { id: "licensing", name: "Content Licensing", description: "License content to third parties" },
+  ];
+}});
+
+// Mark episode prep as used
+export const markPrepUsed = mutation({
+  args: { id: v.id("aiEpisodePrep") },
+  handler: async (ctx, { id }) => {
+    await ctx.db.patch(id, { isUsed: true });
+  },
+});
+
+// CRM Stats (aggregate query)
+export const getCRMStats = query({ args: {}, handler: async (ctx) => {
+  const scores = await ctx.db.query("contactScores").collect();
+  const tiers = { hot: 0, warm: 0, cold: 0 };
+  let totalScore = 0;
+  for (const s of scores) {
+    const sc = (s as any).relationshipScore ?? (s as any).score ?? 50;
+    totalScore += sc;
+    if (sc >= 75) tiers.hot++;
+    else if (sc >= 40) tiers.warm++;
+    else tiers.cold++;
+  }
+  return {
+    total: scores.length,
+    tiers,
+    avgScore: scores.length ? Math.round(totalScore / scores.length) : 0,
+  };
+}});
+
+// Delete weekly report
+export const deleteWeeklyReport = mutation({
+  args: { id: v.id("weeklyReports") },
+  handler: async (ctx, { id }) => {
+    await ctx.db.delete(id);
+  },
+});
