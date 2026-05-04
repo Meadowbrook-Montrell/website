@@ -916,6 +916,285 @@ const schema = defineSchema({
   })
     .index("by_accessLevel", ["accessLevel"])
     .index("by_published", ["isPublished"]),
+
+  // === PHASE 4: AI SUITE + ENTERPRISE + FAN ENGAGEMENT 2.0 ===
+
+  // 1. AI Contract Generator
+  aiContracts: defineTable({
+    templateType: v.string(),
+    title: v.string(),
+    parties: v.object({ party1: v.string(), party2: v.string() }),
+    fields: v.any(),
+    generatedText: v.string(),
+    status: v.string(),
+    createdAt: v.string(),
+    expiresAt: v.optional(v.string()),
+    notes: v.optional(v.string()),
+  })
+    .index("by_status", ["status"])
+    .index("by_template", ["templateType"]),
+
+  // 2. AI Social Captions
+  aiCaptions: defineTable({
+    sourceTitle: v.string(),
+    sourceTopic: v.optional(v.string()),
+    platform: v.string(),
+    generatedCaption: v.string(),
+    hashtags: v.array(v.string()),
+    isSaved: v.optional(v.boolean()),
+    isUsed: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_platform", ["platform"]),
+
+  // 3. AI Episode Prep Kit
+  aiEpisodePrep: defineTable({
+    guestName: v.string(),
+    guestBio: v.optional(v.string()),
+    topic: v.string(),
+    questions: v.array(v.string()),
+    outline: v.string(),
+    talkingPoints: v.array(v.string()),
+    coldOpen: v.optional(v.string()),
+    createdAt: v.string(),
+    episodeDate: v.optional(v.string()),
+    isUsed: v.optional(v.boolean()),
+  })
+    .index("by_guest", ["guestName"]),
+
+  // 4. AI Invoice Generator
+  aiInvoices: defineTable({
+    invoiceNumber: v.string(),
+    clientName: v.string(),
+    clientEmail: v.optional(v.string()),
+    lineItems: v.array(v.object({
+      description: v.string(),
+      quantity: v.number(),
+      rate: v.number(),
+      amount: v.number(),
+    })),
+    subtotal: v.number(),
+    taxRate: v.optional(v.number()),
+    taxAmount: v.optional(v.number()),
+    total: v.number(),
+    status: v.string(),
+    dueDate: v.string(),
+    createdAt: v.string(),
+    paidAt: v.optional(v.string()),
+    notes: v.optional(v.string()),
+  })
+    .index("by_status", ["status"])
+    .index("by_client", ["clientName"]),
+
+  // 5. AI Content Repurposer
+  aiRepurpose: defineTable({
+    sourceTitle: v.string(),
+    sourceType: v.string(),
+    sourceUrl: v.optional(v.string()),
+    suggestions: v.array(v.object({
+      platform: v.string(),
+      format: v.string(),
+      description: v.string(),
+      isCompleted: v.optional(v.boolean()),
+    })),
+    createdAt: v.string(),
+  }),
+
+  // 6. CRM Intelligence
+  contactScores: defineTable({
+    contactId: v.optional(v.id("contacts")),
+    contactName: v.string(),
+    relationshipScore: v.number(),
+    lastInteraction: v.optional(v.string()),
+    interactionCount: v.number(),
+    revenueGenerated: v.optional(v.number()),
+    tags: v.array(v.string()),
+    healthStatus: v.string(),
+    suggestedAction: v.optional(v.string()),
+    updatedAt: v.string(),
+  })
+    .index("by_health", ["healthStatus"])
+    .index("by_score", ["relationshipScore"]),
+
+  // 7. Competitor Tracker
+  competitors: defineTable({
+    name: v.string(),
+    platform: v.string(),
+    profileUrl: v.optional(v.string()),
+    url: v.optional(v.string()),
+    subscribers: v.optional(v.number()),
+    followers: v.optional(v.number()),
+    avgViews: v.optional(v.number()),
+    uploadFrequency: v.optional(v.string()),
+    contentThemes: v.optional(v.array(v.string())),
+    notes: v.optional(v.string()),
+    lastChecked: v.optional(v.string()),
+    isActive: v.optional(v.boolean()),
+    category: v.optional(v.string()),
+    location: v.optional(v.string()),
+    createdAt: v.optional(v.string()),
+    snapshots: v.optional(v.array(v.object({
+      date: v.string(),
+      followers: v.number(),
+      views: v.optional(v.number()),
+    }))),
+  })
+    .index("by_platform", ["platform"]),
+
+  // 8. Brand Deal Calculator
+  brandDeals: defineTable({
+    platform: v.string(),
+    followers: v.number(),
+    avgViews: v.number(),
+    engagementRate: v.number(),
+    niche: v.string(),
+    dealType: v.string(),
+    calculatedRate: v.number(),
+    rateRange: v.object({ low: v.number(), high: v.number() }),
+    createdAt: v.string(),
+    notes: v.optional(v.string()),
+  })
+    .index("by_platform", ["platform"]),
+
+  // 9. Weekly Reports
+  weeklyReports: defineTable({
+    weekStart: v.string(),
+    weekEnd: v.string(),
+    revenue: v.object({
+      total: v.number(),
+      donations: v.number(),
+      sponsors: v.number(),
+      merch: v.number(),
+      bookings: v.number(),
+    }),
+    content: v.object({
+      published: v.number(),
+      views: v.number(),
+      newSubscribers: v.number(),
+    }),
+    community: v.object({
+      newFans: v.number(),
+      messages: v.number(),
+      qaQuestions: v.number(),
+    }),
+    operations: v.object({
+      tasksCompleted: v.number(),
+      tasksPending: v.number(),
+      overdueFollowUps: v.number(),
+    }),
+    highlights: v.array(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_week", ["weekStart"]),
+
+  // 10. Team Roles
+  teamRoles: defineTable({
+    userName: v.string(),
+    email: v.string(),
+    role: v.string(),
+    permissions: v.array(v.string()),
+    isActive: v.optional(v.boolean()),
+    lastLogin: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_role", ["role"])
+    .index("by_email", ["email"]),
+
+  // 11. Live Polls
+  livePolls: defineTable({
+    question: v.string(),
+    options: v.array(v.object({
+      text: v.string(),
+      votes: v.number(),
+    })),
+    isActive: v.boolean(),
+    totalVotes: v.number(),
+    createdAt: v.string(),
+    endsAt: v.optional(v.string()),
+    showResults: v.optional(v.boolean()),
+  })
+    .index("by_active", ["isActive"]),
+
+  pollVotes: defineTable({
+    pollId: v.id("livePolls"),
+    optionIndex: v.number(),
+    voterId: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_poll", ["pollId"]),
+
+  // 12. Fan Art Gallery
+  fanArt: defineTable({
+    submitterName: v.string(),
+    submitterEmail: v.optional(v.string()),
+    title: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.string(),
+    isApproved: v.boolean(),
+    isFeatured: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_approved", ["isApproved"])
+    .index("by_featured", ["isFeatured"]),
+
+  // 13. Achievements & Badges
+  achievements: defineTable({
+    name: v.string(),
+    description: v.string(),
+    icon: v.string(),
+    category: v.string(),
+    criteria: v.string(),
+    threshold: v.optional(v.number()),
+    isActive: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_category", ["category"]),
+
+  fanBadges: defineTable({
+    fanName: v.string(),
+    fanEmail: v.optional(v.string()),
+    achievementId: v.id("achievements"),
+    earnedAt: v.string(),
+  })
+    .index("by_fan", ["fanName"]),
+
+  // 14. Content Request Board
+  contentRequests: defineTable({
+    title: v.string(),
+    description: v.string(),
+    submitterName: v.string(),
+    submitterEmail: v.optional(v.string()),
+    category: v.string(),
+    votes: v.number(),
+    status: v.string(),
+    adminResponse: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_votes", ["votes"])
+    .index("by_status", ["status"]),
+
+  requestVotes: defineTable({
+    requestId: v.id("contentRequests"),
+    voterId: v.string(),
+    createdAt: v.string(),
+  })
+    .index("by_request", ["requestId"]),
+
+  // 15. Exclusive Drops Calendar
+  exclusiveDrops: defineTable({
+    title: v.string(),
+    description: v.string(),
+    type: v.string(),
+    dropDate: v.string(),
+    imageUrl: v.optional(v.string()),
+    linkUrl: v.optional(v.string()),
+    isPublished: v.boolean(),
+    isDropped: v.optional(v.boolean()),
+    createdAt: v.string(),
+  })
+    .index("by_date", ["dropDate"])
+    .index("by_type", ["type"])
+    .index("by_published", ["isPublished"]),
 });
 
 export default schema;

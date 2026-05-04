@@ -254,7 +254,7 @@ export const seedContent = mutation({
         { name: "Fort Worth Legend McHenry", title: "OG / Legend", quote: "The streets remember everything." },
       ];
       for (const g of guests) {
-        await ctx.db.insert("guests", { ...g, featured: true, imageUrl: undefined });
+        await ctx.db.insert("guests", { ...g, featured: true, imageUrl: undefined, createdAt: new Date().toISOString() });
       }
     }
 
@@ -268,7 +268,7 @@ export const seedContent = mutation({
         { name: "Fort Worth Rep Tee", price: 35, category: "apparel", status: "active", inventory: 25 },
       ];
       for (const m of merch) {
-        await ctx.db.insert("merchProducts", { ...m, description: "", imageUrl: undefined, createdAt: new Date().toISOString() });
+        await ctx.db.insert("merchProducts", { ...m, description: "", imageUrl: undefined, createdAt: new Date().toISOString(), isActive: true });
       }
     }
 

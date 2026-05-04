@@ -19,6 +19,7 @@ import type * as contentLib from "../contentLib.js";
 import type * as features2 from "../features2.js";
 import type * as http from "../http.js";
 import type * as operations from "../operations.js";
+import type * as phase4 from "../phase4.js";
 import type * as powerups from "../powerups.js";
 import type * as seedTestUser from "../seedTestUser.js";
 import type * as testAuth from "../testAuth.js";
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   features2: typeof features2;
   http: typeof http;
   operations: typeof operations;
+  phase4: typeof phase4;
   powerups: typeof powerups;
   seedTestUser: typeof seedTestUser;
   testAuth: typeof testAuth;

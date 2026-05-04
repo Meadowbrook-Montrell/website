@@ -11,6 +11,7 @@ import {
   Scissors, Zap, BookOpen, Package, Tag, ChevronDown,
   ChevronRight, Menu, X, Home, Video, Newspaper,
   Megaphone, Briefcase, Settings, PanelLeftClose, PanelLeft,
+  Sparkles, Target, Shield, Award,
 } from "lucide-react";
 import {
   OpsOverviewTab, CalendarTab, GuestCRMTab, BookingsTab,
@@ -52,7 +53,10 @@ type TabId =
   | "notifications"
   | "ops-overview"
   | "expenses" | "contracts" | "ai-content" | "revenue-dash" | "follow-ups" | "pipeline"
-  | "alerts" | "fan-qa" | "exclusive" | "leaderboard";
+  | "alerts" | "fan-qa" | "exclusive" | "leaderboard"
+  | "ai-contracts" | "ai-captions" | "ai-episode-prep" | "ai-invoices" | "ai-repurpose"
+  | "crm-intelligence" | "competitor-tracker" | "brand-deal-calc" | "weekly-reports" | "team-roles"
+  | "live-polls" | "fan-art" | "achievements" | "content-requests" | "exclusive-drops";
 
 interface NavItem {
   id: TabId;
@@ -808,6 +812,27 @@ export function AdminPage() {
           {activeTab === "fan-qa" && <Phase3Safe name="Fan Q&A"><FanQAAdminTab /></Phase3Safe>}
           {activeTab === "exclusive" && <Phase3Safe name="Exclusive Content"><ExclusiveContentTab /></Phase3Safe>}
           {activeTab === "leaderboard" && <Phase3Safe name="Leaderboard"><LeaderboardAdminTab /></Phase3Safe>}
+
+          {/* ── Phase 4: AI Suite ── */}
+          {activeTab === "ai-contracts" && <P4Safe name="AI Contracts"><AIContractTab /></P4Safe>}
+          {activeTab === "ai-captions" && <P4Safe name="AI Captions"><AICaptionTab /></P4Safe>}
+          {activeTab === "ai-episode-prep" && <P4Safe name="AI Episode Prep"><AIEpisodePrepTab /></P4Safe>}
+          {activeTab === "ai-invoices" && <P4Safe name="AI Invoices"><AIInvoiceTab /></P4Safe>}
+          {activeTab === "ai-repurpose" && <P4Safe name="AI Repurpose"><AIRepurposeTab /></P4Safe>}
+
+          {/* ── Phase 4: Enterprise ── */}
+          {activeTab === "crm-intelligence" && <P4Safe name="CRM Intelligence"><CRMIntelligenceTab /></P4Safe>}
+          {activeTab === "competitor-tracker" && <P4Safe name="Competitor Tracker"><CompetitorTrackerTab /></P4Safe>}
+          {activeTab === "brand-deal-calc" && <P4Safe name="Brand Deal Calculator"><BrandDealCalcTab /></P4Safe>}
+          {activeTab === "weekly-reports" && <P4Safe name="Weekly Reports"><WeeklyReportTab /></P4Safe>}
+          {activeTab === "team-roles" && <P4Safe name="Team Roles"><TeamRolesTab /></P4Safe>}
+
+          {/* ── Phase 4: Fan Engagement 2.0 ── */}
+          {activeTab === "live-polls" && <P4Safe name="Live Polls"><LivePollsTab /></P4Safe>}
+          {activeTab === "fan-art" && <P4Safe name="Fan Art"><FanArtTab /></P4Safe>}
+          {activeTab === "achievements" && <P4Safe name="Achievements"><AchievementsTab /></P4Safe>}
+          {activeTab === "content-requests" && <P4Safe name="Content Requests"><ContentRequestTab /></P4Safe>}
+          {activeTab === "exclusive-drops" && <P4Safe name="Exclusive Drops"><ExclusiveDropsTab /></P4Safe>}
         </div>
       </div>
     </div>
