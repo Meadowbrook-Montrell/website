@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
 import BreakingAlertBanner from "../components/BreakingAlertBanner";
@@ -394,12 +394,15 @@ function EmailSignup() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const addSubscriber = useMutation(api.admin.addSubscriber);
+  const sendWelcome = useAction(api.emailService.sendSubscriberWelcome);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     try {
       await addSubscriber({ email, source: "hero" });
+      // F1: Send welcome email (fire-and-forget)
+      sendWelcome({ email }).catch(() => {});
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 4000);
       setEmail("");

@@ -2,13 +2,14 @@
  * Guest Booking Page — public form for potential interview guests
  */
 import { useState } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Calendar, Clock, Send, Mic, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function BookingPage() {
   const addBooking = useMutation(api.operations.addBooking);
+  const sendBookingConfirmation = useAction(api.emailService.sendBookingConfirmation);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [form, setForm] = useState({
@@ -36,6 +37,13 @@ export function BookingPage() {
         preferredTime: form.preferredTime || undefined,
         message: form.message || undefined,
       });
+      // F1: Send confirmation email (fire-and-forget — don't block on failure)
+      sendBookingConfirmation({
+        guestName: form.guestName,
+        email: form.email,
+        topic: form.topic,
+        preferredDate: form.preferredDate,
+      }).catch(() => {}); // email failure shouldn't affect UX
       setSubmitted(true);
     } catch {
       setSubmitError(true);

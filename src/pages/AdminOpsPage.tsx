@@ -3,7 +3,7 @@
  * Revenue, Sponsors, Newsletters, Show Notes, Link-in-Bio, Community, Social Metrics
  */
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Link } from "react-router-dom";
 import {
@@ -627,8 +627,11 @@ export function NewslettersTab() {
   const newsletters = useQuery(api.operations.getNewsletters);
   const subscribers = useQuery(api.admin.listSubscribers);
   const addNewsletter = useMutation(api.operations.addNewsletter);
-  const sendNewsletter = useMutation(api.operations.sendNewsletter);
+  const markNewsletterSent = useMutation(api.operations.sendNewsletter);
+  const sendNewsletterEmails = useAction(api.emailService.sendNewsletter);
+  const subscriberEmails = useQuery(api.emailService.getSubscriberEmails);
   const deleteNewsletter = useMutation(api.operations.deleteNewsletter);
+  const [sending, setSending] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ subject: "", body: "" });
 
@@ -669,7 +672,19 @@ export function NewslettersTab() {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               {n.status === "draft" && (
-                <button onClick={() => sendNewsletter({ id: n._id })} className="px-3 py-1.5 bg-green-500/20 text-green-400 text-xs font-bold tracking-widest uppercase rounded-sm hover:bg-green-500/30">Send</button>
+                <button disabled={sending === n._id} onClick={async () => {
+                  setSending(n._id);
+                  try {
+                    const emails = subscriberEmails || [];
+                    if (emails.length > 0) {
+                      await sendNewsletterEmails({ subject: n.subject, heading: n.subject, body: n.body, subscriberEmails: emails });
+                    }
+                    await markNewsletterSent({ id: n._id });
+                  } catch (err) { console.error("Newsletter send failed:", err); }
+                  setSending(null);
+                }} className="px-3 py-1.5 bg-green-500/20 text-green-400 text-xs font-bold tracking-widest uppercase rounded-sm hover:bg-green-500/30 disabled:opacity-50">
+                  {sending === n._id ? "Sending..." : `Send to ${subscriberEmails?.length || 0}`}
+                </button>
               )}
               <button onClick={() => deleteNewsletter({ id: n._id })} className="text-red-400/50 hover:text-red-400"><Trash2 className="size-4" /></button>
             </div>

@@ -16,6 +16,7 @@ import type * as commandCenter from "../commandCenter.js";
 import type * as constants from "../constants.js";
 import type * as consumer from "../consumer.js";
 import type * as contentLib from "../contentLib.js";
+import type * as emailService from "../emailService.js";
 import type * as features2 from "../features2.js";
 import type * as http from "../http.js";
 import type * as operations from "../operations.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   constants: typeof constants;
   consumer: typeof consumer;
   contentLib: typeof contentLib;
+  emailService: typeof emailService;
   features2: typeof features2;
   http: typeof http;
   operations: typeof operations;
