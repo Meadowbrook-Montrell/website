@@ -108,6 +108,7 @@ const SOCIALS = [
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
+  { label: "Music", href: "/music" },
   { label: "Podcast", href: "/podcast" },
   { label: "Library", href: "/library" },
   { label: "Gallery", href: "/gallery" },
@@ -588,9 +589,7 @@ export function GraffitiLandingPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
-            <a href="#" className="flex items-center gap-2 group">
-              <span className="font-display text-lg md:text-xl tracking-[0.2em] text-[#D4A843] group-hover:text-[#E8C767] transition-colors">3RD GATE</span>
-            </a>
+            {/* logo area intentionally left blank */}
             <div className="hidden md:flex items-center gap-8">
               {NAV_LINKS.map((link) => (
                 <a key={link.href} href={link.href} className="text-sm font-medium tracking-wider uppercase text-[#c8c0b0] hover:text-[#D4A843] transition-colors duration-300">
