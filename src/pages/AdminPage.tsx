@@ -37,6 +37,12 @@ import {
   FollowUpsTab, PipelineTab, AlertsTab, FanQAAdminTab,
   ExclusiveContentTab, LeaderboardAdminTab, TabErrorBoundary as Phase3Safe,
 } from "./Phase3Tabs";
+import {
+  P4Safe, AIContractTab, AICaptionTab, AIEpisodePrepTab, AIInvoiceTab,
+  AIRepurposeTab, CRMIntelligenceTab, CompetitorTrackerTab, BrandDealCalcTab,
+  WeeklyReportTab, TeamRolesTab, LivePollsTab, FanArtTab, AchievementsTab,
+  ContentRequestTab, ExclusiveDropsTab,
+} from "./Phase4Tabs";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAVIGATION CONFIG — organized by workflow
@@ -176,6 +182,42 @@ const sidebarGroups: NavGroup[] = [
       { id: "brand-kit", label: "Brand Kit", icon: Palette },
       { id: "links", label: "Link-in-Bio", icon: Link2 },
       { id: "analytics", label: "Site Analytics", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "AI SUITE",
+    icon: Sparkles,
+    color: "#D4A843",
+    items: [
+      { id: "ai-contracts", label: "AI Contracts", icon: FileText },
+      { id: "ai-captions", label: "AI Captions", icon: MessageSquare },
+      { id: "ai-episode-prep", label: "AI Episode Prep", icon: Mic },
+      { id: "ai-invoices", label: "AI Invoices", icon: DollarSign },
+      { id: "ai-repurpose", label: "AI Repurpose", icon: Zap },
+    ],
+  },
+  {
+    label: "ENTERPRISE",
+    icon: Target,
+    color: "#ec4899",
+    items: [
+      { id: "crm-intelligence", label: "CRM Intelligence", icon: Users },
+      { id: "competitor-tracker", label: "Competitor Tracker", icon: Eye },
+      { id: "brand-deal-calc", label: "Brand Deal Calc", icon: DollarSign },
+      { id: "weekly-reports", label: "Weekly Reports", icon: BarChart3 },
+      { id: "team-roles", label: "Team Roles", icon: Shield },
+    ],
+  },
+  {
+    label: "FAN ENGAGEMENT",
+    icon: Award,
+    color: "#a855f7",
+    items: [
+      { id: "live-polls", label: "Live Polls", icon: BarChart3 },
+      { id: "fan-art", label: "Fan Art Gallery", icon: Image },
+      { id: "achievements", label: "Achievements", icon: Award },
+      { id: "content-requests", label: "Content Requests", icon: MessageSquare },
+      { id: "exclusive-drops", label: "Exclusive Drops", icon: Calendar },
     ],
   },
 ];
