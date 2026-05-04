@@ -2,7 +2,7 @@
  * Service Worker — 3GMG Meadowbrook Montrell
  * Lightweight caching for offline-capable PWA experience.
  */
-const CACHE_NAME = "3gmg-v1";
+const CACHE_NAME = "3gmg-v2";
 const STATIC_ASSETS = ["/", "/manifest.json"];
 
 // Install — pre-cache shell

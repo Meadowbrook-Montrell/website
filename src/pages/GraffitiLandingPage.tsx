@@ -400,12 +400,12 @@ function EmailSignup() {
     if (!email) return;
     try {
       await addSubscriber({ email, source: "hero" });
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 4000);
+      setEmail("");
     } catch (err) {
       console.error("Failed to subscribe:", err);
     }
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setEmail("");
   };
 
   return (
@@ -458,12 +458,12 @@ function FanSubmissionForm() {
         type: form.type,
         message: form.message,
       });
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+      setForm({ name: "", email: "", type: "shoutout", message: "" });
     } catch (err) {
       console.error("Failed to submit:", err);
     }
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
-    setForm({ name: "", email: "", type: "shoutout", message: "" });
   };
 
   if (submitted) {
@@ -1165,7 +1165,7 @@ export function GraffitiLandingPage() {
       </footer>
 
       {/* Feature 4: Floating Audio Player */}
-      <FloatingAudioPlayer />
+      {/* FloatingAudioPlayer removed — no real audio source connected yet */}
     </div>
   );
 }

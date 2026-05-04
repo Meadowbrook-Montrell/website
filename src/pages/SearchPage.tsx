@@ -17,7 +17,7 @@ export function SearchPage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+    <div id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
       {/* Nav */}
       <div className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-lg border-b border-[#D4A843]/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center h-16 gap-4">
@@ -71,7 +71,7 @@ export function SearchPage() {
                 </div>
                 <div className="space-y-2">
                   {results.content.map((item: any) => (
-                    <a key={item._id} href={`/library`} className="flex items-center gap-4 p-4 rounded-lg bg-[#141414]/80 border border-[#D4A843]/5 hover:border-[#D4A843]/20 transition-all">
+                    <a key={item._id} href={`/episode/${item._id}`} className="flex items-center gap-4 p-4 rounded-lg bg-[#141414]/80 border border-[#D4A843]/5 hover:border-[#D4A843]/20 transition-all">
                       {item.youtubeId && (
                         <img src={`https://img.youtube.com/vi/${item.youtubeId}/mqdefault.jpg`} alt="" className="w-24 h-16 object-cover rounded" />
                       )}
@@ -94,7 +94,7 @@ export function SearchPage() {
                 </div>
                 <div className="space-y-2">
                   {results.blog.map((post: any) => (
-                    <a key={post._id} href={`/blog`} className="block p-4 rounded-lg bg-[#141414]/80 border border-[#D4A843]/5 hover:border-[#D4A843]/20 transition-all">
+                    <a key={post._id} href={`/blog/${post.slug || post._id}`} className="block p-4 rounded-lg bg-[#141414]/80 border border-[#D4A843]/5 hover:border-[#D4A843]/20 transition-all">
                       <p className="text-sm text-[#f0ece4] font-medium">{post.title}</p>
                       {post.excerpt && <p className="text-xs text-[#888078] mt-1 line-clamp-2">{post.excerpt}</p>}
                       <span className="text-[10px] font-bold tracking-widest uppercase text-[#D4A843]">{post.category?.replace(/-/g, " ")}</span>

@@ -49,7 +49,7 @@ export function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+    <div id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
       {/* Nav */}
       <div className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-lg border-b border-[#D4A843]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">

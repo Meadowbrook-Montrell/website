@@ -12,17 +12,23 @@ export default function FanQAPage() {
   const [question, setQuestion] = useState("");
   const [category, setCategory] = useState("general");
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !question) return;
-    await submitQ({ fanName: name, question, category });
-    setName(""); setQuestion(""); setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+    setSubmitError("");
+    try {
+      await submitQ({ fanName: name, question, category });
+      setName(""); setQuestion(""); setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      setSubmitError("Something went wrong — please try again.");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+    <div id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
       {/* Hero */}
       <div className="relative bg-gradient-to-b from-purple-500/10 to-transparent">
         <div className="max-w-4xl mx-auto px-6 pt-20 pb-12">
@@ -59,6 +65,7 @@ export default function FanQAPage() {
                 </select>
               </div>
               <textarea className="bg-[#1a1a1a] border border-purple-500/20 rounded px-4 py-3 text-sm text-[#f0ece4] placeholder:text-[#888]/50 focus:border-purple-400/40 focus:outline-none w-full min-h-[100px]" placeholder="What's your question?" value={question} onChange={e => setQuestion(e.target.value)} required />
+              {submitError && <p className="text-red-400 text-sm mt-2">{submitError}</p>}
               <button type="submit" className="mt-3 bg-purple-600 text-white font-bold text-sm rounded px-6 py-2.5 hover:bg-purple-500 transition-all flex items-center gap-2"><Send className="size-4" /> Submit Question</button>
             </>
           )}

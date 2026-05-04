@@ -11,7 +11,7 @@ import {
   Scissors, Zap, BookOpen, Package, Tag, ChevronDown,
   ChevronRight, Menu, X, Home, Video, Newspaper,
   Megaphone, Briefcase, Settings, PanelLeftClose, PanelLeft,
-  Sparkles, Target, Shield, Award,
+  Sparkles, Target, Shield, Award, LogOut,
 } from "lucide-react";
 import {
   OpsOverviewTab, CalendarTab, GuestCRMTab, BookingsTab,
@@ -383,11 +383,15 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed, mobileOpen,
       </nav>
 
       {/* Bottom area */}
-      <div className="p-3 border-t border-[#D4A843]/10">
+      <div className="p-3 border-t border-[#D4A843]/10 space-y-2">
         <a href="/" className={`flex items-center gap-2 text-[#555] hover:text-[#D4A843] transition-colors text-xs ${collapsed ? "justify-center" : ""}`}>
           <ArrowLeft className="size-3.5" />
           {!collapsed && <span>Back to Site</span>}
         </a>
+        <button onClick={() => { sessionStorage.removeItem("3gmg_admin_token"); window.location.reload(); }} className={`flex items-center gap-2 text-[#555] hover:text-red-400 transition-colors text-xs w-full ${collapsed ? "justify-center" : ""}`}>
+          <LogOut className="size-3.5" />
+          {!collapsed && <span>Logout</span>}
+        </button>
       </div>
     </div>
   );
@@ -464,7 +468,14 @@ export function AdminPage() {
   const [newSessionDate, setNewSessionDate] = useState("");
   const [newSessionPlatform, setNewSessionPlatform] = useState("youtube");
 
-  const [activeTab, setActiveTab] = useState<TabId>("overview");
+  const initialTab = (new URLSearchParams(window.location.search).get("tab") || "overview") as TabId;
+  const [activeTab, setActiveTabState] = useState<TabId>(initialTab);
+  const setActiveTab = (tab: TabId) => {
+    setActiveTabState(tab);
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", tab);
+    window.history.replaceState({}, "", url.toString());
+  };
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

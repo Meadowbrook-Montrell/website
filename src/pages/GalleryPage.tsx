@@ -421,7 +421,7 @@ export function GalleryPage() {
   };
 
   return (
-    <div className="min-h-screen text-[#f0ece4] overflow-x-hidden">
+    <div id="main-content" className="min-h-screen text-[#f0ece4] overflow-x-hidden">
       {/* Fixed full-page background */}
       <div
         className="fixed inset-0 -z-10"

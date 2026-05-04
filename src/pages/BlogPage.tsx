@@ -42,7 +42,7 @@ export function BlogPage() {
   // Single post view
   if (selectedSlug && selectedPost) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+      <div id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
         {/* Header */}
         <div className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-lg border-b border-[#D4A843]/10">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 flex items-center h-16">

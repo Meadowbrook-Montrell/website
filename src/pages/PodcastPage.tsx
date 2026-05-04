@@ -3,6 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Play, Headphones, ExternalLink, ChevronRight, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SmartYouTubeEmbed } from "../components/SmartYouTubeEmbed";
 
 const PODCAST_LINKS = {
   youtube: "https://www.youtube.com/@MeadowbrookMontrell",
@@ -19,7 +20,7 @@ export default function PodcastPage() {
   const episodes = content?.filter(c => c.category === "podcast" || c.category === "interview") ?? [];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+    <div id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
       {/* Hero */}
       <div className="relative bg-gradient-to-b from-[#D4A843]/10 to-transparent">
         <div className="max-w-6xl mx-auto px-6 pt-20 pb-16">
@@ -34,9 +35,9 @@ export default function PodcastPage() {
             <a href={PODCAST_LINKS.youtube} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-red-600/20 border border-red-500/30 text-red-400 px-5 py-2.5 rounded hover:bg-red-600/30 transition-all text-sm font-bold tracking-wider">
               <Play className="size-4" /> YouTube
             </a>
-            <a href={PODCAST_LINKS.spotify} className="inline-flex items-center gap-2 bg-green-600/20 border border-green-500/30 text-green-400 px-5 py-2.5 rounded hover:bg-green-600/30 transition-all text-sm font-bold tracking-wider">
-              <Headphones className="size-4" /> Spotify
-            </a>
+            <span className="inline-flex items-center gap-2 bg-green-600/10 border border-green-500/20 text-green-400/50 px-5 py-2.5 rounded text-sm font-bold tracking-wider cursor-not-allowed" title="Coming soon to Spotify">
+              <Headphones className="size-4" /> Spotify <span className="text-[10px] opacity-60">SOON</span>
+            </span>
           </div>
         </div>
       </div>
@@ -45,14 +46,8 @@ export default function PodcastPage() {
       <div className="max-w-6xl mx-auto px-6 pb-20">
         <h2 className="font-display text-2xl tracking-wider mb-8 text-[#D4A843]">ALL EPISODES</h2>
         {selectedEp && (
-          <div className="mb-8 aspect-video max-w-4xl rounded-lg overflow-hidden border border-[#D4A843]/20">
-            <iframe
-              src={`https://www.youtube.com/embed/${selectedEp}?autoplay=1`}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title="Episode Player"
-            />
+          <div className="mb-8 max-w-4xl rounded-lg overflow-hidden border border-[#D4A843]/20">
+            <SmartYouTubeEmbed videoId={selectedEp} title="Episode Player" autoFacade={false} />
           </div>
         )}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">

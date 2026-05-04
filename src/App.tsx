@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { ScrollToTop } from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -26,6 +27,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark" switchable={true}>
         <Toaster />
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<GraffitiLandingPage />} />
           <Route path="/library" element={<LibraryPage />} />

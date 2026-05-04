@@ -15,7 +15,7 @@ export default function ShopPage() {
   const items = (products && products.length > 0) ? products : FALLBACK_MERCH;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+    <div id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
       {/* Hero */}
       <div className="relative bg-gradient-to-b from-orange-500/10 to-transparent">
         <div className="max-w-6xl mx-auto px-6 pt-20 pb-12">
@@ -46,7 +46,11 @@ export default function ShopPage() {
                 )}
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-[#D4A843]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="bg-[#D4A843] text-[#0a0a0a] font-bold text-sm px-6 py-2.5 rounded transform scale-95 group-hover:scale-100 transition-transform">COMING SOON</span>
+                  {item.purchaseUrl ? (
+                    <a href={item.purchaseUrl} target="_blank" rel="noopener noreferrer" className="bg-[#D4A843] text-[#0a0a0a] font-bold text-sm px-6 py-2.5 rounded transform scale-95 group-hover:scale-100 transition-transform hover:bg-[#E8C767]">SHOP NOW</a>
+                  ) : (
+                    <span className="bg-[#D4A843] text-[#0a0a0a] font-bold text-sm px-6 py-2.5 rounded transform scale-95 group-hover:scale-100 transition-transform">COMING SOON</span>
+                  )}
                 </div>
               </div>
               <div className="p-5">

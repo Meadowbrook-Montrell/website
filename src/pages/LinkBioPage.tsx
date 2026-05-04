@@ -40,7 +40,7 @@ export function LinkBioPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#0a0a0a] text-[#f0ece4] relative"
+      id="main-content" className="min-h-screen bg-[#0a0a0a] text-[#f0ece4] relative"
       style={{
         backgroundImage: "url('/images/hero-graffiti.webp')",
         backgroundSize: "cover",

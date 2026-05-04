@@ -2,8 +2,9 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
 // ─── Admin Auth (server-side password validation) ───
-// Password is checked server-side only — not exposed in client bundle
-const ADMIN_PASSWORD = "3GMG817!";
+// Password read from environment variable (set in Convex dashboard → Settings → Environment Variables)
+// Falls back to hardcoded value if env var not set (set ADMIN_PASSWORD in Convex dashboard to override)
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "3GMG817!";
 
 export const verifyAdminPassword = mutation({
   args: { password: v.string() },
