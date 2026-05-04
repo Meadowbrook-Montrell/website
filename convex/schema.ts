@@ -1195,6 +1195,138 @@ const schema = defineSchema({
     .index("by_date", ["dropDate"])
     .index("by_type", ["type"])
     .index("by_published", ["isPublished"]),
+
+  // ═══════════════════════════════════════════════════════════
+  //  MUSIC PRODUCTION COMMAND CENTER
+  // ═══════════════════════════════════════════════════════════
+
+  // ─── Artist Roster ────────────────────────────────────────
+  artists: defineTable({
+    name: v.string(),
+    role: v.string(), // "artist" | "producer" | "engineer" | "songwriter" | "multi"
+    bio: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    genres: v.optional(v.array(v.string())),
+    socialLinks: v.optional(v.object({
+      instagram: v.optional(v.string()),
+      twitter: v.optional(v.string()),
+      spotify: v.optional(v.string()),
+      appleMusic: v.optional(v.string()),
+      youtube: v.optional(v.string()),
+      soundcloud: v.optional(v.string()),
+      tiktok: v.optional(v.string()),
+    })),
+    status: v.string(), // "active" | "inactive" | "development"
+    signedDate: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_role", ["role"])
+    .index("by_status", ["status"]),
+
+  // ─── Music Projects (Songs / Albums / EPs) ────────────────
+  musicProjects: defineTable({
+    title: v.string(),
+    type: v.string(), // "single" | "ep" | "album" | "mixtape" | "feature"
+    status: v.string(), // "concept" | "writing" | "recording" | "mixing" | "mastering" | "review" | "ready" | "released"
+    artistIds: v.optional(v.array(v.string())),
+    producerIds: v.optional(v.array(v.string())),
+    engineerIds: v.optional(v.array(v.string())),
+    genre: v.optional(v.string()),
+    bpm: v.optional(v.number()),
+    key: v.optional(v.string()),
+    mood: v.optional(v.string()),
+    targetReleaseDate: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    priority: v.optional(v.string()), // "low" | "medium" | "high" | "urgent"
+    progress: v.optional(v.number()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_type", ["type"]),
+
+  // ─── Studio Sessions ─────────────────────────────────────
+  studioSessions: defineTable({
+    title: v.string(),
+    projectId: v.optional(v.string()),
+    date: v.string(),
+    startTime: v.string(),
+    endTime: v.optional(v.string()),
+    studio: v.optional(v.string()),
+    engineerName: v.optional(v.string()),
+    artistNames: v.optional(v.array(v.string())),
+    sessionType: v.string(), // "recording" | "mixing" | "mastering" | "writing" | "rehearsal"
+    notes: v.optional(v.string()),
+    status: v.optional(v.string()), // "scheduled" | "in-progress" | "completed" | "cancelled"
+    cost: v.optional(v.number()),
+    createdAt: v.string(),
+  })
+    .index("by_date", ["date"])
+    .index("by_status", ["status"]),
+
+  // ─── Beat / Production Library ────────────────────────────
+  beatLibrary: defineTable({
+    title: v.string(),
+    producerName: v.string(),
+    genre: v.optional(v.string()),
+    bpm: v.optional(v.number()),
+    key: v.optional(v.string()),
+    mood: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    audioUrl: v.optional(v.string()),
+    status: v.string(), // "available" | "on-hold" | "assigned" | "sold" | "used"
+    assignedTo: v.optional(v.string()),
+    price: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_producer", ["producerName"]),
+
+  // ─── Release Manager ─────────────────────────────────────
+  releases: defineTable({
+    title: v.string(),
+    artistName: v.string(),
+    type: v.string(), // "single" | "ep" | "album" | "mixtape"
+    releaseDate: v.optional(v.string()),
+    status: v.string(), // "planning" | "pre-production" | "production" | "post-production" | "submitted" | "scheduled" | "released"
+    distributor: v.optional(v.string()),
+    isrc: v.optional(v.string()),
+    upc: v.optional(v.string()),
+    artworkStatus: v.optional(v.string()),
+    artworkUrl: v.optional(v.string()),
+    mastered: v.optional(v.boolean()),
+    metadataComplete: v.optional(v.boolean()),
+    distributorSubmitted: v.optional(v.boolean()),
+    spotifyUrl: v.optional(v.string()),
+    appleMusicUrl: v.optional(v.string()),
+    youtubeUrl: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_artist", ["artistName"])
+    .index("by_releaseDate", ["releaseDate"]),
+
+  // ─── Split Sheets & Credits ───────────────────────────────
+  splitSheets: defineTable({
+    trackTitle: v.string(),
+    projectId: v.optional(v.string()),
+    contributors: v.array(v.object({
+      name: v.string(),
+      role: v.string(),
+      percentage: v.number(),
+      publisherName: v.optional(v.string()),
+      pro: v.optional(v.string()),
+      ipi: v.optional(v.string()),
+    })),
+    status: v.optional(v.string()), // "draft" | "pending" | "agreed" | "signed"
+    notes: v.optional(v.string()),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"]),
 });
 
 export default schema;

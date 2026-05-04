@@ -12,6 +12,7 @@ import {
   ChevronRight, Menu, X, Home, Video, Newspaper,
   Megaphone, Briefcase, Settings, PanelLeftClose, PanelLeft,
   Sparkles, Target, Shield, Award, LogOut, Youtube,
+  Headphones, Disc3, Music,
 } from "lucide-react";
 import {
   OpsOverviewTab, CalendarTab, GuestCRMTab, BookingsTab,
@@ -43,6 +44,10 @@ import {
   WeeklyReportTab, TeamRolesTab, LivePollsTab, FanArtTab, AchievementsTab,
   ContentRequestTab, ExclusiveDropsTab,
 } from "./Phase4Tabs";
+import {
+  MPSafe, MusicProductionOverviewTab, ArtistRosterTab, ProjectTrackerTab,
+  StudioSessionsTab, BeatLibraryTab, ReleaseManagerTab, SplitsCreditsTab,
+} from "./MusicProductionTabs";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAVIGATION CONFIG — organized by workflow
@@ -62,7 +67,8 @@ type TabId =
   | "alerts" | "fan-qa" | "exclusive" | "leaderboard"
   | "ai-contracts" | "ai-captions" | "ai-episode-prep" | "ai-invoices" | "ai-repurpose"
   | "crm-intelligence" | "competitor-tracker" | "brand-deal-calc" | "weekly-reports" | "team-roles"
-  | "live-polls" | "fan-art" | "achievements" | "content-requests" | "exclusive-drops";
+  | "live-polls" | "fan-art" | "achievements" | "content-requests" | "exclusive-drops"
+  | "mp-overview" | "mp-roster" | "mp-projects" | "mp-sessions" | "mp-beats" | "mp-releases" | "mp-splits";
 
 interface NavItem {
   id: TabId;
@@ -85,6 +91,20 @@ const sidebarGroups: NavGroup[] = [
     items: [
       { id: "overview", label: "Dashboard", icon: BarChart3 },
       { id: "notifications", label: "Notifications", icon: Bell },
+    ],
+  },
+  {
+    label: "MUSIC PRODUCTION",
+    icon: Headphones,
+    color: "#a855f7",
+    items: [
+      { id: "mp-overview", label: "Command Center", icon: Headphones },
+      { id: "mp-roster", label: "Artist Roster", icon: Users },
+      { id: "mp-projects", label: "Project Tracker", icon: Music },
+      { id: "mp-sessions", label: "Studio Sessions", icon: Mic },
+      { id: "mp-beats", label: "Beat Library", icon: Disc3 },
+      { id: "mp-releases", label: "Release Manager", icon: Radio },
+      { id: "mp-splits", label: "Splits & Credits", icon: FileText },
     ],
   },
   {
@@ -955,6 +975,15 @@ export function AdminPage() {
           {activeTab === "achievements" && <P4Safe name="Achievements"><AchievementsTab /></P4Safe>}
           {activeTab === "content-requests" && <P4Safe name="Content Requests"><ContentRequestTab /></P4Safe>}
           {activeTab === "exclusive-drops" && <P4Safe name="Exclusive Drops"><ExclusiveDropsTab /></P4Safe>}
+
+          {/* ── Music Production Command Center ── */}
+          {activeTab === "mp-overview" && <MPSafe name="Command Center"><MusicProductionOverviewTab /></MPSafe>}
+          {activeTab === "mp-roster" && <MPSafe name="Artist Roster"><ArtistRosterTab /></MPSafe>}
+          {activeTab === "mp-projects" && <MPSafe name="Project Tracker"><ProjectTrackerTab /></MPSafe>}
+          {activeTab === "mp-sessions" && <MPSafe name="Studio Sessions"><StudioSessionsTab /></MPSafe>}
+          {activeTab === "mp-beats" && <MPSafe name="Beat Library"><BeatLibraryTab /></MPSafe>}
+          {activeTab === "mp-releases" && <MPSafe name="Release Manager"><ReleaseManagerTab /></MPSafe>}
+          {activeTab === "mp-splits" && <MPSafe name="Splits & Credits"><SplitsCreditsTab /></MPSafe>}
         </div>
       </div>
     </div>
